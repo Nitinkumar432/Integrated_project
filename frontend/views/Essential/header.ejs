@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Header</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+      
+            font-family: 'Poppins', sans-serif;
+        }
+        .custom-shape-divider-bottom-1682452913 {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            overflow: hidden;
+            line-height: 0;
+        }
+        .custom-shape-divider-bottom-1682452913 svg {
+            position: relative;
+            display: block;
+            width: calc(100% + 1.3px);
+            height: 150px;
+        }
+        .custom-shape-divider-bottom-1682452913 .shape-fill {
+            fill: #FFFFFF;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <header x-data="{ isOpen: false }" class="bg-green-600 text-white sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <a href="/" class="text-2xl font-bold">RepairConnect</a>
+                </div>
+                <div class="hidden md:flex items-center space-x-4">
+                    <a href="#how-it-works" class="hover:text-green-200 transition">How It Works</a>
+                    <a href="#join" class="hover:text-green-200 transition">Join</a>
+                    <a href="#impact" class="hover:text-green-200 transition">Impact</a>
+                    <a href="#categories" class="hover:text-green-200 transition">Categories</a>
+                    <a href="/login" class="bg-white text-green-600 px-4 py-2 rounded-full hover:bg-green-100 transition">Login</a>
+                    <a href="/login" class="bg-white text-green-600 px-4 py-2 rounded-full hover:bg-green-100 transition">Sign-Up</a>
+                </div>
+                <div class="md:hidden">
+                    <button @click="isOpen = !isOpen" type="button" class="text-white focus:outline-none">
+                        <svg class="h-6 w-6 fill-current" viewBox="0 0 24 24">
+                            <path x-show="!isOpen" fill-rule="evenodd" clip-rule="evenodd" d="M4 6h16v2H4V6zm0 5h16v2H4v-2zm0 5h16v2H4v-2z"></path>
+                            <path x-show="isOpen" fill-rule="evenodd" clip-rule="evenodd" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div x-show="isOpen" class="md:hidden mt-3">
+                <a href="#how-it-works" class="block py-2 hover:text-green-200 transition">How It Works</a>
+                <a href="#join" class="block py-2 hover:text-green-200 transition">Join</a>
+                <a href="#impact" class="block py-2 hover:text-green-200 transition">Impact</a>
+                <a href="#categories" class="block py-2 hover:text-green-200 transition">Categories</a>
+                <a href="/login" class="block py-2 hover:text-green-200 transition">Login</a>
+            </div>
+        </nav>
+    </header>
+
+</body>
+</html>

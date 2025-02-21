@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RepairConnect - Sustainable Living Community</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+      
+            font-family: 'Poppins', sans-serif;
+        }
+        .custom-shape-divider-bottom-1682452913 {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            overflow: hidden;
+            line-height: 0;
+        }
+        .custom-shape-divider-bottom-1682452913 svg {
+            position: relative;
+            display: block;
+            width: calc(100% + 1.3px);
+            height: 150px;
+        }
+        .custom-shape-divider-bottom-1682452913 .shape-fill {
+            fill: #FFFFFF;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <header x-data="{ isOpen: false }" class="bg-green-600 text-white sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <a href="/" class="text-2xl font-bold">RepairConnect</a>
+                </div>
+                <div class="hidden md:flex items-center space-x-4">
+                    <a href="#how-it-works" class="hover:text-green-200 transition">How It Works</a>
+                    <a href="#join" class="hover:text-green-200 transition">Join</a>
+                    <a href="#impact" class="hover:text-green-200 transition">Impact</a>
+                    <a href="#categories" class="hover:text-green-200 transition">Categories</a>
+                    <a href="/login" class="bg-white text-green-600 px-4 py-2 rounded-full hover:bg-green-100 transition">Login</a>
+                    <a href="/login" class="bg-white text-green-600 px-4 py-2 rounded-full hover:bg-green-100 transition">Sign-Up</a>
+                </div>
+                <div class="md:hidden">
+                    <button @click="isOpen = !isOpen" type="button" class="text-white focus:outline-none">
+                        <svg class="h-6 w-6 fill-current" viewBox="0 0 24 24">
+                            <path x-show="!isOpen" fill-rule="evenodd" clip-rule="evenodd" d="M4 6h16v2H4V6zm0 5h16v2H4v-2zm0 5h16v2H4v-2z"></path>
+                            <path x-show="isOpen" fill-rule="evenodd" clip-rule="evenodd" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div x-show="isOpen" class="md:hidden mt-3">
+                <a href="#how-it-works" class="block py-2 hover:text-green-200 transition">How It Works</a>
+                <a href="#join" class="block py-2 hover:text-green-200 transition">Join</a>
+                <a href="#impact" class="block py-2 hover:text-green-200 transition">Impact</a>
+                <a href="#categories" class="block py-2 hover:text-green-200 transition">Categories</a>
+                <a href="/login" class="block py-2 hover:text-green-200 transition">Login</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="relative bg-gradient-to-b from-green-600 to-green-400 text-white py-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
+            <div class="container mx-auto max-w-4xl text-center relative z-10">
+                <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-6 leading-tight animate__animated animate__fadeInDown">Repair. Reuse. Reconnect.</h1>
+                <p class="text-xl md:text-2xl mb-8 font-light animate__animated animate__fadeInUp animate__delay-1s">Join our community-driven platform to promote sustainable living and reduce waste.</p>
+                <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4 animate__animated animate__fadeInUp animate__delay-2s">
+                    <a href="/find-help" class="bg-white text-green-600 px-8 py-3 rounded-full text-lg font-semibold hover:bg-green-100 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105 shadow-lg">Find Help</a>
+                    <a href="/offer-help" class="bg-green-700 text-white px-8 py-3 rounded-full text-lg font-semibold hover:bg-green-800 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105 shadow-lg">Offer Help</a>
+                </div>
+            </div>
+            <div class="custom-shape-divider-bottom-1682452913">
+                <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+                    <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" class="shape-fill"></path>
+                </svg>
+            </div>
+        </section>
+
+        <section id="how-it-works" class="py-16 bg-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-3xl sm:text-4xl font-bold text-center mb-12">How It Works</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="text-center p-6 bg-gray-50 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg">
+                        <div class="bg-green-100 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-2">Find Help</h3>
+                        <p class="text-gray-600">Connect with local repair experts to fix your items and reduce waste.</p>
+                    </div>
+                    <div class="text-center p-6 bg-gray-50 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg">
+                        <div class="bg-green-100 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-2">Share Skills</h3>
+                        <p class="text-gray-600">Offer your expertise or learn new repair skills from community members.</p>
+                    </div>
+                    <div class="text-center p-6 bg-gray-50 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg">
+                        <div class="bg-green-100 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-2">Track Impact</h3>
+                        <p class="text-gray-600">See how your actions contribute to a more sustainable community.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="join" class="py-16 bg-gray-100">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-3xl sm:text-4xl font-bold text-center mb-12">Join Our Community</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-white rounded-lg shadow-md p-6 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg">
+                        <h3 class="text-2xl font-semibold mb-4">Need Help?</h3>
+                        <p class="text-gray-600 mb-6">Connect with skilled repair experts in your area and give your items a second life.</p>
+                        <a href="/signup" class="inline-block bg-green-600 text-white px-6 py-2 rounded-full hover:bg-green-700 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105">Get Started</a>
+                    </div>
+                    <div class="bg-white rounded-lg shadow-md p-6 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg">
+                        <h3 class="text-2xl font-semibold mb-4">Offer Your Skills</h3>
+                        <p class="text-gray-600 mb-6">Share your expertise, help others, and contribute to a more sustainable future.</p>
+                        <a href="/signup" class="inline-block bg-green-600 text-white px-6 py-2 rounded-full hover:bg-green-700 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105">Become an Expert</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="impact" class="py-16 bg-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-3xl sm:text-4xl font-bold text-center mb-12">Our Impact</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-gray-50 rounded-lg shadow-md p-6">
+                        <h3 class="text-2xl font-semibold mb-4">Environmental Impact</h3>
+                        <canvas id="environmentalImpactChart"></canvas>
+                    </div>
+                    <div class="bg-gray-50 rounded-lg shadow-md p-6">
+                        <h3 class="text-2xl font-semibold mb-4">Community Growth</h3>
+                        <canvas id="communityGrowthChart"></canvas>
+                    </div>
+                </div>
+                <div class="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div class="text-center">
+                        <div class="text-4xl font-bold text-green-600 mb-2">5,000+</div>
+                        <p class="text-gray-600">Items Repaired</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-4xl font-bold text-green-600 mb-2">1,000+</div>
+                        <p class="text-gray-600">Active Experts</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-4xl font-bold text-green-600 mb-2">10,000+</div>
+                        <p class="text-gray-600">Community Members</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-4xl font-bold text-green-600 mb-2">50 tons</div>
+                        <p class="text-gray-600">Waste Reduced</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="categories" class="py-16 bg-gray-100">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-3xl sm:text-4xl font-bold text-center mb-12">Featured Categories</h2>
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                    <a href="#" class="bg-white rounded-lg p-4 text-center hover:bg-green-100 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-md">
+                        <svg class="w-10 h-10 mx-auto mb-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                        <span class="text-gray-800 font-medium">Electronics</span>
+                    </a>
+                    <a href="#" class="bg-white rounded-lg p-4 text-center hover:bg-green-100 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-md">
+                        <svg class="w-10 h-10 mx-auto mb-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                        <span class="text-gray-800 font-medium">Appliances</span>
+                    </a>
+                    <a href="#" class="bg-white rounded-lg p-4 text-center hover:bg-green-100 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-md">
+                        <svg class="w-10 h-10 mx-auto mb-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z"></path></svg>
+                        <span class="text-gray-800 font-medium">Furniture</span>
+                    </a>
+                    <a href="#" class="bg-white rounded-lg p-4 text-center hover:bg-green-100 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-md">
+                        <svg class="w-10 h-10 mx-auto mb-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.121 14.121L19 19m-7-7l7-7m-7 7l-2.879 2.879M12 12L9.121 9.121m0 5.758a3 3 0 10-4.243 4.243 3 3 0 004.243-4.243zm0-5.758a3 3 0 10-4.243-4.243 3 3 0 004.243 4.243z"></path></svg>
+                        <span class="text-gray-800 font-medium">Clothing</span>
+                    </a>
+                    <a href="#" class="bg-white rounded-lg p-4 text-center hover:bg-green-100 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-md">
+                        <svg class="w-10 h-10 mx-auto mb-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                        <span class="text-gray-800 font-medium">Jewelry</span>
+                    </a>
+                    <a href="#" class="bg-white rounded-lg p-4 text-center hover:bg-green-100 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-md">
+                        <svg class="w-10 h-10 mx-auto mb-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                        <span class="text-gray-800 font-medium">Home & Garden</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-16 bg-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-3xl sm:text-4xl font-bold text-center mb-12">Get Started Today</h2>
+                <div class="max-w-md mx-auto bg-gray-50 rounded-lg shadow-md overflow-hidden">
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-4">Join RepairConnect</h3>
+                        <form x-data="{ userType: 'seeker' }">
+                            <div class="mb-4">
+                                <label class="block text-gray-700 font-medium mb-2">I want to:</label>
+                                <div class="flex space-x-4">
+                                    <label class="inline-flex items-center">
+                                        <input type="radio" class="form-radio" name="userType" value="seeker" x-model="userType">
+                                        <span class="ml-2">Find Help</span>
+                                    </label>
+                                    <label class="inline-flex items-center">
+                                        <input type="radio" class="form-radio" name="userType" value="expert" x-model="userType">
+                                        <span class="ml-2">Offer Help</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <label for="email" class="block text-gray-700 font-medium mb-2">Email</label>
+                                <input placeholder="Enter Name" type="email" id="email" name="email" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" required>
+                            </div>
+                            <div class="mb-6">
+                                <label for="password" class="block text-gray-700 font-medium mb-2">Password</label>
+                                <input placeholder="Enter password" type="password" id="password" name="password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" required>
+                            </div>
+                            <button type="submit" class="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105">
+                                <span x-text="userType === 'seeker' ? 'Find Help' : 'Offer Help'"></span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-xl font-semibold mb-4">About RepairConnect</h3>
+                    <p class="text-gray-400">Promoting repair, reuse, and sustainable living through community-driven solutions.</p>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold mb-4">Quick Links</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="/about" class="hover:text-white transition">About Us</a></li>
+                        <li><a href="/faq" class="hover:text-white transition">FAQ</a></li>
+                        <li><a href="/contact" class="hover:text-white transition">Contact</a></li>
+                        <li><a href="/terms" class="hover:text-white transition">Terms of Service</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold mb-4">Connect With Us</h3>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clip-rule="evenodd"/>
+                            </svg>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-4.315 4a4 4 0 108 0 4 4 0 00-8 0zm10 10a10 10 0 10-12 0c.92 0 1.68-.76 1.68-1.68a2.322 2.322 0 00-.037-.38c-1.16-.45-2.23-1.52-2.64-2.68-.15-.38-.24-.79-.24-1.2 0-.2.017-.38.04-.57.14-.94.67-1.72 1.47-2.24a4.92 4.92 0 011.23-.65c.41-.15.83-.26 1.26-.32.35-.05.71-.08 1.08-.08.92 0 1.85.18 2.66.52a5.3 5.3 0 012.15 1.64 4.6 4.6 0 011.17 2.93c0 .46-.08.91-.24 1.34a4.418 4.418 0 01-2.68 2.66c-.12.37-.33.71-.6 1.02-.32.37-.7.68-1.15.92.36.07.74.11 1.12.11z" clip-rule="evenodd"/>
+                            </svg>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M12 2.002c-5.523 0-10 4.477-10 10 0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54v-2.891h2.54v-2.209c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562v1.882h2.773l-.443 2.89h-2.33v6.988C18.343 21.13 22 16.993 22 12c0-5.523-4.477-10-10-10z" clip-rule="evenodd"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-8 text-center text-gray-400">
+                <p>&copy; 2024 RepairConnect. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    

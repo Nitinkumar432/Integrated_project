@@ -55,6 +55,9 @@ mongoose
 app.get("/", (req, res) => {
   res.render("index", { title: "Home Page" });
 });
+app.get("/register", (req, res) => {
+  res.render("./Common/Register.ejs");
+});
 
 // Start Server with animation
 const PORT = process.env.PORT || 5000;

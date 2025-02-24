@@ -16,4 +16,4 @@ const SeekerSchema = new mongoose.Schema({
     createdAt: { type: Date, default: Date.now }
 });
 
-module.exports=mongoose.model("Seeker", SeekerSchema);
+export default mongoose.model("Seeker", SeekerSchema);

@@ -7,7 +7,7 @@ import chalk from "chalk";
 import figlet from "figlet";
 import boxen from "boxen";
 import ora from "ora";
-
+import seeker from './Seeker/Routes/seeker.js';
 // Load environment variables
 dotenv.config();
 
@@ -37,6 +37,7 @@ console.log(
   })
 );
 
+
 // Connect to MongoDB with an animation
 const spinner = ora(chalk.yellow("Connecting to MongoDB...")).start();
 const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/mydatabase";
@@ -58,6 +59,9 @@ app.get("/", (req, res) => {
 app.get("/register", (req, res) => {
   res.render("./Common/Register.ejs");
 });
+
+// seeker
+app.use("/seeker", seeker);
 
 // Start Server with animation
 const PORT = process.env.PORT || 5000;

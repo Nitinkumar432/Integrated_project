@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Common Repair Problems - RepairConnect</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/index.css">
+    <style>
+        .rating-stars .star {
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+        .rating-stars .star.active {
+            color: #FFD700;
+        }
+        .category-pill.active {
+            background-color: #16a34a;
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <%- include('../Essential/header') %>
+
+    <main>
+        <!-- Hero Section -->
+
+
+        <!-- Search and Filter Section -->
+        <section class="py-8 bg-white shadow-md">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                    <div class="relative flex-grow max-w-2xl">
+                        <input type="text" id="search-input" placeholder="Search for repair problems..." class="w-full px-4 py-3 pl-12 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-green-500">
+                        <svg class="w-6 h-6 text-gray-400 absolute left-3 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </div>
+                    <div x-data="{ open: false }" class="relative">
+                        <button @click="open = !open" class="flex items-center px-4 py-2 bg-green-100 text-green-800 rounded-full hover:bg-green-200">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
+                            </svg>
+                            Filter
+                        </button>
+                        <div x-show="open" @click.away="open = false" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10">
+                            <div class="py-1">
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-green-100">Most Recent</a>
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-green-100">Highest Rated</a>
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-green-100">Most Viewed</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Categories Section -->
+        <section class="py-6 bg-gray-50">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex flex-wrap gap-2 justify-center" x-data="{ activeCategory: 'all' }">
+                    <button @click="activeCategory = 'all'" :class="{ 'active': activeCategory === 'all' }" class="category-pill px-4 py-2 rounded-full bg-gray-200 hover:bg-green-100 transition-colors">
+                        All
+                    </button>
+                    <button @click="activeCategory = 'electronics'" :class="{ 'active': activeCategory === 'electronics' }" class="category-pill px-4 py-2 rounded-full bg-gray-200 hover:bg-green-100 transition-colors">
+                        Electronics
+                    </button>
+                    <button @click="activeCategory = 'appliances'" :class="{ 'active': activeCategory === 'appliances' }" class="category-pill px-4 py-2 rounded-full bg-gray-200 hover:bg-green-100 transition-colors">
+                        Appliances
+                    </button>
+                    <button @click="activeCategory = 'computers'" :class="{ 'active': activeCategory === 'computers' }" class="category-pill px-4 py-2 rounded-full bg-gray-200 hover:bg-green-100 transition-colors">
+                        Computers
+                    </button>
+                    <button @click="activeCategory = 'smartphones'" :class="{ 'active': activeCategory === 'smartphones' }" class="category-pill px-4 py-2 rounded-full bg-gray-200 hover:bg-green-100 transition-colors">
+                        Smartphones
+                    </button>
+                    <button @click="activeCategory = 'furniture'" :class="{ 'active': activeCategory === 'furniture' }" class="category-pill px-4 py-2 rounded-full bg-gray-200 hover:bg-green-100 transition-colors">
+                        Furniture
+                    </button>
+                    <button @click="activeCategory = 'clothing'" :class="{ 'active': activeCategory === 'clothing' }" class="category-pill px-4 py-2 rounded-full bg-gray-200 hover:bg-green-100 transition-colors">
+                        Clothing
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Common Problems Grid -->
+        <section class="py-12 bg-gray-100">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-3xl font-bold text-center mb-12">Popular Repair Solutions</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Problem 1 -->
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg">
+                        <img src="/images/fan-repair.jpg" alt="Ceiling Fan Repair" class="w-full h-48 object-cover">
+                        <div class="p-6">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="px-3 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded-full">Electronics</span>
+                                <div class="rating-stars flex" x-data="{ rating: 4 }">
+                                    <template x-for="i in 5">
+                                        <span class="star text-xl" :class="{ 'active': i <= rating }">★</span>
+                                    </template>
+                                    <span class="text-sm text-gray-600 ml-2">(128)</span>
+                                </div>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-2">How to Repair a Ceiling Fan</h3>
+                            <p class="text-gray-600 mb-4">Learn how to diagnose and fix common ceiling fan issues including wobbling, noise, and speed problems without calling a professional.</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-gray-500">Difficulty: Medium</span>
+                                <a href="/problem/ceiling-fan-repair" class="text-green-600 hover:text-green-800 font-medium">View Solution →</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Problem 2 -->
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg">
+                        <img src="/images/laptop-battery.jpg" alt="Laptop Battery Replacement" class="w-full h-48 object-cover">
+                        <div class="p-6">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="px-3 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded-full">Computers</span>
+                                <div class="rating-stars flex" x-data="{ rating: 5 }">
+                                    <template x-for="i in 5">
+                                        <span class="star text-xl" :class="{ 'active': i <= rating }">★</span>
+                                    </template>
+                                    <span class="text-sm text-gray-600 ml-2">(215)</span>
+                                </div>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-2">How to Replace a Laptop Battery</h3>
+                            <p class="text-gray-600 mb-4">Step-by-step guide to safely remove and replace your laptop battery to extend your device's life and improve performance.</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-gray-500">Difficulty: Easy</span>
+                                <a href="/problem/laptop-battery-replacement" class="text-green-600 hover:text-green-800 font-medium">View Solution →</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Problem 3 -->
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg">
+                        <img src="/images/smartphone-update.jpg" alt="Smartphone Update" class="w-full h-48 object-cover">
+                        <div class="p-6">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="px-3 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded-full">Smartphones</span>
+                                <div class="rating-stars flex" x-data="{ rating: 4 }">
+                                    <template x-for="i in 5">
+                                        <span class="star text-xl" :class="{ 'active': i <= rating }">★</span>
+                                    </template>
+                                    <span class="text-sm text-gray-600 ml-2">(189)</span>
+                                </div>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-2">How to Update Your Smartphone</h3>
+                            <p class="text-gray-600 mb-4">Complete guide to updating your smartphone's operating system safely, including backup procedures and troubleshooting tips.</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-gray-500">Difficulty: Easy</span>
+                                <a href="/problem/smartphone-update" class="text-green-600 hover:text-green-800 font-medium">View Solution →</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Problem 4 -->
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg">
+                        <img src="/images/leaky-faucet.jpg" alt="Leaky Faucet Repair" class="w-full h-48 object-cover">
+                        <div class="p-6">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="px-3 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded-full">Appliances</span>
+                                <div class="rating-stars flex" x-data="{ rating: 4 }">
+                                    <template x-for="i in 5">
+                                        <span class="star text-xl" :class="{ 'active': i <= rating }">★</span>
+                                    </template>
+                                    <span class="text-sm text-gray-600 ml-2">(156)</span>
+                                </div>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-2">Fixing a Leaky Faucet</h3>
+                            <p class="text-gray-600 mb-4">Learn how to identify the cause of a leaky faucet and fix it yourself with basic tools, saving water and money on plumber fees.</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-gray-500">Difficulty: Medium</span>
+                                <a href="/problem/leaky-faucet" class="text-green-600 hover:text-green-800 font-medium">View Solution →</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Problem 5 -->
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg">
+                        <img src="/images/screen-replacement.jpg" alt="Phone Screen Replacement" class="w-full h-48 object-cover">
+                        <div class="p-6">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="px-3 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded-full">Smartphones</span>
+                                <div class="rating-stars flex" x-data="{ rating: 3 }">
+                                    <template x-for="i in 5">
+                                        <span class="star text-xl" :class="{ 'active': i <= rating }">★</span>
+                                    </template>
+                                    <span class="text-sm text-gray-600 ml-2">(98)</span>
+                                </div>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-2">Replacing a Cracked Phone Screen</h3>
+                            <p class="text-gray-600 mb-4">Detailed instructions for replacing a cracked smartphone screen at home, including required tools and safety precautions.</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-gray-500">Difficulty: Hard</span>
+                                <a href="/problem/phone-screen-replacement" class="text-green-600 hover:text-green-800 font-medium">View Solution →</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Problem 6 -->
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg">
+                        <img src="/images/clogged-drain.jpg" alt="Unclogging a Drain" class="w-full h-48 object-cover">
+                        <div class="p-6">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="px-3 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded-full">Appliances</span>
+                                <div class="rating-stars flex" x-data="{ rating: 5 }">
+                                    <template x-for="i in 5">
+                                        <span class="star text-xl" :class="{ 'active': i <= rating }">★</span>
+                                    </template>
+                                    <span class="text-sm text-gray-600 ml-2">(243)</span>
+                                </div>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-2">How to Unclog a Drain</h3>
+                            <p class="text-gray-600 mb-4">Natural and effective methods to unclog kitchen and bathroom drains without harsh chemicals, using items you already have at home.</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-gray-500">Difficulty: Easy</span>
+                                <a href="/problem/unclog-drain" class="text-green-600 hover:text-green-800 font-medium">View Solution →</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Problem 7 -->
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg">
+                        <img src="/images/bike-chain.jpg" alt="Bicycle Chain Repair" class="w-full h-48 object-cover">
+                        <div class="p-6">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="px-3 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded-full">Sports & Outdoors</span>
+                                <div class="rating-stars flex" x-data="{ rating: 4 }">
+                                    <template x-for="i in 5">
+                                        <span class="star text-xl" :class="{ 'active': i <= rating }">★</span>
+                                    </template>
+                                    <span class="text-sm text-gray-600 ml-2">(112)</span>
+                                </div>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-2">Fixing a Bicycle Chain</h3>
+                            <p class="text-gray-600 mb-4">Learn how to repair, replace, and maintain your bicycle chain to ensure smooth rides and extend the life of your bike.</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-gray-500">Difficulty: Medium</span>
+                                <a href="/problem/bicycle-chain-repair" class="text-green-600 hover:text-green-800 font-medium">View Solution →</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Problem 8 -->
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg">
+                        <img src="/images/wifi-router.jpg" alt="WiFi Router Setup" class="w-full h-48 object-cover">
+                        <div class="p-6">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="px-3 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded-full">Electronics</span>
+                                <div class="rating-stars flex" x-data="{ rating: 4 }">
+                                    <template x-for="i in 5">
+                                        <span class="star text-xl" :class="{ 'active': i <= rating }">★</span>
+                                    </template>
+                                    <span class="text-sm text-gray-600 ml-2">(176)</span>
+                                </div>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-2">Troubleshooting WiFi Connection Issues</h3>
+                            <p class="text-gray-600 mb-4">Comprehensive guide to diagnosing and fixing common WiFi problems, including router placement, signal interference, and configuration issues.</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-gray-500">Difficulty: Medium</span>
+                                <a href="/problem/wifi-troubleshooting" class="text-green-600 hover:text-green-800 font-medium">View Solution →</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Problem 9 -->
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg">
+                        <img src="/images/furniture-scratch.jpg" alt="Furniture Scratch Repair" class="w-full h-48 object-cover">
+                        <div class="p-6">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="px-3 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded-full">Furniture</span>
+                                <div class="rating-stars flex" x-data="{ rating: 5 }">
+                                    <template x-for="i in 5">
+                                        <span class="star text-xl" :class="{ 'active': i <= rating }">★</span>
+                                    </template>
+                                    <span class="text-sm text-gray-600 ml-2">(203)</span>
+                                </div>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-2">Repairing Scratches on Wooden Furniture</h3>
+                            <p class="text-gray-600 mb-4">Simple techniques to fix scratches on wooden furniture using household items, restoring your pieces to their original beauty.</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-gray-500">Difficulty: Easy</span>
+                                <a href="/problem/furniture-scratch-repair" class="text-green-600 hover:text-green-800 font-medium">View Solution →</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Problem 10 -->
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg">
+                        <img src="/images/washing-machine.jpg" alt="Washing Machine Repair" class="w-full h-48 object-cover">
+                        <div class="p-6">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="px-3 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded-full">Appliances</span>
+                                <div class="rating-stars flex" x-data="{ rating: 3 }">
+                                    <template x-for="i in 5">
+                                        <span class="star text-xl" :class="{ 'active': i <= rating }">★</span>
+                                    </template>
+                                    <span class="text-sm text-gray-600 ml-2">(87)</span>
+                                </div>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-2">Fixing a Noisy Washing Machine</h3>
+                            <p class="text-gray-600 mb-4">Troubleshooting guide for identifying and repairing the causes of unusual noises in your washing machine during operation.</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-gray-500">Difficulty: Hard</span>
+                                <a href="/problem/noisy-washing-machine" class="text-green-600 hover:text-green-800 font-medium">View Solution →</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Problem 11 -->
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg">
+                        <img src="/images/clothing-tear.jpg" alt="Clothing Repair" class="w-full h-48 object-cover">
+                        <div class="p-6">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="px-3 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded-full">Clothing</span>
+                                <div class="rating-stars flex" x-data="{ rating: 5 }">
+                                    <template x-for="i in 5">
+                                        <span class="star text-xl" :class="{ 'active': i <= rating }">★</span>
+                                    </template>
+                                    <span class="text-sm text-gray-600 ml-2">(231)</span>
+                                </div>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-2">Mending Torn Clothing</h3>
+                            <p class="text-gray-600 mb-4">Basic and advanced sewing techniques to repair tears, holes, and worn areas in your favorite clothing items, extending their lifespan.</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-gray-500">Difficulty: Easy</span>
+                                <a href="/problem/clothing-repair" class="text-green-600 hover:text-green-800 font-medium">View Solution →</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Problem 12 -->
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg">
+                        <img src="/images/printer-jam.jpg" alt="Printer Paper Jam" class="w-full h-48 object-cover">
+                        <div class="p-6">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="px-3 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded-full">Electronics</span>
+                                <div class="rating-stars flex" x-data="{ rating: 4 }">
+                                    <template x-for="i in 5">
+                                        <span class="star text-xl" :class="{ 'active': i <= rating }">★</span>
+                                    </template>
+                                    <span class="text-sm text-gray-600 ml-2">(142)</span>
+                                </div>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-2">Fixing Printer Paper Jams</h3>
+                            <p class="text-gray-600 mb-4">Step-by-step instructions for safely clearing paper jams in different printer models and preventing future occurrences.</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-gray-500">Difficulty: Easy</span>
+                                <a href="/problem/printer-paper-jam" class="text-green-600 hover:text-green-800 font-medium">View Solution →</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pagination -->
+                <div class="mt-12 flex justify-center">
+                    <nav class="inline-flex rounded-md shadow">
+                        <a href="#" class="px-4 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                            Previous
+                        </a>
+                        <a href="#" class="px-4 py-2 border-t border-b border-gray-300 bg-white text-sm font-medium text-green-600 hover:bg-green-50">
+                            1
+                        </a>
+                        <a href="#" class="px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                            2
+                        </a>
+                        <a href="#" class="px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                            3
+                        </a>
+                        <a href="#" class="px-4 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                            Next
+                        </a>
+                    </nav>
+                </div>
+            </div>
+        </section>
+
+        <!-- Call to Action -->
+        <section class="py-16 bg-green-600 text-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <h2 class="text-3xl font-bold mb-6">Can't Find What You're Looking For?</h2>
+                <p class="text-xl mb-8 max-w-2xl mx-auto">Connect with our community of repair experts who can help you solve your specific problem.</p>
+                <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+                    <a href="/ask-question" class="bg-white text-green-600 px-8 py-3 rounded-full text-lg font-semibold hover:bg-green-100 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105 shadow-lg">Ask a Question</a>
+                    <a href="/find-expert" class="bg-green-700 text-white px-8 py-3 rounded-full text-lg font-semibold hover:bg-green-800 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105 shadow-lg">Find an Expert</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Community Tips Section -->
+        <section class="py-16 bg-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-3xl font-bold text-center mb-12">Community Tips & Tricks</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-gray-50 rounded-lg p-6 shadow-md">
+                        <h3 class="text-xl font-semibold mb-4">Preventive Maintenance</h3>
+                        <ul class="space-y-3">
+                            <li class="flex items-start">
+                                <svg class="w-5 h-5 text-green-600 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                <span>Clean your electronics regularly to prevent dust buildup</span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg class="w-5 h-5 text-green-600 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                <span>Check and tighten loose screws on furniture every few months</span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg class="w-5 h-5 text-green-600 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                <span>Keep user manuals in a dedicated folder for quick reference</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="bg-gray-50 rounded-lg p-6 shadow-md">
+                        <h3 class="text-xl font-semibold mb-4">Essential Repair Tools</h3>
+                        <ul class="space-y-3">
+                            <li class="flex items-start">
+                                <svg class="w-5 h-5 text-green-600 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                <span>Invest in a quality screwdriver set with various head types</span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg class="w-5 h-5 text-green-600 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                <span>Keep a multimeter handy for electrical troubleshooting</span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg class="w-5 h-5 text-green-600 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                <span>Organize small parts in labeled containers during repairs</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <%- include('../Essential/footer') %>
+
+    <script>
+        // Initialize rating functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Search functionality
+            const searchInput = document.getElementById('search-input');
+            if (searchInput) {
+                searchInput.addEventListener('keyup', function(e) {
+                    if (e.key === 'Enter') {
+                        // Implement search functionality
+                        console.log('Searching for:', searchInput.value);
+                    }
+                });
+            }
+
+            // Charts for demonstration
+            const envCtx = document.getElementById('environmentalImpactChart');
+            const comCtx = document.getElementById('communityGrowthChart');
+            
+            if (typeof Chart !== 'undefined' && envCtx && comCtx) {
+                new Chart(envCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                        datasets: [{
+                            label: 'Waste Reduced (kg)',
+                            data: [120, 190, 300, 250, 420, 380],
+                            backgroundColor: '#16a34a'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+
+                new Chart(comCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                        datasets: [{
+                            label: 'New Members',
+                            data: [65, 120, 180, 220, 300, 450],
+                            borderColor: '#16a34a',
+                            tension: 0.3
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

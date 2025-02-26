@@ -59,6 +59,9 @@ app.get("/", (req, res) => {
 app.get("/register", (req, res) => {
   res.render("./Common/Register.ejs");
 });
+app.get("/login", (req, res) => {
+  res.render("./Common/Login.ejs");
+});
 
 // seeker
 app.use("/seeker", seeker);

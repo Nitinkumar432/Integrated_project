@@ -33,6 +33,7 @@ export const registerSeeker = async (req, res) => {
     });
 
     await newSeeker.save();
+    console.log(req.body);
     res.status(201).json({ message: "Seeker registered successfully!" });
 
   } catch (error) {

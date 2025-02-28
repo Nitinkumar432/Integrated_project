@@ -94,270 +94,29 @@
                 <h2 class="text-3xl font-bold text-center mb-12">Popular Repair Solutions</h2>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <!-- Problem 1 -->
+                <% problems.forEach(problem => { %>
                     <div class="bg-white rounded-xl shadow-md overflow-hidden transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg">
-                        <img src="/images/fan-repair.jpg" alt="Ceiling Fan Repair" class="w-full h-48 object-cover">
+                        <img src="<%= problem.imageUrl %>" alt="<%= problem.title %>" class="w-full h-48 object-cover">
                         <div class="p-6">
                             <div class="flex justify-between items-center mb-2">
-                                <span class="px-3 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded-full">Electronics</span>
-                                <div class="rating-stars flex" x-data="{ rating: 4 }">
-                                    <template x-for="i in 5">
-                                        <span class="star text-xl" :class="{ 'active': i <= rating }">★</span>
-                                    </template>
-                                    <span class="text-sm text-gray-600 ml-2">(128)</span>
+                                <span class="px-3 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded-full"><%= problem.category %></span>
+                                <div class="rating-stars flex">
+                                    <% for(let i = 1; i <= 5; i++) { %>
+                                        <span class="star text-xl <%= i <= problem.rating ? 'active' : '' %>">★</span>
+                                    <% } %>
+                                    <span class="text-sm text-gray-600 ml-2">(<%= problem.reviewCount %>)</span>
                                 </div>
                             </div>
-                            <h3 class="text-xl font-semibold mb-2">How to Repair a Ceiling Fan</h3>
-                            <p class="text-gray-600 mb-4">Learn how to diagnose and fix common ceiling fan issues including wobbling, noise, and speed problems without calling a professional.</p>
+                            <h3 class="text-xl font-semibold mb-2"><%= problem.title %></h3>
+                            <p class="text-gray-600 mb-4"><%= problem.description %></p>
                             <div class="flex justify-between items-center">
-                                <span class="text-sm text-gray-500">Difficulty: Medium</span>
-                                <a href="/problem/ceiling-fan-repair" class="text-green-600 hover:text-green-800 font-medium">View Solution →</a>
+                                <span class="text-sm text-gray-500">Difficulty: <%= problem.difficulty %></span>
+                                <a href="<%= problem.solutionUrl %>" class="text-green-600 hover:text-green-800 font-medium">View Solution →</a>
                             </div>
                         </div>
                     </div>
-
-                    <!-- Problem 2 -->
-                    <div class="bg-white rounded-xl shadow-md overflow-hidden transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg">
-                        <img src="/images/laptop-battery.jpg" alt="Laptop Battery Replacement" class="w-full h-48 object-cover">
-                        <div class="p-6">
-                            <div class="flex justify-between items-center mb-2">
-                                <span class="px-3 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded-full">Computers</span>
-                                <div class="rating-stars flex" x-data="{ rating: 5 }">
-                                    <template x-for="i in 5">
-                                        <span class="star text-xl" :class="{ 'active': i <= rating }">★</span>
-                                    </template>
-                                    <span class="text-sm text-gray-600 ml-2">(215)</span>
-                                </div>
-                            </div>
-                            <h3 class="text-xl font-semibold mb-2">How to Replace a Laptop Battery</h3>
-                            <p class="text-gray-600 mb-4">Step-by-step guide to safely remove and replace your laptop battery to extend your device's life and improve performance.</p>
-                            <div class="flex justify-between items-center">
-                                <span class="text-sm text-gray-500">Difficulty: Easy</span>
-                                <a href="/problem/laptop-battery-replacement" class="text-green-600 hover:text-green-800 font-medium">View Solution →</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Problem 3 -->
-                    <div class="bg-white rounded-xl shadow-md overflow-hidden transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg">
-                        <img src="/images/smartphone-update.jpg" alt="Smartphone Update" class="w-full h-48 object-cover">
-                        <div class="p-6">
-                            <div class="flex justify-between items-center mb-2">
-                                <span class="px-3 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded-full">Smartphones</span>
-                                <div class="rating-stars flex" x-data="{ rating: 4 }">
-                                    <template x-for="i in 5">
-                                        <span class="star text-xl" :class="{ 'active': i <= rating }">★</span>
-                                    </template>
-                                    <span class="text-sm text-gray-600 ml-2">(189)</span>
-                                </div>
-                            </div>
-                            <h3 class="text-xl font-semibold mb-2">How to Update Your Smartphone</h3>
-                            <p class="text-gray-600 mb-4">Complete guide to updating your smartphone's operating system safely, including backup procedures and troubleshooting tips.</p>
-                            <div class="flex justify-between items-center">
-                                <span class="text-sm text-gray-500">Difficulty: Easy</span>
-                                <a href="/problem/smartphone-update" class="text-green-600 hover:text-green-800 font-medium">View Solution →</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Problem 4 -->
-                    <div class="bg-white rounded-xl shadow-md overflow-hidden transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg">
-                        <img src="/images/leaky-faucet.jpg" alt="Leaky Faucet Repair" class="w-full h-48 object-cover">
-                        <div class="p-6">
-                            <div class="flex justify-between items-center mb-2">
-                                <span class="px-3 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded-full">Appliances</span>
-                                <div class="rating-stars flex" x-data="{ rating: 4 }">
-                                    <template x-for="i in 5">
-                                        <span class="star text-xl" :class="{ 'active': i <= rating }">★</span>
-                                    </template>
-                                    <span class="text-sm text-gray-600 ml-2">(156)</span>
-                                </div>
-                            </div>
-                            <h3 class="text-xl font-semibold mb-2">Fixing a Leaky Faucet</h3>
-                            <p class="text-gray-600 mb-4">Learn how to identify the cause of a leaky faucet and fix it yourself with basic tools, saving water and money on plumber fees.</p>
-                            <div class="flex justify-between items-center">
-                                <span class="text-sm text-gray-500">Difficulty: Medium</span>
-                                <a href="/problem/leaky-faucet" class="text-green-600 hover:text-green-800 font-medium">View Solution →</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Problem 5 -->
-                    <div class="bg-white rounded-xl shadow-md overflow-hidden transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg">
-                        <img src="/images/screen-replacement.jpg" alt="Phone Screen Replacement" class="w-full h-48 object-cover">
-                        <div class="p-6">
-                            <div class="flex justify-between items-center mb-2">
-                                <span class="px-3 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded-full">Smartphones</span>
-                                <div class="rating-stars flex" x-data="{ rating: 3 }">
-                                    <template x-for="i in 5">
-                                        <span class="star text-xl" :class="{ 'active': i <= rating }">★</span>
-                                    </template>
-                                    <span class="text-sm text-gray-600 ml-2">(98)</span>
-                                </div>
-                            </div>
-                            <h3 class="text-xl font-semibold mb-2">Replacing a Cracked Phone Screen</h3>
-                            <p class="text-gray-600 mb-4">Detailed instructions for replacing a cracked smartphone screen at home, including required tools and safety precautions.</p>
-                            <div class="flex justify-between items-center">
-                                <span class="text-sm text-gray-500">Difficulty: Hard</span>
-                                <a href="/problem/phone-screen-replacement" class="text-green-600 hover:text-green-800 font-medium">View Solution →</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Problem 6 -->
-                    <div class="bg-white rounded-xl shadow-md overflow-hidden transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg">
-                        <img src="/images/clogged-drain.jpg" alt="Unclogging a Drain" class="w-full h-48 object-cover">
-                        <div class="p-6">
-                            <div class="flex justify-between items-center mb-2">
-                                <span class="px-3 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded-full">Appliances</span>
-                                <div class="rating-stars flex" x-data="{ rating: 5 }">
-                                    <template x-for="i in 5">
-                                        <span class="star text-xl" :class="{ 'active': i <= rating }">★</span>
-                                    </template>
-                                    <span class="text-sm text-gray-600 ml-2">(243)</span>
-                                </div>
-                            </div>
-                            <h3 class="text-xl font-semibold mb-2">How to Unclog a Drain</h3>
-                            <p class="text-gray-600 mb-4">Natural and effective methods to unclog kitchen and bathroom drains without harsh chemicals, using items you already have at home.</p>
-                            <div class="flex justify-between items-center">
-                                <span class="text-sm text-gray-500">Difficulty: Easy</span>
-                                <a href="/problem/unclog-drain" class="text-green-600 hover:text-green-800 font-medium">View Solution →</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Problem 7 -->
-                    <div class="bg-white rounded-xl shadow-md overflow-hidden transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg">
-                        <img src="/images/bike-chain.jpg" alt="Bicycle Chain Repair" class="w-full h-48 object-cover">
-                        <div class="p-6">
-                            <div class="flex justify-between items-center mb-2">
-                                <span class="px-3 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded-full">Sports & Outdoors</span>
-                                <div class="rating-stars flex" x-data="{ rating: 4 }">
-                                    <template x-for="i in 5">
-                                        <span class="star text-xl" :class="{ 'active': i <= rating }">★</span>
-                                    </template>
-                                    <span class="text-sm text-gray-600 ml-2">(112)</span>
-                                </div>
-                            </div>
-                            <h3 class="text-xl font-semibold mb-2">Fixing a Bicycle Chain</h3>
-                            <p class="text-gray-600 mb-4">Learn how to repair, replace, and maintain your bicycle chain to ensure smooth rides and extend the life of your bike.</p>
-                            <div class="flex justify-between items-center">
-                                <span class="text-sm text-gray-500">Difficulty: Medium</span>
-                                <a href="/problem/bicycle-chain-repair" class="text-green-600 hover:text-green-800 font-medium">View Solution →</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Problem 8 -->
-                    <div class="bg-white rounded-xl shadow-md overflow-hidden transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg">
-                        <img src="/images/wifi-router.jpg" alt="WiFi Router Setup" class="w-full h-48 object-cover">
-                        <div class="p-6">
-                            <div class="flex justify-between items-center mb-2">
-                                <span class="px-3 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded-full">Electronics</span>
-                                <div class="rating-stars flex" x-data="{ rating: 4 }">
-                                    <template x-for="i in 5">
-                                        <span class="star text-xl" :class="{ 'active': i <= rating }">★</span>
-                                    </template>
-                                    <span class="text-sm text-gray-600 ml-2">(176)</span>
-                                </div>
-                            </div>
-                            <h3 class="text-xl font-semibold mb-2">Troubleshooting WiFi Connection Issues</h3>
-                            <p class="text-gray-600 mb-4">Comprehensive guide to diagnosing and fixing common WiFi problems, including router placement, signal interference, and configuration issues.</p>
-                            <div class="flex justify-between items-center">
-                                <span class="text-sm text-gray-500">Difficulty: Medium</span>
-                                <a href="/problem/wifi-troubleshooting" class="text-green-600 hover:text-green-800 font-medium">View Solution →</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Problem 9 -->
-                    <div class="bg-white rounded-xl shadow-md overflow-hidden transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg">
-                        <img src="/images/furniture-scratch.jpg" alt="Furniture Scratch Repair" class="w-full h-48 object-cover">
-                        <div class="p-6">
-                            <div class="flex justify-between items-center mb-2">
-                                <span class="px-3 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded-full">Furniture</span>
-                                <div class="rating-stars flex" x-data="{ rating: 5 }">
-                                    <template x-for="i in 5">
-                                        <span class="star text-xl" :class="{ 'active': i <= rating }">★</span>
-                                    </template>
-                                    <span class="text-sm text-gray-600 ml-2">(203)</span>
-                                </div>
-                            </div>
-                            <h3 class="text-xl font-semibold mb-2">Repairing Scratches on Wooden Furniture</h3>
-                            <p class="text-gray-600 mb-4">Simple techniques to fix scratches on wooden furniture using household items, restoring your pieces to their original beauty.</p>
-                            <div class="flex justify-between items-center">
-                                <span class="text-sm text-gray-500">Difficulty: Easy</span>
-                                <a href="/problem/furniture-scratch-repair" class="text-green-600 hover:text-green-800 font-medium">View Solution →</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Problem 10 -->
-                    <div class="bg-white rounded-xl shadow-md overflow-hidden transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg">
-                        <img src="/images/washing-machine.jpg" alt="Washing Machine Repair" class="w-full h-48 object-cover">
-                        <div class="p-6">
-                            <div class="flex justify-between items-center mb-2">
-                                <span class="px-3 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded-full">Appliances</span>
-                                <div class="rating-stars flex" x-data="{ rating: 3 }">
-                                    <template x-for="i in 5">
-                                        <span class="star text-xl" :class="{ 'active': i <= rating }">★</span>
-                                    </template>
-                                    <span class="text-sm text-gray-600 ml-2">(87)</span>
-                                </div>
-                            </div>
-                            <h3 class="text-xl font-semibold mb-2">Fixing a Noisy Washing Machine</h3>
-                            <p class="text-gray-600 mb-4">Troubleshooting guide for identifying and repairing the causes of unusual noises in your washing machine during operation.</p>
-                            <div class="flex justify-between items-center">
-                                <span class="text-sm text-gray-500">Difficulty: Hard</span>
-                                <a href="/problem/noisy-washing-machine" class="text-green-600 hover:text-green-800 font-medium">View Solution →</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Problem 11 -->
-                    <div class="bg-white rounded-xl shadow-md overflow-hidden transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg">
-                        <img src="/images/clothing-tear.jpg" alt="Clothing Repair" class="w-full h-48 object-cover">
-                        <div class="p-6">
-                            <div class="flex justify-between items-center mb-2">
-                                <span class="px-3 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded-full">Clothing</span>
-                                <div class="rating-stars flex" x-data="{ rating: 5 }">
-                                    <template x-for="i in 5">
-                                        <span class="star text-xl" :class="{ 'active': i <= rating }">★</span>
-                                    </template>
-                                    <span class="text-sm text-gray-600 ml-2">(231)</span>
-                                </div>
-                            </div>
-                            <h3 class="text-xl font-semibold mb-2">Mending Torn Clothing</h3>
-                            <p class="text-gray-600 mb-4">Basic and advanced sewing techniques to repair tears, holes, and worn areas in your favorite clothing items, extending their lifespan.</p>
-                            <div class="flex justify-between items-center">
-                                <span class="text-sm text-gray-500">Difficulty: Easy</span>
-                                <a href="/problem/clothing-repair" class="text-green-600 hover:text-green-800 font-medium">View Solution →</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Problem 12 -->
-                    <div class="bg-white rounded-xl shadow-md overflow-hidden transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg">
-                        <img src="/images/printer-jam.jpg" alt="Printer Paper Jam" class="w-full h-48 object-cover">
-                        <div class="p-6">
-                            <div class="flex justify-between items-center mb-2">
-                                <span class="px-3 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded-full">Electronics</span>
-                                <div class="rating-stars flex" x-data="{ rating: 4 }">
-                                    <template x-for="i in 5">
-                                        <span class="star text-xl" :class="{ 'active': i <= rating }">★</span>
-                                    </template>
-                                    <span class="text-sm text-gray-600 ml-2">(142)</span>
-                                </div>
-                            </div>
-                            <h3 class="text-xl font-semibold mb-2">Fixing Printer Paper Jams</h3>
-                            <p class="text-gray-600 mb-4">Step-by-step instructions for safely clearing paper jams in different printer models and preventing future occurrences.</p>
-                            <div class="flex justify-between items-center">
-                                <span class="text-sm text-gray-500">Difficulty: Easy</span>
-                                <a href="/problem/printer-paper-jam" class="text-green-600 hover:text-green-800 font-medium">View Solution →</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <% }) %>
+            </div>
 
                 <!-- Pagination -->
                 <div class="mt-12 flex justify-center">

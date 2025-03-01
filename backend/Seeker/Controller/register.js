@@ -1,3 +1,4 @@
+import bcrypt from "bcrypt"
 import Seeker from "../../Models/seekers.js";  
 
 export const registerSeeker = async (req, res) => {
@@ -15,14 +16,19 @@ export const registerSeeker = async (req, res) => {
     // Check if email or phone already exists
     const existingSeeker = await Seeker.findOne({ $or: [{ email }, { phone }] });
     if (existingSeeker) {
-      return res.status(400).json({ error: "Email or phone number already registered!" });
+      return res.redirect(
+        "/register?error=Email or phone number already registered!"
+      );
     }
+
+    // Hash the password before saving (security best practice)
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     const newSeeker = new Seeker({
       name,
       email,
       phone,
-      password,  // You should hash the password before saving!
+      password:hashedPassword,  // You should hash the password before saving!
       address,
       state,
       city,
@@ -34,7 +40,7 @@ export const registerSeeker = async (req, res) => {
 
     await newSeeker.save();
     console.log(req.body);
-    res.status(201).json({ message: "Seeker registered successfully!" });
+    res.status(201).redirect("/login");
 
   } catch (error) {
     console.error(error);

@@ -1,4 +1,5 @@
 import bcrypt from "bcrypt"
+import jwt from "jsonwebtoken"; // For JWT authentication
 import Seeker from "../../Models/seekers.js";  
 
 export const registerSeeker = async (req, res) => {

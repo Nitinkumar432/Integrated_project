@@ -260,6 +260,12 @@
             seekerToggle.classList.remove('bg-blue-600', 'text-white');
             seekerToggle.classList.add('text-gray-700');
         });
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const errorMessage = urlParams.get("error");
+        if (errorMessage) {
+            alert(errorMessage);
+        }
     </script>
     <%- include('../Essential/footer') %>
 </body>

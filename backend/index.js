@@ -8,6 +8,7 @@ import figlet from "figlet";
 import boxen from "boxen";
 import ora from "ora";
 import seeker from './Seeker/Routes/seeker.js';
+import cookieParser from "cookie-parser";
 // Load environment variables
 dotenv.config();
 
@@ -17,6 +18,7 @@ const app = express();
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(cookieParser());
 
 // Set EJS as the view engine and point to frontend folder
 app.set("view engine", "ejs");

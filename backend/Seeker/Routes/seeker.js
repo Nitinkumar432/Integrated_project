@@ -1,6 +1,8 @@
 import express from "express";
 import { registerSeeker } from "../Controller/register.js";
 import RepairProblem from "../../Models/repairProblem.js"; // Import the model
+import { loginSeeker } from "../Controller/login.js";
+import { authenticateUser } from "../../middlewares/auth.js";
 
 const router = express.Router();
 
@@ -23,5 +25,13 @@ router.get("/problempage", async (req, res) => {
 
 // Register seeker route
 router.post("/register", registerSeeker);
+
+// Login route
+router.post("/login", loginSeeker);
+
+router.get("/profile", authenticateUser, (req, res) => {
+  res.send(req.user);
+  
+});
 
 export default router;

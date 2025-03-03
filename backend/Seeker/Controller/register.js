@@ -16,7 +16,7 @@ export const registerSeeker = async (req, res) => {
 
     // Check if email or phone already exists
     const existingSeeker = await Seeker.findOne({ $or: [{ email }, { phone }] });
-    if (existingSeeker) {
+    if (existingSeeker) { 
       return res.redirect(
         "/register?error=Email or phone number already registered!"
       );

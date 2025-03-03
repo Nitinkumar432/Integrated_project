@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 
+
 dotenv.config();
 
 export const authenticateUser = (req, res, next) => {

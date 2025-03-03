@@ -8,7 +8,9 @@ import figlet from "figlet";
 import boxen from "boxen";
 import ora from "ora";
 import seeker from './Seeker/Routes/seeker.js';
+import provider from './Provider/Routes/provider.js'; // ✅ Import provider routes
 import cookieParser from "cookie-parser";
+
 // Load environment variables
 dotenv.config();
 
@@ -39,7 +41,6 @@ console.log(
   })
 );
 
-
 // Connect to MongoDB with an animation
 const spinner = ora(chalk.yellow("Connecting to MongoDB...")).start();
 const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/mydatabase";
@@ -54,7 +55,7 @@ mongoose
     console.error(chalk.red(err));
   });
 
-// Sample Route
+// Sample Routes
 app.get("/", (req, res) => {
   res.render("index", { title: "Home Page" });
 });
@@ -65,8 +66,11 @@ app.get("/login", (req, res) => {
   res.render("./Common/Login.ejs");
 });
 
-// seeker
+// Seeker Routes
 app.use("/seeker", seeker);
+
+// ✅ Provider Routes
+app.use("/provider", provider);
 
 // Start Server with animation
 const PORT = process.env.PORT || 5000;

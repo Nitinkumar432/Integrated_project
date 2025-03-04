@@ -6,8 +6,11 @@ import Provider from "../../Models/provideschema.js"; // Updated import path
 
 const router = express.Router();
 
+console.log("✅ Provider Routes Loaded");
+
 // Test route
 router.get("/", (req, res) => {
+  console.log("✅ /provider route hit"); // Debugging log
   res.send("Welcome to the Provider Route");
 });
 
@@ -21,6 +24,12 @@ router.get("/providerpage", async (req, res) => {
     console.error("Error fetching providers:", err);
     res.status(500).send("Server Error");
   }
+});
+
+router.post("/register", (req, res, next) => {
+  console.log("🚀 Provider register route hit");
+  console.log("Request Body:", req.body); // Log incoming request data
+  registerProvider(req, res, next);
 });
 
 // Register provider route

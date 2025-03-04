@@ -16,6 +16,9 @@ dotenv.config();
 
 const app = express();
 
+console.log("🛠 Views directory set to:", path.join(process.cwd(), "../frontend/views"));
+
+
 // Middleware
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));

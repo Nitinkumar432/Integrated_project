@@ -6,7 +6,6 @@ import path from "path";
 import chalk from "chalk";
 import figlet from "figlet";
 import boxen from "boxen";
-import ora from "ora";
 import seeker from './Seeker/Routes/seeker.js';
 import provider from './Provider/Routes/provider.js'; // ✅ Import provider routes
 import cookieParser from "cookie-parser";
@@ -18,9 +17,12 @@ const app = express();
 
 console.log("🛠 Views directory set to:", path.join(process.cwd(), "../frontend/views"));
 
-
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: "http://localhost:3000", // Update with frontend URL if different
+  methods: ["GET", "POST"],
+  credentials: true // Allow cookies/auth headers
+}));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
@@ -44,18 +46,17 @@ console.log(
   })
 );
 
-// Connect to MongoDB with an animation
-const spinner = ora(chalk.yellow("Connecting to MongoDB...")).start();
+// Connect to MongoDB
 const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/mydatabase";
 
 mongoose
   .connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
-    spinner.succeed(chalk.green("✅ MongoDB Connected Successfully!"));
+    console.log("✅ MongoDB Connected Successfully!");
   })
   .catch((err) => {
-    spinner.fail(chalk.red("❌ MongoDB Connection Failed!"));
-    console.error(chalk.red(err));
+    console.log("❌ MongoDB Connection Failed!");
+    console.error(err);
   });
 
 // Sample Routes
@@ -75,7 +76,7 @@ app.use("/seeker", seeker);
 // ✅ Provider Routes
 app.use("/provider", provider);
 
-// Start Server with animation
+// Start Server
 const PORT = process.env.PORT || 5000;
 
 setTimeout(() => {

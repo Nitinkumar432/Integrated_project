@@ -94,29 +94,60 @@
                 <h2 class="text-3xl font-bold text-center mb-12">Popular Repair Solutions</h2>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <% problems.forEach(problem => { %>
-                    <div class="bg-white rounded-xl shadow-md overflow-hidden transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg">
-                        <img src="<%= problem.imageUrl %>" alt="<%= problem.title %>" class="w-full h-48 object-cover">
-                        <div class="p-6">
-                            <div class="flex justify-between items-center mb-2">
-                                <span class="px-3 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded-full"><%= problem.category %></span>
-                                <div class="rating-stars flex">
+                    <% problems.forEach(problem => { %>
+                        <div class="bg-white rounded-xl shadow-md overflow-hidden p-6 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg">
+                            <img src="<%= problem.imageUrl %>" alt="<%= problem.title %>" class="w-full h-48 object-cover rounded-lg">
+                            
+                            <h3 class="text-xl font-semibold mt-4 text-gray-900"><%= problem.title %></h3>
+                            <p class="text-gray-600 mb-4"><%= problem.description %></p>
+
+                            <!-- ⭐ Rating Display -->
+                            <div class="flex justify-between items-center mb-4">
+                                <span class="text-lg font-bold text-yellow-500" id="rating-value-<%= problem._id %>">
+                                    <%= problem.averageRating %>
+                                </span>
+                                <span class="text-sm text-gray-500" id="rating-count-<%= problem._id %>">
+                                    (<%= problem.ratings.length %> users)
+                                </span>
+                            </div>
+
+                            <!-- ⭐ Interactive Star Rating -->
+                            <div class="flex items-center justify-between space-x-4 mb-4">
+                                <div class="flex space-x-1" id="stars-<%= problem._id %>">
                                     <% for(let i = 1; i <= 5; i++) { %>
-                                        <span class="star text-xl <%= i <= problem.rating ? 'active' : '' %>">★</span>
+                                        <span class="star text-2xl cursor-pointer <%= i <= problem.averageRating ? 'text-yellow-400' : 'text-gray-300' %>"
+                                            data-problem-id="<%= problem._id %>"
+                                            data-rating="<%= i %>"
+                                            onclick="submitRating('<%= problem._id %>', '<%= i %>')">
+                                            ★
+                                        </span>
                                     <% } %>
-                                    <span class="text-sm text-gray-600 ml-2">(<%= problem.reviewCount %>)</span>
                                 </div>
                             </div>
-                            <h3 class="text-xl font-semibold mb-2"><%= problem.title %></h3>
-                            <p class="text-gray-600 mb-4"><%= problem.description %></p>
-                            <div class="flex justify-between items-center">
-                                <span class="text-sm text-gray-500">Difficulty: <%= problem.difficulty %></span>
-                                <a href="<%= problem.solutionUrl %>" class="text-green-600 hover:text-green-800 font-medium">View Solution →</a>
-                            </div>
+
+                            <!-- View Solution Button -->
+                            <button class="w-full text-green-600 hover:text-green-800 font-medium py-2 border-t border-gray-200 mt-2"
+                                    onclick="showVideoModal('<%= problem.solutionUrl %>')">
+                                View Solution →
+                            </button>
+                        </div>
+                    <% }); %>
+                </div>
+
+
+
+
+                <!-- Video Modal -->
+                <div id="videoModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 hidden z-50">
+                    <div class="relative bg-white p-6 rounded-lg shadow-lg w-[90%] max-w-3xl">
+                        <!-- Close Button (Moved Outside Box) -->
+                        <button id="closeModal" class="absolute -top-6 -right-6 bg-red-600 text-white text-5xl rounded-full w-12 h-12 flex items-center justify-center hover:bg-red-800">&times;</button>
+                        <!-- Video Frame -->
+                        <div class="relative w-full h-0 pb-[56.25%]">
+                            <iframe id="videoFrame" class="absolute top-0 left-0 w-full h-full rounded-lg" src="" frameborder="0" allowfullscreen></iframe>
                         </div>
                     </div>
-                <% }) %>
-            </div>
+                </div>
 
                 <!-- Pagination -->
                 <div class="mt-12 flex justify-center">
@@ -272,6 +303,57 @@
                 });
             }
         });
+
+        // JavaScript to Handle Video Modal 
+        function showVideoModal(videoUrl) {
+            const modal = document.getElementById("videoModal");
+            const videoFrame = document.getElementById("videoFrame");
+            videoFrame.src = videoUrl.replace("watch?v=", "embed/"); // Convert YouTube link to embed format
+            modal.classList.remove("hidden");
+        }
+
+        document.getElementById("closeModal").addEventListener("click", function() {
+            const modal = document.getElementById("videoModal");
+            const videoFrame = document.getElementById("videoFrame");
+            modal.classList.add("hidden");
+            videoFrame.src = ""; // Stop video when closing
+        });
+
+        // Rating
+        async function submitRating(problemId, rating) {
+        try {
+            const response = await fetch(`/seeker/rate/${problemId}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ rating: parseInt(rating) })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                // ✅ Correctly update rating count and average
+                document.getElementById(`rating-value-${problemId}`).innerText = data.averageRating;
+                document.getElementById(`rating-count-${problemId}`).innerText = `(${data.totalRatings} users)`;
+
+                // ✅ Update the stars instantly
+                updateStars(problemId, data.averageRating);
+            } else {
+                alert(`Error: ${data.error}`);
+            }
+        } catch (error) {
+            alert("Something went wrong. Try again!");
+        }
+    }
+
+    function updateStars(problemId, newRating) {
+        const stars = document.querySelectorAll(`#stars-${problemId} .star`);
+        stars.forEach((star, index) => {
+            star.classList.toggle("text-yellow-400", index < newRating);
+            star.classList.toggle("text-gray-300", index >= newRating);
+        });
+    }
+
+
     </script>
 </body>
 </html>

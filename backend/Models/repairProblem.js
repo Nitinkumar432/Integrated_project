@@ -7,10 +7,17 @@ const RepairProblemSchema = new mongoose.Schema({
   difficulty: { type: String, required: true },
   description: { type: String, required: true },
   imageUrl: { type: String, required: true }, // Image URL for the problem
-  rating: { type: Number, min: 1, max: 5, required: true }, // Star rating (1-5)
+  ratings: { type: [Number], default: [] },
   reviewCount: { type: Number, default: 0 }, // Number of reviews
   solutionUrl: { type: String, required: true }, // Link to full solution
   createdAt: { type: Date, default: Date.now },
+});
+
+// Compute average rating dynamically
+RepairProblemSchema.virtual("averageRating").get(function () {
+  if (this.ratings.length === 0) return 0; // Default rating if no reviews
+  const totalStars = this.ratings.reduce((sum, rating) => sum + rating, 0);
+  return (totalStars / this.ratings.length).toFixed(1); // Round to 1 decimal place
 });
 
 export default mongoose.model("RepairProblem", RepairProblemSchema);

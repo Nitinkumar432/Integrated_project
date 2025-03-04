@@ -111,7 +111,8 @@ export const registerProvider = async (req, res) => {
       await newProvider.save();
       console.log("✅ Provider successfully registered!");
   
-      res.status(201).redirect("/login");
+      // res.status(201).redirect("/login");
+      res.status(201).json({message :"successfully registered"});
   
     } catch (error) {
       console.error("❌ Error saving provider data:", error);

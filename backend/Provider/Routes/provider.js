@@ -26,11 +26,11 @@ router.get("/providerpage", async (req, res) => {
   }
 });
 
-router.post("/register", (req, res, next) => {
-  console.log("🚀 Provider register route hit");
-  console.log("Request Body:", req.body); // Log incoming request data
-  registerProvider(req, res, next);
-});
+// router.post("/register", (req, res, next) => {
+//   console.log("🚀 Provider register route hit");
+//   console.log("Request Body:", req.body); // Log incoming request data
+//   registerProvider(req, res, next);
+// });
 
 // Register provider route
 router.post("/register", registerProvider);
@@ -42,5 +42,12 @@ router.post("/login", loginProvider);
 router.get("/profile", authenticateUser, (req, res) => {
   res.send(req.user);
 });
+
+// router.get("/register", (req, res) => {
+//   console.log("✅ /provider/register route hit!"); // Debugging log
+//   res.render("Common/Register.ejs"); // ✅ Correct path
+// });
+
+
 
 export default router;

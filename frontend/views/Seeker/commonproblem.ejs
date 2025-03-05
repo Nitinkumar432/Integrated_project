@@ -95,6 +95,8 @@
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     <% problems.forEach(problem => { %>
+                        <% let userHasRated = problem.ratings.some(r => r.userId.toString() === currentUserId.toString()); %>
+
                         <div class="bg-white rounded-xl shadow-md overflow-hidden p-6 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg">
                             <img src="<%= problem.imageUrl %>" alt="<%= problem.title %>" class="w-full h-48 object-cover rounded-lg">
                             
@@ -118,7 +120,8 @@
                                         <span class="star text-2xl cursor-pointer <%= i <= problem.averageRating ? 'text-yellow-400' : 'text-gray-300' %>"
                                             data-problem-id="<%= problem._id %>"
                                             data-rating="<%= i %>"
-                                            onclick="submitRating('<%= problem._id %>', '<%= i %>')">
+                                            <% if (!userHasRated) { %> onclick="submitRating('<%= problem._id %>', <%= i %>)" <% } else { %> 
+                                            style="pointer-events: none; opacity: 0.5;" <% } %>>
                                             ★
                                         </span>
                                     <% } %>
@@ -133,6 +136,8 @@
                         </div>
                     <% }); %>
                 </div>
+
+
 
 
 
@@ -321,37 +326,53 @@
 
         // Rating
         async function submitRating(problemId, rating) {
-        try {
-            const response = await fetch(`/seeker/rate/${problemId}`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ rating: parseInt(rating) })
-            });
+            try {
+                const response = await fetch(`/seeker/rate/${problemId}`, {
+                    method: "POST",
+                    headers: { 
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ rating: parseInt(rating) })
+                });
 
-            const data = await response.json();
+                const data = await response.json();
 
-            if (response.ok) {
-                // ✅ Correctly update rating count and average
-                document.getElementById(`rating-value-${problemId}`).innerText = data.averageRating;
-                document.getElementById(`rating-count-${problemId}`).innerText = `(${data.totalRatings} users)`;
+                if (response.ok) {
+                    // ✅ Update displayed rating count and average rating
+                    document.getElementById(`rating-value-${problemId}`).innerText = data.averageRating;
+                    document.getElementById(`rating-count-${problemId}`).innerText = `(${data.totalRatings} users)`;
 
-                // ✅ Update the stars instantly
-                updateStars(problemId, data.averageRating);
-            } else {
-                alert(`Error: ${data.error}`);
+                    // ✅ Update the stars instantly
+                    updateStars(problemId, data.averageRating);
+
+                    // ✅ Disable future ratings for this user
+                    disableRating(problemId);
+                } else {
+                    alert(`Error: ${data.error}`);
+                }
+            } catch (error) {
+                alert("Something went wrong. Try again!");
             }
-        } catch (error) {
-            alert("Something went wrong. Try again!");
         }
-    }
 
-    function updateStars(problemId, newRating) {
-        const stars = document.querySelectorAll(`#stars-${problemId} .star`);
-        stars.forEach((star, index) => {
-            star.classList.toggle("text-yellow-400", index < newRating);
-            star.classList.toggle("text-gray-300", index >= newRating);
-        });
-    }
+        // ⭐ Updates Star Colors Based on Rating
+        function updateStars(problemId, newRating) {
+            const stars = document.querySelectorAll(`#stars-${problemId} .star`);
+            stars.forEach((star, index) => {
+                star.classList.toggle("text-yellow-400", index < newRating);
+                star.classList.toggle("text-gray-300", index >= newRating);
+            });
+        }
+
+        // ❌ Disables Stars After User Has Rated
+        function disableRating(problemId) {
+            const stars = document.querySelectorAll(`#stars-${problemId} .star`);
+            stars.forEach(star => {
+                star.style.pointerEvents = "none";
+                star.style.opacity = "0.5";
+            });
+        }
+
 
 
     </script>

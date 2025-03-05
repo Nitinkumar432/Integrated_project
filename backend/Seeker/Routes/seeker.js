@@ -12,44 +12,53 @@ router.get("/", (req, res) => {
 });
 
 // ⭐ API to Submit Rating
-router.post("/rate/:id", async (req, res) => {
+// Route to submit a rating
+router.post("/rate/:problemId", authenticateUser, async (req, res) => {
   try {
+    const { problemId } = req.params;
     const { rating } = req.body;
-    const problem = await RepairProblem.findById(req.params.id);
+    const userId = req.user.userId; // Get user ID from token
 
+    const problem = await RepairProblem.findById(problemId);
     if (!problem) {
-      return res.status(404).json({ error: "Problem not found." });
+      return res.status(404).json({ error: "Problem not found" });
     }
 
-    // Add the new rating to the ratings array
-    problem.ratings.push(rating);
+    // Check if user has already rated
+    const existingRating = problem.ratings.find(
+      (r) => r.userId.toString() === userId
+    );
+    if (existingRating) {
+      return res
+        .status(400)
+        .json({ error: "You have already rated this problem." });
+    }
 
-    // Calculate new average rating
-    const totalRatings = problem.ratings.length;
-    const averageRating = (
-      problem.ratings.reduce((sum, r) => sum + r, 0) / totalRatings
-    ).toFixed(1);
-
-    problem.averageRating = parseFloat(averageRating);
+    // Add new rating
+    problem.ratings.push({ userId, rating: parseInt(rating) });
     await problem.save();
 
     res.json({
-      message: "Rating updated successfully!",
+      message: "Rating submitted successfully!",
       averageRating: problem.averageRating,
-      totalRatings: totalRatings,
+      totalRatings: problem.ratings.length,
     });
   } catch (error) {
     console.error("Error updating rating:", error);
-    res.status(500).json({ error: "Internal server error." });
+    res.status(500).json({ error: "Server error" });
   }
 });
 
 // Fetch problems from MongoDB and render the EJS page
-router.get("/problempage", async (req, res) => {
+// 🔹 Fetch problems and pass `currentUserId` to EJS
+router.get("/problempage", authenticateUser, async (req, res) => {
   try {
-    const problems = await RepairProblem.find(); // Fetch all repair problems
+    const problems = await RepairProblem.find();
     console.log("Fetched Problems:", problems);
-    res.render("Seeker/commonproblem.ejs", { problems }); // Pass problems to EJS
+    res.render("Seeker/commonproblem.ejs", {
+      problems,
+      currentUserId: req.user.userId, // ✅ Pass logged-in user ID
+    });
   } catch (err) {
     console.error("Error fetching problems:", err);
     res.status(500).send("Server Error");

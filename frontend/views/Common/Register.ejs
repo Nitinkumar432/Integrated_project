@@ -160,8 +160,17 @@
                 </div>
                 <div>
                     <label for="serviceLocation" class="block text-gray-700 font-medium mb-2">Service Location</label>
-                    <input type="text" id="serviceLocation" name="serviceLocation" class="w-full p-3 border rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-300" placeholder="Service Location" required>
+                    <div class="flex space-x-2">
+                        <input type="text" id="serviceLocation" name="serviceLocation" 
+                            class="w-full p-3 border rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-300" 
+                            placeholder="Service Location" required>
+                        <button type="button" id="detectLocation" 
+                                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+                            Locate Me
+                        </button>
+                    </div>
                 </div>
+
                 <div class="grid gap-8 md:grid-cols-2">
                     <div>
                         <label for="availability" class="block text-gray-700 font-medium mb-2">Availability</label>
@@ -244,43 +253,75 @@
             }
         }
 
+        // Location
         document.getElementById('locateMe').addEventListener('click', () => {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(async (position) => {
-                try {
-                    const response = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${position.coords.latitude}&lon=${position.coords.longitude}&format=json`);
-                    const data = await response.json();
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(async (position) => {
+                    try {
+                        const response = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${position.coords.latitude}&lon=${position.coords.longitude}&format=json`);
+                        const data = await response.json();
 
-                    if (data && data.address) {
-                        let locationName = data.address.suburb || data.address.city_district || data.address.city || data.address.town || data.address.village || data.address.state;
-                        let city = data.address.city || data.address.town || data.address.village || '';
-                        let state = data.address.state || '';
-                        let zipCode = data.address.postcode || '';
+                        if (data && data.address) {
+                            let locationName = data.address.suburb || data.address.city_district || data.address.city || data.address.town || data.address.village || data.address.state;
+                            let city = data.address.city || data.address.town || data.address.village || '';
+                            let state = data.address.state || '';
+                            let zipCode = data.address.postcode || '';
 
-                        // Autofill fields while keeping them editable
-                        document.getElementById('address').value = locationName;
-                        document.getElementById('city').value = city;
-                        document.getElementById('state').value = state;
-                        document.getElementById('zipCode').value = zipCode;
-                    } else {
-                        document.getElementById('address').value = 'Location not found';
-                        document.getElementById('city').value = '';
-                        document.getElementById('state').value = '';
-                        document.getElementById('zipCode').value = '';
+                            // Autofill fields while keeping them editable
+                            document.getElementById('address').value = locationName;
+                            document.getElementById('city').value = city;
+                            document.getElementById('state').value = state;
+                            document.getElementById('zipCode').value = zipCode;
+                        } else {
+                            document.getElementById('address').value = 'Location not found';
+                            document.getElementById('city').value = '';
+                            document.getElementById('state').value = '';
+                            document.getElementById('zipCode').value = '';
+                        }
+                    } catch (error) {
+                        console.error('Error fetching location:', error);
+                        document.getElementById('address').value = 'Error fetching location';
                     }
-                } catch (error) {
-                    console.error('Error fetching location:', error);
-                    document.getElementById('address').value = 'Error fetching location';
-                }
-            }, (error) => {
-                console.error('Error getting location:', error);
-                document.getElementById('address').value = 'Failed to get location';
-            }, { enableHighAccuracy: true });
-        } else {
-            document.getElementById('address').value = 'Geolocation not supported';
-        }
-    });
+                }, (error) => {
+                    console.error('Error getting location:', error);
+                    document.getElementById('address').value = 'Failed to get location';
+                }, { enableHighAccuracy: true });
+            } else {
+                document.getElementById('address').value = 'Geolocation not supported';
+            }
+        });
 
+        document.getElementById('detectLocation').addEventListener('click', () => {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(async (position) => {
+                    try {
+                        const response = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${position.coords.latitude}&lon=${position.coords.longitude}&format=json`);
+                        const data = await response.json();
+
+                        if (data && data.address) {
+                            let area = data.address.suburb || data.address.city_district || data.address.city || data.address.town || data.address.village || '';
+                            let city = data.address.city || data.address.town || data.address.village || '';
+                            let state = data.address.state || '';
+                            let country = data.address.country || '';  // ✅ Added country
+                            let zipCode = data.address.postcode || '';
+
+                            // ✅ Fill Service Location with Complete Address
+                            document.getElementById('serviceLocation').value = `${area}, ${city}, ${state}, ${country}, ${zipCode}`;
+                        } else {
+                            document.getElementById('serviceLocation').value = 'Location not found';
+                        }
+                    } catch (error) {
+                        console.error('Error fetching location:', error);
+                        document.getElementById('serviceLocation').value = 'Error fetching location';
+                    }
+                }, (error) => {
+                    console.error('Error getting location:', error);
+                    document.getElementById('serviceLocation').value = 'Failed to get location';
+                }, { enableHighAccuracy: true });
+            } else {
+                document.getElementById('serviceLocation').value = 'Geolocation not supported';
+            }
+        });
 
         // Toggle between seeker and provider forms
         const seekerToggle = document.getElementById('seekerToggle');

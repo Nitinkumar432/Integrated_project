@@ -92,51 +92,7 @@
 
     <!-- JavaScript -->
     <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        const loginForm = document.getElementById("loginForm");
-        const passwordInput = document.getElementById("password");
-        const togglePasswordBtn = document.getElementById("togglePassword");
-        const loginButton = document.getElementById("loginButton");
-
-        // Toggle Password Visibility
-        togglePasswordBtn.addEventListener("click", function () {
-          passwordInput.type =
-            passwordInput.type === "password" ? "text" : "password";
-        });
-
-        // Handle form submission via AJAX
-        loginForm.addEventListener("submit", async function (e) {
-          e.preventDefault(); // Prevent default form submission
-
-          loginButton.innerHTML = "Logging in...";
-          loginButton.disabled = true;
-
-          const formData = new FormData(loginForm);
-
-          try {
-            const response = await fetch("/admin/login", {
-              method: "POST",
-              body: formData,
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
-              // ✅ Redirect to Admin Dashboard on successful login
-              window.location.href = "/admin/dashboard";
-            } else {
-              alert(data.error || "Login failed. Please try again.");
-              loginButton.innerHTML = "Login";
-              loginButton.disabled = false;
-            }
-          } catch (error) {
-            console.error("Error logging in:", error);
-            alert("Something went wrong. Try again.");
-            loginButton.innerHTML = "Login";
-            loginButton.disabled = false;
-          }
-        });
-      });
+  
     </script>
   </body>
 </html>

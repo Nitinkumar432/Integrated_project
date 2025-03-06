@@ -92,7 +92,21 @@
 
     <!-- JavaScript -->
     <script>
-  
+      document.addEventListener("DOMContentLoaded", function () {
+        const loginForm = document.getElementById("loginForm");
+        const passwordInput = document.getElementById("password");
+        const togglePasswordBtn = document.getElementById("togglePassword");
+        const loginButton = document.getElementById("loginButton");
+
+        // Toggle Password Visibility
+        togglePasswordBtn.addEventListener("click", function () {
+          passwordInput.type =
+            passwordInput.type === "password" ? "text" : "password";
+        });
+
+        // Handle form submission via AJAX
+     
+      });
     </script>
   </body>
 </html>

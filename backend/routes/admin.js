@@ -11,6 +11,7 @@ import {
 import Provider from "../Models/provideschema.js";
 import Seeker from "../Models/seekers.js";
 import RepairProblem from "../Models/repairProblem.js";
+import Admin from "../Models/admin.js";
 
 const router = express.Router();
 
@@ -55,6 +56,44 @@ router.get("/dashboard", authenticateAdmin, async (req, res) => {
     console.error("Error fetching admin dashboard data:", error);
     res.status(500).send("Server Error");
   }
+});
+
+// ✅ Serve Admin Profile Page
+router.get("/profile", authenticateAdmin, async (req, res) => {
+  try {
+    const admin = await Admin.findOne({ username: "admin" });
+    if (!admin) return res.status(404).send("Admin not found");
+
+    res.render("Admin/adminProfile.ejs", { admin });
+  } catch (error) {
+    console.error("Error fetching admin profile:", error);
+    res.status(500).send("Server Error");
+  }
+});
+
+// ✅ Handle Admin Profile Update
+router.post("/profile/update", authenticateAdmin, async (req, res) => {
+  try {
+    const { email, newPassword } = req.body;
+    const updateFields = {};
+
+    if (email) updateFields.email = email;
+    if (newPassword) updateFields.password = newPassword;
+
+    await Admin.findOneAndUpdate({ username: "admin" }, updateFields, {
+      new: true,
+    });
+
+    res.redirect("/admin/profile");
+  } catch (error) {
+    console.error("Error updating admin profile:", error);
+    res.status(500).send("Server Error");
+  }
+});
+
+// ✅ Serve Admin Settings Page
+router.get("/settings", authenticateAdmin, (req, res) => {
+  res.render("Admin/adminSettings.ejs"); // Ensure this file exists in views/Admin
 });
 
 // ✅ Protected Admin Routes

@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Manage Seekers | Admin Panel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              sidebar: "#1a1c23",
+              "sidebar-hover": "#2d3748",
+              "card-bg": "#252836",
+              "card-hover": "#2d303e",
+              primary: {
+                DEFAULT: "#3b82f6",
+                hover: "#2563eb",
+              },
+              secondary: {
+                DEFAULT: "#10b981",
+                hover: "#059669",
+              },
+              danger: {
+                DEFAULT: "#ef4444",
+                hover: "#dc2626",
+              },
+            },
+            animation: {
+              "pulse-slow": "pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+            },
+          },
+        },
+      };
+    </script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <!-- Heroicons -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-gray-900 text-white flex flex-col md:flex-row min-h-screen">
+    <!-- Mobile Navigation Toggle -->
+    <div class="md:hidden p-4 bg-sidebar flex justify-between items-center">
+      <h2 class="text-xl font-bold text-white">⚙️ Admin Panel</h2>
+      <button id="mobileMenuToggle" class="text-white focus:outline-none">
+        <i class="ri-menu-line text-2xl"></i>
+      </button>
+    </div>
+
+    <!-- Sidebar -->
+    <aside
+      id="sidebar"
+      class="w-full md:w-72 bg-sidebar min-h-screen p-6 flex flex-col md:sticky md:top-0 md:h-screen overflow-y-auto hidden md:flex"
+    >
+      <div class="flex items-center space-x-3 mb-8">
+        <div class="bg-primary p-2 rounded-lg">
+          <i class="ri-settings-4-line text-xl"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-white">Admin Panel</h2>
+      </div>
+
+      <div class="mb-8">
+        <p
+          class="text-gray-400 uppercase text-xs font-semibold tracking-wider mb-4"
+        >
+          Main Menu
+        </p>
+        <nav class="space-y-2 flex-1">
+          <a
+            href="/admin/dashboard"
+            class="flex items-center px-4 py-3 rounded-lg hover:bg-sidebar-hover transition-all group"
+          >
+            <i
+              class="ri-dashboard-line mr-3 text-gray-400 group-hover:text-white"
+            ></i>
+            <span>Dashboard</span>
+          </a>
+          <a
+            href="/admin/pending-providers"
+            class="flex items-center px-4 py-3 rounded-lg hover:bg-sidebar-hover transition-all group"
+          >
+            <i
+              class="ri-time-line mr-3 text-gray-400 group-hover:text-white"
+            ></i>
+            <span>Pending Providers</span>
+          </a>
+          <a
+            href="/admin/seekers"
+            class="flex items-center px-4 py-3 rounded-lg bg-primary/20 text-primary border-l-4 border-primary transition-all"
+          >
+            <i class="ri-user-search-line mr-3"></i>
+            <span>View Seekers</span>
+          </a>
+        </nav>
+      </div>
+
+      <div class="mb-8">
+        <p
+          class="text-gray-400 uppercase text-xs font-semibold tracking-wider mb-4"
+        >
+          Settings
+        </p>
+        <nav class="space-y-2">
+          <a
+            href="/admin/settings"
+            class="flex items-center px-4 py-3 rounded-lg hover:bg-sidebar-hover transition-all group"
+          >
+            <i
+              class="ri-settings-line mr-3 text-gray-400 group-hover:text-white"
+            ></i>
+            <span>General Settings</span>
+          </a>
+          <a
+            href="/admin/profile"
+            class="flex items-center px-4 py-3 rounded-lg hover:bg-sidebar-hover transition-all group"
+          >
+            <i
+              class="ri-user-settings-line mr-3 text-gray-400 group-hover:text-white"
+            ></i>
+            <span>Profile</span>
+          </a>
+        </nav>
+      </div>
+
+      <div class="mt-auto">
+        <a
+          href="/admin/logout"
+          class="flex items-center justify-center px-4 py-3 bg-danger/20 text-danger rounded-lg hover:bg-danger hover:text-white transition-all"
+        >
+          <i class="ri-logout-box-line mr-2"></i>
+          <span>Logout</span>
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-4 md:p-8 overflow-x-hidden">
+      <div class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <div
+          class="flex flex-col md:flex-row md:items-center justify-between mb-8"
+        >
+          <div>
+            <h1 class="text-3xl md:text-4xl font-bold flex items-center">
+              <i class="ri-user-search-line mr-3 text-primary"></i>
+              Manage Seekers
+            </h1>
+            <p class="mt-2 text-gray-400">
+              View, delete, or message registered seekers.
+            </p>
+          </div>
+
+          <div class="mt-4 md:mt-0 flex flex-col sm:flex-row gap-3">
+            <div class="relative">
+              <input
+                type="text"
+                id="searchInput"
+                placeholder="Search seekers..."
+                class="bg-gray-800 text-white px-4 py-2 pl-10 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary w-full"
+              />
+              <i
+                class="ri-search-line absolute left-3 top-2.5 text-gray-400"
+              ></i>
+            </div>
+            <select
+              id="filterSelect"
+              class="bg-gray-800 text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+            >
+              <option value="all">All Seekers</option>
+              <option value="recent">Recently Added</option>
+              <option value="alphabetical">Alphabetical</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <div class="bg-card-bg p-6 rounded-xl shadow-lg">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-gray-400 text-sm">Total Seekers</p>
+                <h3 class="text-2xl font-bold mt-1"><%= seekers.length %></h3>
+              </div>
+              <div class="bg-blue-500/20 p-3 rounded-lg">
+                <i class="ri-user-line text-blue-500 text-xl"></i>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-card-bg p-6 rounded-xl shadow-lg">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-gray-400 text-sm">Active Today</p>
+                <h3 class="text-2xl font-bold mt-1">
+                  <%= seekers.filter(s => s.lastActive && new
+                  Date(s.lastActive).toDateString() === new
+                  Date().toDateString()).length || 0 %>
+                </h3>
+              </div>
+              <div class="bg-green-500/20 p-3 rounded-lg">
+                <i class="ri-user-follow-line text-green-500 text-xl"></i>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-card-bg p-6 rounded-xl shadow-lg">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-gray-400 text-sm">New This Week</p>
+                <h3 class="text-2xl font-bold mt-1">
+                  <%= seekers.filter(s => s.createdAt && (new Date() - new
+                  Date(s.createdAt)) / (1000 * 60 * 60 * 24) <= 7).length || 0
+                  %>
+                </h3>
+              </div>
+              <div class="bg-purple-500/20 p-3 rounded-lg">
+                <i class="ri-user-add-line text-purple-500 text-xl"></i>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-card-bg p-6 rounded-xl shadow-lg">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-gray-400 text-sm">Messages Sent</p>
+                <h3 class="text-2xl font-bold mt-1">
+                  <%= typeof messageCount !== 'undefined' ? messageCount : '—'
+                  %>
+                </h3>
+              </div>
+              <div class="bg-yellow-500/20 p-3 rounded-lg">
+                <i class="ri-message-3-line text-yellow-500 text-xl"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Seekers List -->
+        <div
+          id="seekersList"
+          class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+        >
+          <% seekers.forEach(seeker => { %>
+          <div
+            class="bg-card-bg rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 hover:translate-y-[-4px]"
+            data-seeker-id="<%= seeker._id %>"
+            data-seeker-name="<%= seeker.name %>"
+            data-seeker-email="<%= seeker.email %>"
+          >
+            <div class="p-6">
+              <div class="flex items-start justify-between">
+                <div class="flex items-center">
+                  <div
+                    class="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center text-primary text-xl font-bold mr-4"
+                  >
+                    <%= seeker.name.charAt(0).toUpperCase() %>
+                  </div>
+                  <div>
+                    <h2 class="text-xl font-bold text-white">
+                      <%= seeker.name %>
+                    </h2>
+                    <p class="text-gray-400 text-sm flex items-center">
+                      <i class="ri-mail-line mr-1"></i>
+                      <%= seeker.email %>
+                    </p>
+                  </div>
+                </div>
+                <div class="relative">
+                  <button
+                    class="text-gray-400 hover:text-white focus:outline-none"
+                    onclick="toggleDropdown('<%= seeker._id %>')"
+                  >
+                    <i class="ri-more-2-fill text-xl"></i>
+                  </button>
+                  <div
+                    id="dropdown-<%= seeker._id %>"
+                    class="absolute right-0 mt-2 w-48 bg-gray-800 rounded-md shadow-lg z-10 hidden"
+                  >
+                    <div class="py-1">
+                      <a
+                        href="/admin/seekers/<%= seeker._id %>"
+                        class="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700"
+                      >
+                        <i class="ri-eye-line mr-2"></i> View Details
+                      </a>
+                      <button
+                        onclick="sendMessage('<%= seeker._id %>', '<%= seeker.name %>')"
+                        class="w-full text-left block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700"
+                      >
+                        <i class="ri-message-2-line mr-2"></i> Send Message
+                      </button>
+                      <button
+                        onclick="deleteSeeker('<%= seeker._id %>', '<%= seeker.name %>')"
+                        class="w-full text-left block px-4 py-2 text-sm text-red-400 hover:bg-gray-700"
+                      >
+                        <i class="ri-delete-bin-line mr-2"></i> Delete Seeker
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-4 space-y-2">
+                <div class="flex items-center text-sm">
+                  <i class="ri-map-pin-line text-gray-400 mr-2"></i>
+                  <span
+                    ><%= seeker.city || 'N/A' %>, <%= seeker.state || 'N/A'
+                    %></span
+                  >
+                </div>
+                <% if(seeker.phone) { %>
+                <div class="flex items-center text-sm">
+                  <i class="ri-phone-line text-gray-400 mr-2"></i>
+                  <span><%= seeker.phone %></span>
+                </div>
+                <% } %> <% if(seeker.createdAt) { %>
+                <div class="flex items-center text-sm">
+                  <i class="ri-calendar-line text-gray-400 mr-2"></i>
+                  <span
+                    >Joined <%= new Date(seeker.createdAt).toLocaleDateString()
+                    %></span
+                  >
+                </div>
+                <% } %>
+              </div>
+            </div>
+
+            <div class="bg-gray-800 p-4 flex justify-between">
+              <a
+                href="/admin/seekers/<%= seeker._id %>"
+                class="px-3 py-2 bg-primary/10 text-primary text-sm rounded-lg hover:bg-primary hover:text-white transition-colors flex items-center"
+              >
+                <i class="ri-eye-line mr-1"></i> Details
+              </a>
+              <button
+                onclick="sendMessage('<%= seeker._id %>', '<%= seeker.name %>')"
+                class="px-3 py-2 bg-secondary/10 text-secondary text-sm rounded-lg hover:bg-secondary hover:text-white transition-colors flex items-center"
+              >
+                <i class="ri-message-2-line mr-1"></i> Message
+              </button>
+              <button
+                onclick="deleteSeeker('<%= seeker._id %>', '<%= seeker.name %>')"
+                class="px-3 py-2 bg-danger/10 text-danger text-sm rounded-lg hover:bg-danger hover:text-white transition-colors flex items-center"
+              >
+                <i class="ri-delete-bin-line mr-1"></i> Delete
+              </button>
+            </div>
+          </div>
+          <% }); %>
+        </div>
+
+        <% if(seekers.length === 0) { %>
+        <div class="bg-card-bg rounded-xl p-8 text-center">
+          <div
+            class="w-20 h-20 bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4"
+          >
+            <i class="ri-user-search-line text-3xl text-gray-400"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-2">No Seekers Found</h3>
+          <p class="text-gray-400">
+            There are no seekers registered in the system yet.
+          </p>
+        </div>
+        <% } %> <% if(seekers.length > 0) { %>
+        <!-- Pagination -->
+        <div class="mt-8 flex justify-between items-center">
+          <p class="text-gray-400 text-sm">
+            Showing
+            <span class="font-medium"><%= seekers.length %></span> seekers
+          </p>
+          <div class="flex space-x-2">
+            <button
+              class="px-4 py-2 bg-gray-800 rounded-lg hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled
+            >
+              <i class="ri-arrow-left-s-line"></i>
+            </button>
+            <button
+              class="px-4 py-2 bg-primary rounded-lg hover:bg-primary-hover"
+            >
+              1
+            </button>
+            <button
+              class="px-4 py-2 bg-gray-800 rounded-lg hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled
+            >
+              <i class="ri-arrow-right-s-line"></i>
+            </button>
+          </div>
+        </div>
+        <% } %>
+      </div>
+    </main>
+
+    <!-- Message Modal -->
+    <div
+      id="messageModal"
+      class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden"
+    >
+      <div
+        class="bg-card-bg rounded-xl shadow-2xl w-full max-w-md mx-4 overflow-hidden"
+      >
+        <div class="p-6 border-b border-gray-700">
+          <div class="flex justify-between items-center">
+            <h3 class="text-xl font-bold" id="messageModalTitle">
+              Send Message
+            </h3>
+            <button
+              onclick="closeMessageModal()"
+              class="text-gray-400 hover:text-white"
+            >
+              <i class="ri-close-line text-xl"></i>
+            </button>
+          </div>
+        </div>
+        <div class="p-6">
+          <div class="mb-4">
+            <label
+              for="messageText"
+              class="block text-sm font-medium text-gray-400 mb-2"
+              >Message</label
+            >
+            <textarea
+              id="messageText"
+              rows="4"
+              class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-primary"
+              placeholder="Enter your message here..."
+            ></textarea>
+          </div>
+          <div class="flex justify-end space-x-3">
+            <button
+              onclick="closeMessageModal()"
+              class="px-4 py-2 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              id="sendMessageBtn"
+              class="px-4 py-2 bg-secondary rounded-lg hover:bg-secondary-hover transition-colors flex items-center"
+            >
+              <i class="ri-send-plane-line mr-2"></i> Send Message
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div
+      id="deleteModal"
+      class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden"
+    >
+      <div
+        class="bg-card-bg rounded-xl shadow-2xl w-full max-w-md mx-4 overflow-hidden"
+      >
+        <div class="p-6 border-b border-gray-700">
+          <div class="flex justify-between items-center">
+            <h3 class="text-xl font-bold text-white">Confirm Deletion</h3>
+            <button
+              onclick="closeDeleteModal()"
+              class="text-gray-400 hover:text-white"
+            >
+              <i class="ri-close-line text-xl"></i>
+            </button>
+          </div>
+        </div>
+        <div class="p-6">
+          <div class="flex items-center justify-center mb-4 text-danger">
+            <div
+              class="w-16 h-16 rounded-full bg-danger/20 flex items-center justify-center"
+            >
+              <i class="ri-delete-bin-line text-3xl"></i>
+            </div>
+          </div>
+          <p class="text-center mb-6" id="deleteModalText">
+            Are you sure you want to delete this seeker? This action cannot be
+            undone.
+          </p>
+          <div class="flex justify-center space-x-3">
+            <button
+              onclick="closeDeleteModal()"
+              class="px-4 py-2 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              id="confirmDeleteBtn"
+              class="px-4 py-2 bg-danger rounded-lg hover:bg-danger-hover transition-colors flex items-center"
+            >
+              <i class="ri-delete-bin-line mr-2"></i> Delete Permanently
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div
+      id="toast"
+      class="fixed bottom-4 right-4 bg-gray-800 text-white px-4 py-3 rounded-lg shadow-lg flex items-center transform translate-y-20 opacity-0 transition-all duration-300 z-50"
+    >
+      <div id="toastIcon" class="mr-3 text-green-500">
+        <i class="ri-checkbox-circle-line text-xl"></i>
+      </div>
+      <div>
+        <h4 class="font-medium" id="toastTitle">Success</h4>
+        <p class="text-sm text-gray-300" id="toastMessage">
+          Operation completed successfully.
+        </p>
+      </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+      // Mobile menu toggle
+      document
+        .getElementById("mobileMenuToggle")
+        .addEventListener("click", function () {
+          const sidebar = document.getElementById("sidebar");
+          sidebar.classList.toggle("hidden");
+        });
+
+      // Search functionality
+      document
+        .getElementById("searchInput")
+        .addEventListener("input", function (e) {
+          const searchTerm = e.target.value.toLowerCase();
+          const seekerCards = document.querySelectorAll("#seekersList > div");
+
+          seekerCards.forEach((card) => {
+            const seekerName = card
+              .getAttribute("data-seeker-name")
+              .toLowerCase();
+            const seekerEmail = card
+              .getAttribute("data-seeker-email")
+              .toLowerCase();
+
+            if (
+              seekerName.includes(searchTerm) ||
+              seekerEmail.includes(searchTerm)
+            ) {
+              card.classList.remove("hidden");
+            } else {
+              card.classList.add("hidden");
+            }
+          });
+        });
+
+      // Filter functionality
+      document
+        .getElementById("filterSelect")
+        .addEventListener("change", function (e) {
+          const filterValue = e.target.value;
+          const seekerCards = Array.from(
+            document.querySelectorAll("#seekersList > div")
+          );
+
+          if (filterValue === "alphabetical") {
+            seekerCards.sort((a, b) => {
+              const nameA = a.getAttribute("data-seeker-name").toLowerCase();
+              const nameB = b.getAttribute("data-seeker-name").toLowerCase();
+              return nameA.localeCompare(nameB);
+            });
+          } else if (filterValue === "recent") {
+            // This would ideally use creation date, but we'll just reverse for demo
+            seekerCards.reverse();
+          }
+
+          const seekersList = document.getElementById("seekersList");
+          seekerCards.forEach((card) => seekersList.appendChild(card));
+        });
+
+      // Dropdown toggle
+      function toggleDropdown(id) {
+        const dropdown = document.getElementById(`dropdown-${id}`);
+        dropdown.classList.toggle("hidden");
+
+        // Close other dropdowns
+        document.querySelectorAll('[id^="dropdown-"]').forEach((el) => {
+          if (el.id !== `dropdown-${id}` && !el.classList.contains("hidden")) {
+            el.classList.add("hidden");
+          }
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener("click", function closeDropdowns(e) {
+          if (
+            !e.target.closest(`#dropdown-${id}`) &&
+            !e.target.closest(`button[onclick="toggleDropdown('${id}')"]`)
+          ) {
+            dropdown.classList.add("hidden");
+            document.removeEventListener("click", closeDropdowns);
+          }
+        });
+      }
+
+      // Message modal
+      let currentSeekerId = null;
+
+      function sendMessage(seekerId, seekerName) {
+        currentSeekerId = seekerId;
+        document.getElementById(
+          "messageModalTitle"
+        ).textContent = `Message to ${seekerName}`;
+        document.getElementById("messageText").value = "";
+        document.getElementById("messageModal").classList.remove("hidden");
+        document.getElementById("messageText").focus();
+
+        document.getElementById("sendMessageBtn").onclick = async function () {
+          const message = document.getElementById("messageText").value.trim();
+          if (!message) {
+            showToast("Error", "Please enter a message", "error");
+            return;
+          }
+
+          const sendBtn = this;
+          const originalContent = sendBtn.innerHTML;
+          sendBtn.innerHTML =
+            '<i class="ri-loader-4-line animate-spin mr-2"></i> Sending...';
+          sendBtn.disabled = true;
+
+          try {
+            await axios.post(`/admin/seekers/${seekerId}/message`, { message });
+            closeMessageModal();
+            showToast("Success", "Message sent successfully", "success");
+          } catch (error) {
+            showToast("Error", "Failed to send message", "error");
+          } finally {
+            sendBtn.innerHTML = originalContent;
+            sendBtn.disabled = false;
+          }
+        };
+      }
+
+      function closeMessageModal() {
+        document.getElementById("messageModal").classList.add("hidden");
+        currentSeekerId = null;
+      }
+
+      // Delete modal
+      function deleteSeeker(seekerId, seekerName) {
+        currentSeekerId = seekerId;
+        document.getElementById(
+          "deleteModalText"
+        ).textContent = `Are you sure you want to delete ${seekerName}? This action cannot be undone.`;
+        document.getElementById("deleteModal").classList.remove("hidden");
+
+        document.getElementById("confirmDeleteBtn").onclick =
+          async function () {
+            const deleteBtn = this;
+            const originalContent = deleteBtn.innerHTML;
+            deleteBtn.innerHTML =
+              '<i class="ri-loader-4-line animate-spin mr-2"></i> Deleting...';
+            deleteBtn.disabled = true;
+
+            try {
+              await axios.delete(`/admin/seekers/${seekerId}`);
+              closeDeleteModal();
+
+              // Remove the card with animation
+              const card = document.querySelector(
+                `[data-seeker-id="${seekerId}"]`
+              );
+              card.classList.add("opacity-0", "scale-95");
+              setTimeout(() => {
+                card.remove();
+
+                // Update counter
+                const totalCounter = document.querySelector(
+                  ".bg-card-bg:first-child h3"
+                );
+                if (totalCounter) {
+                  totalCounter.textContent =
+                    parseInt(totalCounter.textContent) - 1;
+                }
+
+                // Show empty state if no seekers left
+                if (
+                  document.querySelectorAll("#seekersList > div").length === 0
+                ) {
+                  const emptyState = document.createElement("div");
+                  emptyState.className =
+                    "bg-card-bg rounded-xl p-8 text-center col-span-full";
+                  emptyState.innerHTML = `
+                  <div class="w-20 h-20 bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="ri-user-search-line text-3xl text-gray-400"></i>
+                  </div>
+                  <h3 class="text-xl font-bold mb-2">No Seekers Found</h3>
+                  <p class="text-gray-400">There are no seekers registered in the system yet.</p>
+                `;
+                  document
+                    .getElementById("seekersList")
+                    .appendChild(emptyState);
+                }
+              }, 300);
+
+              showToast("Success", "Seeker deleted successfully", "success");
+            } catch (error) {
+              showToast("Error", "Failed to delete seeker", "error");
+            } finally {
+              deleteBtn.innerHTML = originalContent;
+              deleteBtn.disabled = false;
+            }
+          };
+      }
+
+      function closeDeleteModal() {
+        document.getElementById("deleteModal").classList.add("hidden");
+        currentSeekerId = null;
+      }
+
+      // Toast notification
+      function showToast(title, message, type = "success") {
+        const toast = document.getElementById("toast");
+        const toastTitle = document.getElementById("toastTitle");
+        const toastMessage = document.getElementById("toastMessage");
+        const toastIcon = document.getElementById("toastIcon");
+
+        toastTitle.textContent = title;
+        toastMessage.textContent = message;
+
+        if (type === "success") {
+          toastIcon.className = "mr-3 text-green-500";
+          toastIcon.innerHTML =
+            '<i class="ri-checkbox-circle-line text-xl"></i>';
+        } else if (type === "error") {
+          toastIcon.className = "mr-3 text-red-500";
+          toastIcon.innerHTML = '<i class="ri-error-warning-line text-xl"></i>';
+        } else if (type === "warning") {
+          toastIcon.className = "mr-3 text-yellow-500";
+          toastIcon.innerHTML = '<i class="ri-alert-line text-xl"></i>';
+        }
+
+        toast.classList.remove("translate-y-20", "opacity-0");
+
+        setTimeout(() => {
+          toast.classList.add("translate-y-20", "opacity-0");
+        }, 3000);
+      }
+
+      // Close modals when clicking outside
+      window.addEventListener("click", function (e) {
+        const messageModal = document.getElementById("messageModal");
+        const deleteModal = document.getElementById("deleteModal");
+
+        if (e.target === messageModal) {
+          closeMessageModal();
+        }
+
+        if (e.target === deleteModal) {
+          closeDeleteModal();
+        }
+      });
+
+      // Close modals with Escape key
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape") {
+          closeMessageModal();
+          closeDeleteModal();
+        }
+      });
+    </script>
+  </body>
+</html>

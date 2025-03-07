@@ -5,96 +5,691 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Admin Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              sidebar: "#1a1c23",
+              "sidebar-hover": "#2d3748",
+              "card-bg": "#252836",
+              "card-hover": "#2d303e",
+              primary: {
+                DEFAULT: "#3b82f6",
+                hover: "#2563eb",
+              },
+              secondary: {
+                DEFAULT: "#10b981",
+                hover: "#059669",
+              },
+              danger: {
+                DEFAULT: "#ef4444",
+                hover: "#dc2626",
+              },
+              warning: {
+                DEFAULT: "#f59e0b",
+                hover: "#d97706",
+              },
+              info: {
+                DEFAULT: "#6366f1",
+                hover: "#4f46e5",
+              },
+            },
+          },
+        },
+      };
+    </script>
+    <!-- Chart.js for data visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Remix Icon -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css"
+      rel="stylesheet"
+    />
   </head>
-  <body class="bg-gray-900 text-white flex">
+  <body class="bg-gray-900 text-white flex flex-col md:flex-row min-h-screen">
+    <!-- Mobile Navigation Toggle -->
+    <div class="md:hidden p-4 bg-sidebar flex justify-between items-center">
+      <h2 class="text-xl font-bold text-white">⚙️ Admin Panel</h2>
+      <button id="mobileMenuToggle" class="text-white focus:outline-none">
+        <i class="ri-menu-line text-2xl"></i>
+      </button>
+    </div>
+
     <!-- Sidebar -->
-    <aside class="w-64 bg-gray-800 min-h-screen p-6 flex flex-col">
-      <h2 class="text-2xl font-bold text-white mb-6">⚙️ Admin Panel</h2>
-      <nav class="space-y-4 flex-1">
-        <a
-          href="/admin/dashboard"
-          class="block px-4 py-3 rounded-lg bg-gray-700 hover:bg-gray-600 transition"
-          >📊 Dashboard</a
+    <aside
+      id="sidebar"
+      class="w-full md:w-64 bg-sidebar min-h-screen p-6 flex flex-col md:sticky md:top-0 md:h-screen overflow-y-auto hidden md:flex"
+    >
+      <div class="flex items-center space-x-3 mb-8">
+        <div class="bg-primary p-2 rounded-lg">
+          <i class="ri-settings-4-line text-xl"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-white">Admin Panel</h2>
+      </div>
+
+      <div class="mb-8">
+        <p
+          class="text-gray-400 uppercase text-xs font-semibold tracking-wider mb-4"
         >
-        <a
-          href="/admin/pending-providers"
-          class="block px-4 py-3 rounded-lg bg-gray-700 hover:bg-gray-600 transition"
-          >🕒 Pending Providers</a
+          Main Menu
+        </p>
+        <nav class="space-y-2 flex-1">
+          <a
+            href="/admin/dashboard"
+            class="flex items-center px-4 py-3 rounded-lg bg-primary/20 text-primary border-l-4 border-primary transition-all"
+          >
+            <i class="ri-dashboard-line mr-3"></i>
+            <span>Dashboard</span>
+          </a>
+          <a
+            href="/admin/pending-providers"
+            class="flex items-center px-4 py-3 rounded-lg hover:bg-sidebar-hover transition-all group"
+          >
+            <i
+              class="ri-time-line mr-3 text-gray-400 group-hover:text-white"
+            ></i>
+            <span>Pending Providers</span>
+          </a>
+          <a
+            href="/admin/verified-providers"
+            class="flex items-center px-4 py-3 rounded-lg hover:bg-sidebar-hover transition-all group"
+          >
+            <i
+              class="ri-check-double-line mr-3 text-gray-400 group-hover:text-white"
+            ></i>
+            <span>Verified Providers</span>
+          </a>
+          <a
+            href="/admin/seekers"
+            class="flex items-center px-4 py-3 rounded-lg hover:bg-sidebar-hover transition-all group"
+          >
+            <i
+              class="ri-user-search-line mr-3 text-gray-400 group-hover:text-white"
+            ></i>
+            <span>View Seekers</span>
+          </a>
+        </nav>
+      </div>
+
+      <div class="mb-8">
+        <p
+          class="text-gray-400 uppercase text-xs font-semibold tracking-wider mb-4"
         >
+          Settings
+        </p>
+        <nav class="space-y-2">
+          <a
+            href="/admin/settings"
+            class="flex items-center px-4 py-3 rounded-lg hover:bg-sidebar-hover transition-all group"
+          >
+            <i
+              class="ri-settings-line mr-3 text-gray-400 group-hover:text-white"
+            ></i>
+            <span>System Settings</span>
+          </a>
+          <a
+            href="/admin/profile"
+            class="flex items-center px-4 py-3 rounded-lg hover:bg-sidebar-hover transition-all group"
+          >
+            <i
+              class="ri-user-settings-line mr-3 text-gray-400 group-hover:text-white"
+            ></i>
+            <span>Profile</span>
+          </a>
+        </nav>
+      </div>
+
+      <div class="mt-auto">
         <a
-          href="/admin/verified-providers"
-          class="block px-4 py-3 rounded-lg bg-gray-700 hover:bg-gray-600 transition"
-          >✅ Verified Providers</a
+          href="/admin/logout"
+          class="flex items-center justify-center px-4 py-3 bg-danger/20 text-danger rounded-lg hover:bg-danger hover:text-white transition-all"
         >
-        <a
-          href="/admin/seekers"
-          class="block px-4 py-3 rounded-lg bg-gray-700 hover:bg-gray-600 transition"
-          >👥 View Seekers</a
-        >
-      </nav>
-      <a
-        href="/admin/logout"
-        class="mt-6 block px-4 py-3 bg-red-500 text-center rounded-lg hover:bg-red-700 transition"
-        >🚪 Logout</a
-      >
+          <i class="ri-logout-box-line mr-2"></i>
+          <span>Logout</span>
+        </a>
+      </div>
     </aside>
 
     <!-- Main Content -->
-    <main class="flex-1 p-8">
-      <div class="flex justify-between items-center">
-        <h1 class="text-4xl font-bold">Welcome, Admin</h1>
-        <span class="text-sm text-gray-400"
-          >📅 <%= new Date().toLocaleDateString() %></span
+    <main class="flex-1 p-4 md:p-8 overflow-x-hidden">
+      <div class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <div
+          class="flex flex-col md:flex-row md:items-center justify-between mb-8 bg-card-bg p-4 md:p-6 rounded-xl shadow-lg"
         >
-      </div>
-      <p class="mt-2 text-gray-400">
-        Manage users, providers, and platform settings.
-      </p>
+          <div class="flex items-center">
+            <div
+              class="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center text-primary mr-4"
+            >
+              <i class="ri-admin-line text-2xl"></i>
+            </div>
+            <div>
+              <h1 class="text-2xl md:text-3xl font-bold">Welcome, Admin</h1>
+              <p class="text-gray-400 text-sm flex items-center">
+                <i class="ri-calendar-line mr-2"></i>
+                <%= new Date().toLocaleDateString('en-US', { weekday: 'long',
+                year: 'numeric', month: 'long', day: 'numeric' }) %>
+              </p>
+            </div>
+          </div>
 
-      <!-- Overview Stats -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
-        <div class="bg-gray-800 p-6 rounded-lg text-center shadow-lg">
-          <h2 class="text-3xl font-bold">🛠️ <%= pendingProvidersCount %></h2>
-          <p class="text-gray-400 mt-1">Pending Approvals</p>
+          <div class="mt-4 md:mt-0 flex items-center space-x-4">
+            <div class="relative">
+              <button
+                class="relative p-2 bg-gray-800 rounded-full hover:bg-gray-700 transition-colors"
+              >
+                <i class="ri-notification-3-line text-xl"></i>
+                <span
+                  class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"
+                ></span>
+              </button>
+            </div>
+            <div class="relative">
+              <button
+                class="flex items-center space-x-2 bg-gray-800 px-3 py-2 rounded-lg hover:bg-gray-700 transition-colors"
+              >
+                <div
+                  class="w-8 h-8 bg-primary/20 rounded-full flex items-center justify-center text-primary"
+                >
+                  A
+                </div>
+                <span>Admin</span>
+                <i class="ri-arrow-down-s-line"></i>
+              </button>
+            </div>
+          </div>
         </div>
-        <div class="bg-gray-800 p-6 rounded-lg text-center shadow-lg">
-          <h2 class="text-3xl font-bold">👥 <%= seekersCount %></h2>
-          <p class="text-gray-400 mt-1">Registered Seekers</p>
-        </div>
-        <div class="bg-gray-800 p-6 rounded-lg text-center shadow-lg">
-          <h2 class="text-3xl font-bold">🔧 <%= providersCount %></h2>
-          <p class="text-gray-400 mt-1">Verified Providers</p>
-        </div>
-        <div class="bg-gray-800 p-6 rounded-lg text-center shadow-lg">
-          <h2 class="text-3xl font-bold">📜 <%= totalRequests %></h2>
-          <p class="text-gray-400 mt-1">Total Requests</p>
-        </div>
-      </div>
 
-      <!-- Quick Actions -->
-      <h2 class="text-2xl font-bold mt-8">Quick Actions</h2>
-      <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <a
-          href="/admin/pending-providers"
-          class="block bg-blue-600 p-4 rounded-lg text-center hover:bg-blue-700 transition shadow-lg"
-          >✅ Approve Providers</a
-        >
-        <a
-          href="/admin/seekers"
-          class="block bg-green-600 p-4 rounded-lg text-center hover:bg-green-700 transition shadow-lg"
-          >🔍 View Seekers</a
-        >
-        <a
-          href="/admin/verified-providers"
-          class="block bg-purple-600 p-4 rounded-lg text-center hover:bg-purple-700 transition shadow-lg"
-          >👨‍🔧 View Verified Providers</a
-        >
-        <a
-          href="#"
-          class="block bg-gray-600 p-4 rounded-lg text-center hover:bg-gray-700 transition shadow-lg"
-          >⚙️ System Settings</a
-        >
+        <!-- Overview Stats -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div
+            class="bg-card-bg p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:translate-y-[-4px] group"
+          >
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-lg font-semibold text-gray-300">
+                Pending Approvals
+              </h3>
+              <div
+                class="bg-warning/20 p-3 rounded-lg text-warning group-hover:bg-warning group-hover:text-white transition-colors"
+              >
+                <i class="ri-time-line text-xl"></i>
+              </div>
+            </div>
+            <div class="flex items-end justify-between">
+              <div>
+                <h2 class="text-3xl font-bold"><%= pendingProvidersCount %></h2>
+                <p class="text-gray-400 text-sm mt-1">
+                  <% if (typeof pendingProvidersDiff !== 'undefined') { %>
+                  <span
+                    class="<%= pendingProvidersDiff > 0 ? 'text-green-500' : pendingProvidersDiff < 0 ? 'text-red-500' : 'text-gray-400' %> flex items-center"
+                  >
+                    <i
+                      class="<%= pendingProvidersDiff > 0 ? 'ri-arrow-up-line' : pendingProvidersDiff < 0 ? 'ri-arrow-down-line' : 'ri-subtract-line' %> mr-1"
+                    ></i>
+                    <%= Math.abs(pendingProvidersDiff) %>% from last week
+                  </span>
+                  <% } else { %> Awaiting approval <% } %>
+                </p>
+              </div>
+              <a
+                href="/admin/pending-providers"
+                class="text-primary hover:underline text-sm"
+                >View all</a
+              >
+            </div>
+          </div>
+
+          <div
+            class="bg-card-bg p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:translate-y-[-4px] group"
+          >
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-lg font-semibold text-gray-300">
+                Registered Seekers
+              </h3>
+              <div
+                class="bg-primary/20 p-3 rounded-lg text-primary group-hover:bg-primary group-hover:text-white transition-colors"
+              >
+                <i class="ri-user-search-line text-xl"></i>
+              </div>
+            </div>
+            <div class="flex items-end justify-between">
+              <div>
+                <h2 class="text-3xl font-bold"><%= seekersCount %></h2>
+                <p class="text-gray-400 text-sm mt-1">
+                  <% if (typeof seekersDiff !== 'undefined') { %>
+                  <span
+                    class="<%= seekersDiff > 0 ? 'text-green-500' : seekersDiff < 0 ? 'text-red-500' : 'text-gray-400' %> flex items-center"
+                  >
+                    <i
+                      class="<%= seekersDiff > 0 ? 'ri-arrow-up-line' : seekersDiff < 0 ? 'ri-arrow-down-line' : 'ri-subtract-line' %> mr-1"
+                    ></i>
+                    <%= Math.abs(seekersDiff) %>% from last week
+                  </span>
+                  <% } else { %> Total users <% } %>
+                </p>
+              </div>
+              <a
+                href="/admin/seekers"
+                class="text-primary hover:underline text-sm"
+                >View all</a
+              >
+            </div>
+          </div>
+
+          <div
+            class="bg-card-bg p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:translate-y-[-4px] group"
+          >
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-lg font-semibold text-gray-300">
+                Verified Providers
+              </h3>
+              <div
+                class="bg-secondary/20 p-3 rounded-lg text-secondary group-hover:bg-secondary group-hover:text-white transition-colors"
+              >
+                <i class="ri-check-double-line text-xl"></i>
+              </div>
+            </div>
+            <div class="flex items-end justify-between">
+              <div>
+                <h2 class="text-3xl font-bold"><%= providersCount %></h2>
+                <p class="text-gray-400 text-sm mt-1">
+                  <% if (typeof providersDiff !== 'undefined') { %>
+                  <span
+                    class="<%= providersDiff > 0 ? 'text-green-500' : providersDiff < 0 ? 'text-red-500' : 'text-gray-400' %> flex items-center"
+                  >
+                    <i
+                      class="<%= providersDiff > 0 ? 'ri-arrow-up-line' : providersDiff < 0 ? 'ri-arrow-down-line' : 'ri-subtract-line' %> mr-1"
+                    ></i>
+                    <%= Math.abs(providersDiff) %>% from last week
+                  </span>
+                  <% } else { %> Active providers <% } %>
+                </p>
+              </div>
+              <a
+                href="/admin/verified-providers"
+                class="text-primary hover:underline text-sm"
+                >View all</a
+              >
+            </div>
+          </div>
+
+          <div
+            class="bg-card-bg p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:translate-y-[-4px] group"
+          >
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-lg font-semibold text-gray-300">
+                Total Requests
+              </h3>
+              <div
+                class="bg-info/20 p-3 rounded-lg text-info group-hover:bg-info group-hover:text-white transition-colors"
+              >
+                <i class="ri-file-list-3-line text-xl"></i>
+              </div>
+            </div>
+            <div class="flex items-end justify-between">
+              <div>
+                <h2 class="text-3xl font-bold"><%= totalRequests %></h2>
+                <p class="text-gray-400 text-sm mt-1">
+                  <% if (typeof requestsDiff !== 'undefined') { %>
+                  <span
+                    class="<%= requestsDiff > 0 ? 'text-green-500' : requestsDiff < 0 ? 'text-red-500' : 'text-gray-400' %> flex items-center"
+                  >
+                    <i
+                      class="<%= requestsDiff > 0 ? 'ri-arrow-up-line' : requestsDiff < 0 ? 'ri-arrow-down-line' : 'ri-subtract-line' %> mr-1"
+                    ></i>
+                    <%= Math.abs(requestsDiff) %>% from last week
+                  </span>
+                  <% } else { %> All time <% } %>
+                </p>
+              </div>
+              <a
+                href="#"
+                class="text-primary hover:underline text-sm"
+                >View all</a
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- Charts & Analytics -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+          <div class="bg-card-bg p-6 rounded-xl shadow-lg lg:col-span-2">
+            <div class="flex justify-between items-center mb-6">
+              <h3 class="text-xl font-bold">User Growth</h3>
+              <div class="flex space-x-2">
+                <button
+                  class="px-3 py-1 bg-primary/10 text-primary text-sm rounded-lg hover:bg-primary/20 transition-colors"
+                >
+                  Weekly
+                </button>
+                <button
+                  class="px-3 py-1 bg-gray-800 text-sm rounded-lg hover:bg-gray-700 transition-colors"
+                >
+                  Monthly
+                </button>
+                <button
+                  class="px-3 py-1 bg-gray-800 text-sm rounded-lg hover:bg-gray-700 transition-colors"
+                >
+                  Yearly
+                </button>
+              </div>
+            </div>
+            <div class="h-80">
+              <canvas id="growthChart"></canvas>
+            </div>
+          </div>
+
+          <div class="bg-card-bg p-6 rounded-xl shadow-lg">
+            <h3 class="text-xl font-bold mb-6">User Distribution</h3>
+            <div class="h-80">
+              <canvas id="distributionChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="mb-8">
+          <div class="flex items-center justify-between mb-6">
+            <h2 class="text-2xl font-bold">Quick Actions</h2>
+            <button class="text-sm text-primary hover:underline">
+              View All
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <a
+              href="/admin/pending-providers"
+              class="bg-card-bg p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:translate-y-[-4px] group"
+            >
+              <div
+                class="flex items-center justify-center w-16 h-16 mx-auto mb-4 bg-primary/20 rounded-full text-primary group-hover:bg-primary group-hover:text-white transition-colors"
+              >
+                <i class="ri-check-line text-3xl"></i>
+              </div>
+              <h3 class="text-lg font-semibold text-center mb-2">
+                Approve Providers
+              </h3>
+              <p class="text-gray-400 text-sm text-center">
+                Review and approve pending provider applications
+              </p>
+            </a>
+
+            <a
+              href="/admin/seekers"
+              class="bg-card-bg p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:translate-y-[-4px] group"
+            >
+              <div
+                class="flex items-center justify-center w-16 h-16 mx-auto mb-4 bg-secondary/20 rounded-full text-secondary group-hover:bg-secondary group-hover:text-white transition-colors"
+              >
+                <i class="ri-user-search-line text-3xl"></i>
+              </div>
+              <h3 class="text-lg font-semibold text-center mb-2">
+                View Seekers
+              </h3>
+              <p class="text-gray-400 text-sm text-center">
+                Manage registered users and their accounts
+              </p>
+            </a>
+
+            <a
+              href="/admin/verified-providers"
+              class="bg-card-bg p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:translate-y-[-4px] group"
+            >
+              <div
+                class="flex items-center justify-center w-16 h-16 mx-auto mb-4 bg-info/20 rounded-full text-info group-hover:bg-info group-hover:text-white transition-colors"
+              >
+                <i class="ri-user-star-line text-3xl"></i>
+              </div>
+              <h3 class="text-lg font-semibold text-center mb-2">
+                Verified Providers
+              </h3>
+              <p class="text-gray-400 text-sm text-center">
+                View and manage all verified service providers
+              </p>
+            </a>
+
+            <a
+              href="/admin/settings"
+              class="bg-card-bg p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:translate-y-[-4px] group"
+            >
+              <div
+                class="flex items-center justify-center w-16 h-16 mx-auto mb-4 bg-warning/20 rounded-full text-warning group-hover:bg-warning group-hover:text-white transition-colors"
+              >
+                <i class="ri-settings-line text-3xl"></i>
+              </div>
+              <h3 class="text-lg font-semibold text-center mb-2">
+                System Settings
+              </h3>
+              <p class="text-gray-400 text-sm text-center">
+                Configure platform settings and preferences
+              </p>
+            </a>
+          </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="bg-card-bg rounded-xl shadow-lg p-6">
+          <div class="flex items-center justify-between mb-6">
+            <h2 class="text-2xl font-bold">Recent Activity</h2>
+            <button class="text-sm text-primary hover:underline">
+              View All
+            </button>
+          </div>
+
+          <div class="space-y-4">
+            <% if (typeof recentActivities !== 'undefined' &&
+            recentActivities.length > 0) { %> <%
+            recentActivities.forEach(activity => { %>
+            <div class="flex items-start p-4 bg-gray-800 rounded-lg">
+              <div
+                class="bg-<%= activity.type === 'approval' ? 'primary' : activity.type === 'registration' ? 'secondary' : 'warning' %>/20 p-3 rounded-full mr-4"
+              >
+                <i
+                  class="ri-<%= activity.type === 'approval' ? 'check-line' : activity.type === 'registration' ? 'user-add-line' : 'notification-line' %> text-<%= activity.type === 'approval' ? 'primary' : activity.type === 'registration' ? 'secondary' : 'warning' %>"
+                ></i>
+              </div>
+              <div class="flex-1">
+                <p class="font-medium"><%= activity.message %></p>
+                <p class="text-gray-400 text-sm mt-1"><%= activity.time %></p>
+              </div>
+              <button class="text-gray-400 hover:text-white">
+                <i class="ri-more-2-fill"></i>
+              </button>
+            </div>
+            <% }); %> <% } else { %>
+            <!-- Placeholder activities if no real data available -->
+            <div class="flex items-start p-4 bg-gray-800 rounded-lg">
+              <div class="bg-primary/20 p-3 rounded-full mr-4">
+                <i class="ri-check-line text-primary"></i>
+              </div>
+              <div class="flex-1">
+                <p class="font-medium">
+                  Provider "TechFix Solutions" was approved
+                </p>
+                <p class="text-gray-400 text-sm mt-1">2 hours ago</p>
+              </div>
+              <button class="text-gray-400 hover:text-white">
+                <i class="ri-more-2-fill"></i>
+              </button>
+            </div>
+
+            <div class="flex items-start p-4 bg-gray-800 rounded-lg">
+              <div class="bg-secondary/20 p-3 rounded-full mr-4">
+                <i class="ri-user-add-line text-secondary"></i>
+              </div>
+              <div class="flex-1">
+                <p class="font-medium">New seeker "John Smith" registered</p>
+                <p class="text-gray-400 text-sm mt-1">5 hours ago</p>
+              </div>
+              <button class="text-gray-400 hover:text-white">
+                <i class="ri-more-2-fill"></i>
+              </button>
+            </div>
+
+            <div class="flex items-start p-4 bg-gray-800 rounded-lg">
+              <div class="bg-warning/20 p-3 rounded-full mr-4">
+                <i class="ri-notification-line text-warning"></i>
+              </div>
+              <div class="flex-1">
+                <p class="font-medium">New provider application received</p>
+                <p class="text-gray-400 text-sm mt-1">1 day ago</p>
+              </div>
+              <button class="text-gray-400 hover:text-white">
+                <i class="ri-more-2-fill"></i>
+              </button>
+            </div>
+            <% } %>
+          </div>
+        </div>
       </div>
     </main>
+
+    <!-- JavaScript -->
+    <script>
+      // Mobile menu toggle
+      document
+        .getElementById("mobileMenuToggle")
+        .addEventListener("click", function () {
+          const sidebar = document.getElementById("sidebar");
+          sidebar.classList.toggle("hidden");
+        });
+
+      // Chart.js - User Growth Chart
+      const growthCtx = document.getElementById("growthChart").getContext("2d");
+      const growthChart = new Chart(growthCtx, {
+        type: "line",
+        data: {
+          labels: [
+            "Jan",
+            "Feb",
+            "Mar",
+            "Apr",
+            "May",
+            "Jun",
+            "Jul",
+            "Aug",
+            "Sep",
+            "Oct",
+            "Nov",
+            "Dec",
+          ],
+          datasets: [
+            {
+              label: "Seekers",
+              data: [
+                30,
+                40,
+                45,
+                50,
+                49,
+                60,
+                70,
+                91,
+                125,
+                150,
+                180,
+                "<%= seekersCount %>",
+              ],
+              borderColor: "#3b82f6",
+              backgroundColor: "rgba(59, 130, 246, 0.1)",
+              tension: 0.4,
+              fill: true,
+            },
+            {
+              label: "Providers",
+              data: [
+                10,
+                20,
+                30,
+                40,
+                45,
+                55,
+                65,
+                75,
+                85,
+                95,
+                110,
+                "<%= providersCount %>",
+              ],
+              borderColor: "#10b981",
+              backgroundColor: "rgba(16, 185, 129, 0.1)",
+              tension: 0.4,
+              fill: true,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: "top",
+              labels: {
+                color: "#e5e7eb",
+              },
+            },
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              grid: {
+                color: "rgba(75, 85, 99, 0.2)",
+              },
+              ticks: {
+                color: "#9ca3af",
+              },
+            },
+            x: {
+              grid: {
+                color: "rgba(75, 85, 99, 0.2)",
+              },
+              ticks: {
+                color: "#9ca3af",
+              },
+            },
+          },
+        },
+      });
+
+      // Chart.js - User Distribution Chart
+      const distributionCtx = document
+        .getElementById("distributionChart")
+        .getContext("2d");
+      const distributionChart = new Chart(distributionCtx, {
+        type: "doughnut",
+        data: {
+          labels: ["Seekers", "Verified Providers", "Pending Providers"],
+          datasets: [
+            {
+              data: [
+                "<%= seekersCount %>",
+                "<%= providersCount %>",
+                "<%= pendingProvidersCount %>",
+              ],
+              backgroundColor: ["#3b82f6", "#10b981", "#f59e0b"],
+              borderWidth: 0,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: "bottom",
+              labels: {
+                color: "#e5e7eb",
+                padding: 20,
+                font: {
+                  size: 12,
+                },
+              },
+            },
+          },
+          cutout: "70%",
+        },
+      });
+    </script>
   </body>
 </html>

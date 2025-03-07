@@ -3,121 +3,945 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Pending Providers</title>
+    <title>Pending Providers | Admin Panel</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              sidebar: "#1a1c23",
+              "sidebar-hover": "#2d3748",
+              "card-bg": "#252836",
+              "card-hover": "#2d303e",
+              primary: {
+                DEFAULT: "#3b82f6",
+                hover: "#2563eb",
+              },
+              success: {
+                DEFAULT: "#10b981",
+                hover: "#059669",
+              },
+              danger: {
+                DEFAULT: "#ef4444",
+                hover: "#dc2626",
+              },
+              warning: {
+                DEFAULT: "#f59e0b",
+                hover: "#d97706",
+              },
+            },
+          },
+        },
+      };
+    </script>
+    <!-- Remix Icon -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css"
+      rel="stylesheet"
+    />
   </head>
-  <body class="bg-gray-900 text-white flex">
+  <body class="bg-gray-900 text-white flex flex-col md:flex-row min-h-screen">
+    <!-- Mobile Navigation Toggle -->
+    <div class="md:hidden p-4 bg-sidebar flex justify-between items-center">
+      <h2 class="text-xl font-bold text-white">⚙️ Admin Panel</h2>
+      <button id="mobileMenuToggle" class="text-white focus:outline-none">
+        <i class="ri-menu-line text-2xl"></i>
+      </button>
+    </div>
+
     <!-- Sidebar -->
-    <aside class="w-64 bg-gray-800 min-h-screen p-6 flex flex-col shadow-lg">
-      <h2 class="text-xl font-bold text-white mb-6">⚙️ Admin Panel</h2>
-      <nav class="space-y-4 flex-1">
-        <a
-          href="/admin/dashboard"
-          class="block px-4 py-3 rounded-lg bg-gray-700 hover:bg-gray-600 transition"
-          >📊 Dashboard</a
+    <aside
+      id="sidebar"
+      class="w-full md:w-64 bg-sidebar min-h-screen p-6 flex flex-col md:sticky md:top-0 md:h-screen overflow-y-auto hidden md:flex"
+    >
+      <div class="flex items-center space-x-3 mb-8">
+        <div class="bg-primary p-2 rounded-lg">
+          <i class="ri-settings-4-line text-xl"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-white">Admin Panel</h2>
+      </div>
+
+      <div class="mb-8">
+        <p
+          class="text-gray-400 uppercase text-xs font-semibold tracking-wider mb-4"
         >
-        <a
-          href="/admin/pending-providers"
-          class="block px-4 py-3 rounded-lg bg-blue-600 hover:bg-blue-700 transition"
-          >🕒 Pending Providers</a
+          Main Menu
+        </p>
+        <nav class="space-y-2 flex-1">
+          <a
+            href="/admin/dashboard"
+            class="flex items-center px-4 py-3 rounded-lg hover:bg-sidebar-hover transition-all group"
+          >
+            <i
+              class="ri-dashboard-line mr-3 text-gray-400 group-hover:text-white"
+            ></i>
+            <span>Dashboard</span>
+          </a>
+          <a
+            href="/admin/pending-providers"
+            class="flex items-center px-4 py-3 rounded-lg bg-primary/20 text-primary border-l-4 border-primary transition-all"
+          >
+            <i class="ri-time-line mr-3"></i>
+            <span>Pending Providers</span>
+          </a>
+          <a
+            href="/admin/verified-providers"
+            class="flex items-center px-4 py-3 rounded-lg hover:bg-sidebar-hover transition-all group"
+          >
+            <i
+              class="ri-check-double-line mr-3 text-gray-400 group-hover:text-white"
+            ></i>
+            <span>Verified Providers</span>
+          </a>
+          <a
+            href="/admin/seekers"
+            class="flex items-center px-4 py-3 rounded-lg hover:bg-sidebar-hover transition-all group"
+          >
+            <i
+              class="ri-user-search-line mr-3 text-gray-400 group-hover:text-white"
+            ></i>
+            <span>View Seekers</span>
+          </a>
+        </nav>
+      </div>
+
+      <div class="mb-8">
+        <p
+          class="text-gray-400 uppercase text-xs font-semibold tracking-wider mb-4"
         >
+          Settings
+        </p>
+        <nav class="space-y-2">
+          <a
+            href="/admin/settings"
+            class="flex items-center px-4 py-3 rounded-lg hover:bg-sidebar-hover transition-all group"
+          >
+            <i
+              class="ri-settings-line mr-3 text-gray-400 group-hover:text-white"
+            ></i>
+            <span>System Settings</span>
+          </a>
+          <a
+            href="/admin/profile"
+            class="flex items-center px-4 py-3 rounded-lg hover:bg-sidebar-hover transition-all group"
+          >
+            <i
+              class="ri-user-settings-line mr-3 text-gray-400 group-hover:text-white"
+            ></i>
+            <span>Profile</span>
+          </a>
+        </nav>
+      </div>
+
+      <div class="mt-auto">
         <a
-          href="/admin/seekers"
-          class="block px-4 py-3 rounded-lg bg-gray-700 hover:bg-gray-600 transition"
-          >👥 View Seekers</a
+          href="/admin/logout"
+          class="flex items-center justify-center px-4 py-3 bg-danger/20 text-danger rounded-lg hover:bg-danger hover:text-white transition-all"
         >
-      </nav>
-      <a
-        href="/admin/logout"
-        class="mt-6 block px-4 py-3 bg-red-500 text-center rounded-lg hover:bg-red-700 transition"
-        >🚪 Logout</a
-      >
+          <i class="ri-logout-box-line mr-2"></i>
+          <span>Logout</span>
+        </a>
+      </div>
     </aside>
 
     <!-- Main Content -->
-    <main class="flex-1 p-8">
-      <div class="flex items-center justify-between mb-6">
-        <h1 class="text-3xl font-bold">Pending Provider Approvals</h1>
-        <p class="text-gray-400">
-          Review and take action on provider requests.
-        </p>
-      </div>
-
-      <% if (pendingProviders.length === 0) { %>
-      <p class="text-center text-gray-400 text-lg mt-12">
-        ✅ No pending approvals at the moment.
-      </p>
-      <% } else { %>
-      <!-- Providers Grid -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <% pendingProviders.forEach(provider => { %>
+    <main class="flex-1 p-4 md:p-8 overflow-x-hidden">
+      <div class="max-w-7xl mx-auto">
+        <!-- Header -->
         <div
-          class="bg-gray-800 p-6 rounded-lg shadow-lg transition hover:shadow-2xl hover:-translate-y-1"
+          class="flex flex-col md:flex-row md:items-center justify-between mb-8 bg-card-bg p-4 md:p-6 rounded-xl shadow-lg"
         >
-          <h2 class="text-2xl font-bold mb-2 text-blue-400">
-            <%= provider.name %>
-          </h2>
-          <p class="text-gray-400">📧 <%= provider.email %></p>
-          <p class="text-gray-400">📍 <%= provider.serviceLocation %></p>
-          <p class="text-gray-400">
-            🔧 Skills:
-            <span class="text-green-300"
-              ><%= provider.skills.join(", ") %></span
-            >
-          </p>
-          <p class="text-gray-400">
-            🕒 Experience:
-            <span class="text-yellow-300"
-              ><%= provider.experience %> years</span
-            >
-          </p>
+          <div>
+            <h1 class="text-2xl md:text-3xl font-bold flex items-center">
+              <i class="ri-time-line text-primary mr-3"></i>
+              Pending Provider Approvals
+            </h1>
+            <p class="text-gray-400 mt-1">
+              Review and take action on provider requests.
+            </p>
+          </div>
 
-          <!-- Action Buttons -->
-          <div class="flex justify-between mt-6">
-            <button
-              onclick="handleAction('<%= provider._id %>', 'approve')"
-              class="px-4 py-2 bg-green-600 hover:bg-green-700 rounded-lg text-white font-medium transition"
+          <div class="mt-4 md:mt-0 flex flex-col sm:flex-row gap-3">
+            <div class="relative">
+              <input
+                type="text"
+                id="searchInput"
+                placeholder="Search providers..."
+                class="bg-gray-800 text-white px-4 py-2 pl-10 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary w-full"
+              />
+              <i
+                class="ri-search-line absolute left-3 top-2.5 text-gray-400"
+              ></i>
+            </div>
+            <select
+              id="filterSelect"
+              class="bg-gray-800 text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
             >
-              ✅ Approve
+              <option value="all">All Skills</option>
+              <option value="plumbing">Plumbing</option>
+              <option value="electrical">Electrical</option>
+              <option value="carpentry">Carpentry</option>
+              <option value="painting">Painting</option>
+              <option value="cleaning">Cleaning</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Stats Summary -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
+          <div class="bg-card-bg p-6 rounded-xl shadow-lg">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-gray-400 text-sm">Total Pending</p>
+                <h3 class="text-2xl font-bold mt-1">
+                  <%= pendingProviders.length %>
+                </h3>
+              </div>
+              <div class="bg-primary/20 p-3 rounded-lg">
+                <i class="ri-time-line text-primary text-xl"></i>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-card-bg p-6 rounded-xl shadow-lg">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-gray-400 text-sm">Approved Today</p>
+                <h3 class="text-2xl font-bold mt-1">
+                  <%= typeof approvedToday !== 'undefined' ? approvedToday : 0
+                  %>
+                </h3>
+              </div>
+              <div class="bg-success/20 p-3 rounded-lg">
+                <i class="ri-check-line text-success text-xl"></i>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-card-bg p-6 rounded-xl shadow-lg">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-gray-400 text-sm">Rejected Today</p>
+                <h3 class="text-2xl font-bold mt-1">
+                  <%= typeof rejectedToday !== 'undefined' ? rejectedToday : 0
+                  %>
+                </h3>
+              </div>
+              <div class="bg-danger/20 p-3 rounded-lg">
+                <i class="ri-close-line text-danger text-xl"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <% if (pendingProviders.length === 0) { %>
+        <!-- Empty State -->
+        <div class="bg-card-bg rounded-xl p-12 text-center shadow-lg">
+          <div
+            class="w-20 h-20 bg-success/20 rounded-full flex items-center justify-center mx-auto mb-6"
+          >
+            <i class="ri-check-double-line text-success text-3xl"></i>
+          </div>
+          <h3 class="text-2xl font-bold mb-2">All Caught Up!</h3>
+          <p class="text-gray-400 max-w-md mx-auto">
+            There are no pending provider approvals at the moment. All provider
+            applications have been processed.
+          </p>
+          <a
+            href="/admin/dashboard"
+            class="inline-flex items-center mt-6 px-4 py-2 bg-primary rounded-lg hover:bg-primary-hover transition-colors"
+          >
+            <i class="ri-arrow-left-line mr-2"></i> Back to Dashboard
+          </a>
+        </div>
+        <% } else { %>
+
+        <!-- Providers Grid -->
+        <div
+          id="providersGrid"
+          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+        >
+          <% pendingProviders.forEach(provider => { %>
+          <div
+            class="bg-card-bg rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 hover:translate-y-[-4px]"
+            data-provider-id="<%= provider._id %>"
+            data-provider-skills="<%= provider.skills.join(',').toLowerCase() %>"
+          >
+            <!-- Provider Header -->
+            <div class="p-6 border-b border-gray-700">
+              <div class="flex items-start justify-between">
+                <div class="flex items-center">
+                  <div
+                    class="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center text-primary text-xl font-bold mr-4"
+                  >
+                    <%= provider.name.charAt(0).toUpperCase() %>
+                  </div>
+                  <div>
+                    <h2 class="text-xl font-bold text-white">
+                      <%= provider.name %>
+                    </h2>
+                    <p class="text-gray-400 text-sm flex items-center">
+                      <i class="ri-mail-line mr-1"></i>
+                      <%= provider.email %>
+                    </p>
+                  </div>
+                </div>
+                <span
+                  class="px-2 py-1 bg-warning/20 text-warning text-xs rounded-full flex items-center"
+                >
+                  <i class="ri-time-line mr-1"></i> Pending
+                </span>
+              </div>
+            </div>
+
+            <!-- Provider Details -->
+            <div class="p-6">
+              <div class="space-y-4">
+                <div class="flex items-start">
+                  <i class="ri-map-pin-line text-gray-400 mt-1 mr-3"></i>
+                  <div>
+                    <p class="text-sm font-medium">Service Location</p>
+                    <p class="text-gray-400 text-sm">
+                      <%= provider.serviceLocation %>
+                    </p>
+                  </div>
+                </div>
+
+                <div class="flex items-start">
+                  <i class="ri-tools-line text-gray-400 mt-1 mr-3"></i>
+                  <div>
+                    <p class="text-sm font-medium">Skills</p>
+                    <div class="flex flex-wrap gap-2 mt-1">
+                      <% provider.skills.forEach(skill => { %>
+                      <span
+                        class="px-2 py-1 bg-primary/10 text-primary text-xs rounded-full"
+                        ><%= skill %></span
+                      >
+                      <% }); %>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flex items-start">
+                  <i class="ri-history-line text-gray-400 mt-1 mr-3"></i>
+                  <div>
+                    <p class="text-sm font-medium">Experience</p>
+                    <p class="text-gray-400 text-sm">
+                      <%= provider.experience %> years
+                    </p>
+                  </div>
+                </div>
+
+                <% if (provider.about) { %>
+                <div class="flex items-start">
+                  <i class="ri-user-line text-gray-400 mt-1 mr-3"></i>
+                  <div>
+                    <p class="text-sm font-medium">About</p>
+                    <p class="text-gray-400 text-sm line-clamp-2">
+                      <%= provider.about %>
+                    </p>
+                  </div>
+                </div>
+                <% } %> <% if (provider.appliedAt) { %>
+                <div class="flex items-start">
+                  <i class="ri-calendar-line text-gray-400 mt-1 mr-3"></i>
+                  <div>
+                    <p class="text-sm font-medium">Applied</p>
+                    <p class="text-gray-400 text-sm">
+                      <%= new Date(provider.appliedAt).toLocaleDateString() %>
+                    </p>
+                  </div>
+                </div>
+                <% } %>
+              </div>
+
+              <!-- Action Buttons -->
+              <div class="flex justify-between mt-6">
+                <button
+                  onclick="openViewModal('<%= provider._id %>')"
+                  class="px-3 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg text-white font-medium transition-colors flex items-center"
+                >
+                  <i class="ri-eye-line mr-1"></i> View Details
+                </button>
+                <div class="flex space-x-2">
+                  <button
+                    onclick="confirmAction('<%= provider._id %>', '<%= provider.name %>', 'approve')"
+                    class="px-3 py-2 bg-success hover:bg-success-hover rounded-lg text-white font-medium transition-colors flex items-center"
+                  >
+                    <i class="ri-check-line mr-1"></i> Approve
+                  </button>
+                  <button
+                    onclick="confirmAction('<%= provider._id %>', '<%= provider.name %>', 'reject')"
+                    class="px-3 py-2 bg-danger hover:bg-danger-hover rounded-lg text-white font-medium transition-colors flex items-center"
+                  >
+                    <i class="ri-close-line mr-1"></i> Reject
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <% }); %>
+        </div>
+
+        <% if (pendingProviders.length > 9) { %>
+        <!-- Pagination -->
+        <div class="mt-8 flex justify-between items-center">
+          <p class="text-gray-400 text-sm">
+            Showing
+            <span class="font-medium"><%= pendingProviders.length %></span>
+            providers
+          </p>
+          <div class="flex space-x-2">
+            <button
+              class="px-4 py-2 bg-gray-800 rounded-lg hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled
+            >
+              <i class="ri-arrow-left-s-line"></i>
             </button>
             <button
-              onclick="handleAction('<%= provider._id %>', 'reject')"
-              class="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg text-white font-medium transition"
+              class="px-4 py-2 bg-primary rounded-lg hover:bg-primary-hover"
             >
-              ❌ Reject
+              1
+            </button>
+            <button
+              class="px-4 py-2 bg-gray-800 rounded-lg hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled
+            >
+              <i class="ri-arrow-right-s-line"></i>
             </button>
           </div>
         </div>
-        <% }); %>
+        <% } %> <% } %>
       </div>
-      <% } %>
     </main>
-  </body>
 
-  <!-- JavaScript for handling approvals and rejections -->
-  <script>
-    async function handleAction(providerId, action) {
-      const confirmAction = confirm(
-        `Are you sure you want to ${action} this provider?`
-      );
-      if (!confirmAction) return;
+    <!-- View Provider Modal -->
+    <div
+      id="viewModal"
+      class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden"
+    >
+      <div
+        class="bg-card-bg rounded-xl shadow-2xl w-full max-w-2xl mx-4 overflow-hidden"
+      >
+        <div
+          class="p-6 border-b border-gray-700 flex justify-between items-center"
+        >
+          <h3 class="text-xl font-bold" id="viewModalTitle">
+            Provider Details
+          </h3>
+          <button
+            onclick="closeViewModal()"
+            class="text-gray-400 hover:text-white"
+          >
+            <i class="ri-close-line text-xl"></i>
+          </button>
+        </div>
+        <div class="p-6 max-h-[70vh] overflow-y-auto" id="viewModalContent">
+          <!-- Content will be populated by JavaScript -->
+          <div class="flex justify-center">
+            <div
+              class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"
+            ></div>
+          </div>
+        </div>
+        <div class="p-6 border-t border-gray-700 flex justify-end space-x-3">
+          <button
+            onclick="closeViewModal()"
+            class="px-4 py-2 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
 
-      try {
-        const response = await fetch(
-          `/admin/${action}-provider/${providerId}`,
-          { method: "PUT" }
+    <!-- Confirmation Modal -->
+    <div
+      id="confirmModal"
+      class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden"
+    >
+      <div
+        class="bg-card-bg rounded-xl shadow-2xl w-full max-w-md mx-4 overflow-hidden"
+      >
+        <div class="p-6 border-b border-gray-700">
+          <div class="flex justify-between items-center">
+            <h3 class="text-xl font-bold text-white" id="confirmModalTitle">
+              Confirm Action
+            </h3>
+            <button
+              onclick="closeConfirmModal()"
+              class="text-gray-400 hover:text-white"
+            >
+              <i class="ri-close-line text-xl"></i>
+            </button>
+          </div>
+        </div>
+        <div class="p-6">
+          <div
+            id="confirmModalIcon"
+            class="flex items-center justify-center mb-4"
+          >
+            <!-- Icon will be populated by JavaScript -->
+          </div>
+          <p class="text-center mb-6" id="confirmModalText">
+            Are you sure you want to take this action?
+          </p>
+          <div class="flex justify-center space-x-3">
+            <button
+              onclick="closeConfirmModal()"
+              class="px-4 py-2 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              id="confirmActionBtn"
+              class="px-4 py-2 rounded-lg transition-colors flex items-center"
+            >
+              <!-- Button will be populated by JavaScript -->
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div
+      id="toast"
+      class="fixed bottom-4 right-4 bg-gray-800 text-white px-4 py-3 rounded-lg shadow-lg flex items-center transform translate-y-20 opacity-0 transition-all duration-300 z-50"
+    >
+      <div id="toastIcon" class="mr-3 text-green-500">
+        <i class="ri-checkbox-circle-line text-xl"></i>
+      </div>
+      <div>
+        <h4 class="font-medium" id="toastTitle">Success</h4>
+        <p class="text-sm text-gray-300" id="toastMessage">
+          Operation completed successfully.
+        </p>
+      </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+      // Mobile menu toggle
+      document
+        .getElementById("mobileMenuToggle")
+        .addEventListener("click", function () {
+          const sidebar = document.getElementById("sidebar");
+          sidebar.classList.toggle("hidden");
+        });
+
+      // Search functionality
+      document
+        .getElementById("searchInput")
+        .addEventListener("input", function (e) {
+          const searchTerm = e.target.value.toLowerCase();
+          const providerCards = document.querySelectorAll(
+            "#providersGrid > div"
+          );
+
+          providerCards.forEach((card) => {
+            const providerName = card
+              .querySelector("h2")
+              .textContent.toLowerCase();
+            const providerEmail = card
+              .querySelector(".ri-mail-line")
+              .nextSibling.textContent.trim()
+              .toLowerCase();
+
+            if (
+              providerName.includes(searchTerm) ||
+              providerEmail.includes(searchTerm)
+            ) {
+              card.classList.remove("hidden");
+            } else {
+              card.classList.add("hidden");
+            }
+          });
+
+          checkEmptyResults();
+        });
+
+      // Filter functionality
+      document
+        .getElementById("filterSelect")
+        .addEventListener("change", function (e) {
+          const filterValue = e.target.value.toLowerCase();
+          const providerCards = document.querySelectorAll(
+            "#providersGrid > div"
+          );
+
+          providerCards.forEach((card) => {
+            const skills = card
+              .getAttribute("data-provider-skills")
+              .toLowerCase();
+
+            if (filterValue === "all" || skills.includes(filterValue)) {
+              card.classList.remove("hidden");
+            } else {
+              card.classList.add("hidden");
+            }
+          });
+
+          checkEmptyResults();
+        });
+
+      // Check if there are no visible results after filtering
+      function checkEmptyResults() {
+        const visibleCards = document.querySelectorAll(
+          "#providersGrid > div:not(.hidden)"
         );
-        const data = await response.json();
-        if (response.ok) {
-          alert(data.message);
-          location.reload(); // Refresh page after action
-        } else {
-          alert(`Error: ${data.error}`);
+        const providersGrid = document.getElementById("providersGrid");
+        const noResultsEl = document.getElementById("noResults");
+
+        if (visibleCards.length === 0 && !noResultsEl) {
+          const noResults = document.createElement("div");
+          noResults.id = "noResults";
+          noResults.className =
+            "col-span-full bg-card-bg rounded-xl p-8 text-center";
+          noResults.innerHTML = `
+            <div class="w-16 h-16 bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
+              <i class="ri-search-line text-2xl text-gray-400"></i>
+            </div>
+            <h3 class="text-xl font-bold mb-2">No Matching Providers</h3>
+            <p class="text-gray-400">Try adjusting your search or filter criteria.</p>
+          `;
+          providersGrid.appendChild(noResults);
+        } else if (visibleCards.length > 0 && noResultsEl) {
+          noResultsEl.remove();
         }
-      } catch (error) {
-        console.error("Action failed:", error);
-        alert("Something went wrong. Try again!");
       }
-    }
-  </script>
+
+      // View Provider Modal
+      let currentProviderId = null;
+
+      function openViewModal(providerId) {
+        currentProviderId = providerId;
+        document.getElementById("viewModal").classList.remove("hidden");
+
+        // Find the provider card
+        const providerCard = document.querySelector(
+          `[data-provider-id="${providerId}"]`
+        );
+        if (!providerCard) return;
+
+        // Clone the content for the modal
+        const providerName = providerCard.querySelector("h2").textContent;
+        document.getElementById(
+          "viewModalTitle"
+        ).textContent = `${providerName} - Details`;
+
+        // Simulate loading provider details
+        const modalContent = document.getElementById("viewModalContent");
+        modalContent.innerHTML = `<div class="flex justify-center"><div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div></div>`;
+
+        // Simulate API call to get full details
+        setTimeout(() => {
+          // Get basic info from the card
+          const email = providerCard
+            .querySelector(".ri-mail-line")
+            .nextSibling.textContent.trim();
+          const location = providerCard
+            .querySelector(".ri-map-pin-line")
+            .parentNode.querySelector(".text-gray-400").textContent;
+          const skills = Array.from(
+            providerCard.querySelectorAll(".bg-primary\\/10")
+          ).map((el) => el.textContent);
+          const experience = providerCard
+            .querySelector(".ri-history-line")
+            .parentNode.querySelector(".text-gray-400").textContent;
+
+          // Create detailed view
+          modalContent.innerHTML = `
+            <div class="space-y-6">
+              <div class="flex items-center">
+                <div class="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center text-primary text-2xl font-bold mr-4">
+                  ${providerName.charAt(0).toUpperCase()}
+                </div>
+                <div>
+                  <h2 class="text-2xl font-bold">${providerName}</h2>
+                  <p class="text-gray-400 flex items-center">
+                    <i class="ri-mail-line mr-1"></i> ${email}
+                  </p>
+                </div>
+              </div>
+              
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                <div class="bg-gray-800 p-4 rounded-lg">
+                  <h3 class="font-medium mb-2 flex items-center">
+                    <i class="ri-map-pin-line mr-2 text-primary"></i> Service Location
+                  </h3>
+                  <p class="text-gray-400">${location}</p>
+                </div>
+                
+                <div class="bg-gray-800 p-4 rounded-lg">
+                  <h3 class="font-medium mb-2 flex items-center">
+                    <i class="ri-history-line mr-2 text-primary"></i> Experience
+                  </h3>
+                  <p class="text-gray-400">${experience}</p>
+                </div>
+              </div>
+              
+              <div class="bg-gray-800 p-4 rounded-lg">
+                <h3 class="font-medium mb-2 flex items-center">
+                  <i class="ri-tools-line mr-2 text-primary"></i> Skills
+                </h3>
+                <div class="flex flex-wrap gap-2">
+                  ${skills
+                    .map(
+                      (skill) =>
+                        `<span class="px-3 py-1 bg-primary/10 text-primary rounded-full">${skill}</span>`
+                    )
+                    .join("")}
+                </div>
+              </div>
+              
+              <div class="bg-gray-800 p-4 rounded-lg">
+                <h3 class="font-medium mb-2 flex items-center">
+                  <i class="ri-user-line mr-2 text-primary"></i> About
+                </h3>
+                <p class="text-gray-400">
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nisl vel ultricies lacinia, nisl nisl aliquam nisl, eget aliquam nisl nisl sit amet nisl. Sed euismod, nisl vel ultricies lacinia, nisl nisl aliquam nisl, eget aliquam nisl nisl sit amet nisl.
+                </p>
+              </div>
+              
+              <div class="bg-gray-800 p-4 rounded-lg">
+                <h3 class="font-medium mb-2 flex items-center">
+                  <i class="ri-file-list-line mr-2 text-primary"></i> Documents
+                </h3>
+                <div class="space-y-2">
+                  <div class="flex items-center justify-between p-3 bg-gray-700 rounded-lg">
+                    <div class="flex items-center">
+                      <i class="ri-file-pdf-line text-red-400 mr-2 text-xl"></i>
+                      <span>ID_Verification.pdf</span>
+                    </div>
+                    <button class="text-primary hover:text-primary-hover">
+                      <i class="ri-download-line"></i>
+                    </button>
+                  </div>
+                  <div class="flex items-center justify-between p-3 bg-gray-700 rounded-lg">
+                    <div class="flex items-center">
+                      <i class="ri-file-pdf-line text-red-400 mr-2 text-xl"></i>
+                      <span>Certificate_of_Experience.pdf</span>
+                    </div>
+                    <button class="text-primary hover:text-primary-hover">
+                      <i class="ri-download-line"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+        }, 1000);
+      }
+
+      function closeViewModal() {
+        document.getElementById("viewModal").classList.add("hidden");
+        currentProviderId = null;
+      }
+
+      // Confirmation Modal
+      let currentAction = null;
+
+      function confirmAction(providerId, providerName, action) {
+        currentProviderId = providerId;
+        currentAction = action;
+
+        const confirmModal = document.getElementById("confirmModal");
+        const confirmModalTitle = document.getElementById("confirmModalTitle");
+        const confirmModalText = document.getElementById("confirmModalText");
+        const confirmModalIcon = document.getElementById("confirmModalIcon");
+        const confirmActionBtn = document.getElementById("confirmActionBtn");
+
+        if (action === "approve") {
+          confirmModalTitle.textContent = "Approve Provider";
+          confirmModalText.textContent = `Are you sure you want to approve ${providerName} as a service provider?`;
+          confirmModalIcon.innerHTML = `
+            <div class="w-16 h-16 rounded-full bg-success/20 flex items-center justify-center">
+              <i class="ri-check-line text-success text-3xl"></i>
+            </div>
+          `;
+          confirmActionBtn.className =
+            "px-4 py-2 bg-success rounded-lg hover:bg-success-hover transition-colors flex items-center";
+          confirmActionBtn.innerHTML = `<i class="ri-check-line mr-2"></i> Approve Provider`;
+        } else if (action === "reject") {
+          confirmModalTitle.textContent = "Reject Provider";
+          confirmModalText.textContent = `Are you sure you want to reject ${providerName}'s application?`;
+          confirmModalIcon.innerHTML = `
+            <div class="w-16 h-16 rounded-full bg-danger/20 flex items-center justify-center">
+              <i class="ri-close-line text-danger text-3xl"></i>
+            </div>
+          `;
+          confirmActionBtn.className =
+            "px-4 py-2 bg-danger rounded-lg hover:bg-danger-hover transition-colors flex items-center";
+          confirmActionBtn.innerHTML = `<i class="ri-close-line mr-2"></i> Reject Provider`;
+        }
+
+        confirmModal.classList.remove("hidden");
+
+        confirmActionBtn.onclick = function () {
+          handleAction(providerId, action);
+        };
+      }
+
+      function closeConfirmModal() {
+        document.getElementById("confirmModal").classList.add("hidden");
+        currentProviderId = null;
+        currentAction = null;
+      }
+
+      // Handle provider action (approve/reject)
+      async function handleAction(providerId, action) {
+        const confirmActionBtn = document.getElementById("confirmActionBtn");
+        const originalContent = confirmActionBtn.innerHTML;
+
+        // Show loading state
+        confirmActionBtn.innerHTML = `<i class="ri-loader-4-line animate-spin mr-2"></i> Processing...`;
+        confirmActionBtn.disabled = true;
+
+        try {
+          const response = await fetch(
+            `/admin/${action}-provider/${providerId}`,
+            { method: "PUT" }
+          );
+          const data = await response.json();
+
+          if (response.ok) {
+            closeConfirmModal();
+
+            // Remove the card with animation
+            const card = document.querySelector(
+              `[data-provider-id="${providerId}"]`
+            );
+            card.classList.add("opacity-0", "scale-95");
+
+            setTimeout(() => {
+              card.remove();
+
+              // Update counter
+              const totalCounter = document.querySelector(
+                ".bg-card-bg:first-child h3"
+              );
+              if (totalCounter) {
+                totalCounter.textContent =
+                  parseInt(totalCounter.textContent) - 1;
+              }
+
+              // Update approved/rejected counter
+              if (action === "approve") {
+                const approvedCounter = document.querySelector(
+                  ".bg-card-bg:nth-child(2) h3"
+                );
+                if (approvedCounter) {
+                  approvedCounter.textContent =
+                    parseInt(approvedCounter.textContent) + 1;
+                }
+              } else if (action === "reject") {
+                const rejectedCounter = document.querySelector(
+                  ".bg-card-bg:nth-child(3) h3"
+                );
+                if (rejectedCounter) {
+                  rejectedCounter.textContent =
+                    parseInt(rejectedCounter.textContent) + 1;
+                }
+              }
+
+              // Show empty state if no providers left
+              const remainingCards = document.querySelectorAll(
+                "#providersGrid > div"
+              ).length;
+              if (remainingCards === 0) {
+                const providersGrid = document.getElementById("providersGrid");
+                providersGrid.innerHTML = `
+                  <div class="col-span-full bg-card-bg rounded-xl p-12 text-center shadow-lg">
+                    <div class="w-20 h-20 bg-success/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                      <i class="ri-check-double-line text-success text-3xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-2">All Caught Up!</h3>
+                    <p class="text-gray-400 max-w-md mx-auto">
+                      There are no pending provider approvals at the moment. All provider applications have been processed.
+                    </p>
+                    <a href="/admin/dashboard" class="inline-flex items-center mt-6 px-4 py-2 bg-primary rounded-lg hover:bg-primary-hover transition-colors">
+                      <i class="ri-arrow-left-line mr-2"></i> Back to Dashboard
+                    </a>
+                  </div>
+                `;
+              }
+
+              // Show success toast
+              showToast(
+                action === "approve"
+                  ? "Provider Approved"
+                  : "Provider Rejected",
+                data.message ||
+                  `Provider has been ${
+                    action === "approve" ? "approved" : "rejected"
+                  } successfully.`,
+                action === "approve" ? "success" : "warning"
+              );
+            }, 300);
+          } else {
+            showToast("Error", data.error || "Something went wrong", "error");
+          }
+        } catch (error) {
+          console.error("Action failed:", error);
+          showToast("Error", "Something went wrong. Try again!", "error");
+        } finally {
+          confirmActionBtn.innerHTML = originalContent;
+          confirmActionBtn.disabled = false;
+        }
+      }
+
+      // Toast notification
+      function showToast(title, message, type = "success") {
+        const toast = document.getElementById("toast");
+        const toastTitle = document.getElementById("toastTitle");
+        const toastMessage = document.getElementById("toastMessage");
+        const toastIcon = document.getElementById("toastIcon");
+
+        toastTitle.textContent = title;
+        toastMessage.textContent = message;
+
+        if (type === "success") {
+          toastIcon.className = "mr-3 text-green-500";
+          toastIcon.innerHTML =
+            '<i class="ri-checkbox-circle-line text-xl"></i>';
+        } else if (type === "error") {
+          toastIcon.className = "mr-3 text-red-500";
+          toastIcon.innerHTML = '<i class="ri-error-warning-line text-xl"></i>';
+        } else if (type === "warning") {
+          toastIcon.className = "mr-3 text-yellow-500";
+          toastIcon.innerHTML = '<i class="ri-alert-line text-xl"></i>';
+        }
+
+        toast.classList.remove("translate-y-20", "opacity-0");
+
+        setTimeout(() => {
+          toast.classList.add("translate-y-20", "opacity-0");
+        }, 3000);
+      }
+
+      // Close modals when clicking outside
+      window.addEventListener("click", function (e) {
+        const viewModal = document.getElementById("viewModal");
+        const confirmModal = document.getElementById("confirmModal");
+
+        if (e.target === viewModal) {
+          closeViewModal();
+        }
+
+        if (e.target === confirmModal) {
+          closeConfirmModal();
+        }
+      });
+
+      // Close modals with Escape key
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape") {
+          closeViewModal();
+          closeConfirmModal();
+        }
+      });
+    </script>
+  </body>
 </html>

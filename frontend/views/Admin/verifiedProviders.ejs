@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Verified Providers</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-900 text-white flex">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-gray-800 min-h-screen p-6 flex flex-col shadow-lg">
+      <h2 class="text-xl font-bold text-white mb-6">⚙️ Admin Panel</h2>
+      <nav class="space-y-4 flex-1">
+        <a
+          href="/admin/dashboard"
+          class="block px-4 py-3 rounded-lg bg-gray-700 hover:bg-gray-600 transition"
+          >📊 Dashboard</a
+        >
+        <a
+          href="/admin/pending-providers"
+          class="block px-4 py-3 rounded-lg bg-gray-700 hover:bg-gray-600 transition"
+          >🕒 Pending Providers</a
+        >
+        <a
+          href="/admin/verified-providers"
+          class="block px-4 py-3 rounded-lg bg-blue-600 hover:bg-blue-700 transition"
+          >✅ Verified Providers</a
+        >
+        <a
+          href="/admin/seekers"
+          class="block px-4 py-3 rounded-lg bg-gray-700 hover:bg-gray-600 transition"
+          >👥 View Seekers</a
+        >
+      </nav>
+      <a
+        href="/admin/logout"
+        class="mt-6 block px-4 py-3 bg-red-500 text-center rounded-lg hover:bg-red-700 transition"
+        >🚪 Logout</a
+      >
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-8">
+      <h1 class="text-3xl font-bold">Verified Providers</h1>
+      <p class="text-gray-400 mt-2">List of all approved service providers.</p>
+
+      <% if (verifiedProviders.length === 0) { %>
+      <p class="text-center text-gray-400 text-lg mt-12">
+        ❌ No verified providers available.
+      </p>
+      <% } else { %>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+        <% verifiedProviders.forEach(provider => { %>
+        <div
+          class="bg-gray-800 p-6 rounded-lg shadow-lg transition hover:shadow-2xl hover:-translate-y-1"
+        >
+          <h2 class="text-2xl font-bold mb-2 text-green-400">
+            <%= provider.name %>
+          </h2>
+          <p class="text-gray-400">📧 <%= provider.email %></p>
+          <p class="text-gray-400">📍 <%= provider.serviceLocation %></p>
+          <p class="text-gray-400">
+            🔧 Skills:
+            <span class="text-blue-300"><%= provider.skills.join(", ") %></span>
+          </p>
+          <p class="text-gray-400">
+            🕒 Experience:
+            <span class="text-yellow-300"
+              ><%= provider.experience %> years</span
+            >
+          </p>
+        </div>
+        <% }); %>
+      </div>
+      <% } %>
+    </main>
+  </body>
+</html>

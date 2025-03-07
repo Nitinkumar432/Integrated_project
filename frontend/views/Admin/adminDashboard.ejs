@@ -6,17 +6,95 @@
     <title>Admin Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
-  <body
-    class="bg-gray-900 text-white flex items-center justify-center h-screen"
-  >
-    <div class="text-center">
-      <h1 class="text-4xl font-bold">Welcome, Admin</h1>
-      <p class="mt-2 text-gray-400">This is your dashboard.</p>
+  <body class="bg-gray-900 text-white flex">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-gray-800 min-h-screen p-6 flex flex-col">
+      <h2 class="text-2xl font-bold text-white mb-6">⚙️ Admin Panel</h2>
+      <nav class="space-y-4 flex-1">
+        <a
+          href="/admin/dashboard"
+          class="block px-4 py-3 rounded-lg bg-gray-700 hover:bg-gray-600 transition"
+          >📊 Dashboard</a
+        >
+        <a
+          href="/admin/pending-providers"
+          class="block px-4 py-3 rounded-lg bg-gray-700 hover:bg-gray-600 transition"
+          >🕒 Pending Providers</a
+        >
+        <a
+          href="/admin/verified-providers"
+          class="block px-4 py-3 rounded-lg bg-gray-700 hover:bg-gray-600 transition"
+          >✅ Verified Providers</a
+        >
+        <a
+          href="/admin/seekers"
+          class="block px-4 py-3 rounded-lg bg-gray-700 hover:bg-gray-600 transition"
+          >👥 View Seekers</a
+        >
+      </nav>
       <a
         href="/admin/logout"
-        class="mt-6 inline-block px-6 py-2 bg-red-500 hover:bg-red-700 text-white rounded"
-        >Logout</a
+        class="mt-6 block px-4 py-3 bg-red-500 text-center rounded-lg hover:bg-red-700 transition"
+        >🚪 Logout</a
       >
-    </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-8">
+      <div class="flex justify-between items-center">
+        <h1 class="text-4xl font-bold">Welcome, Admin</h1>
+        <span class="text-sm text-gray-400"
+          >📅 <%= new Date().toLocaleDateString() %></span
+        >
+      </div>
+      <p class="mt-2 text-gray-400">
+        Manage users, providers, and platform settings.
+      </p>
+
+      <!-- Overview Stats -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
+        <div class="bg-gray-800 p-6 rounded-lg text-center shadow-lg">
+          <h2 class="text-3xl font-bold">🛠️ <%= pendingProvidersCount %></h2>
+          <p class="text-gray-400 mt-1">Pending Approvals</p>
+        </div>
+        <div class="bg-gray-800 p-6 rounded-lg text-center shadow-lg">
+          <h2 class="text-3xl font-bold">👥 <%= seekersCount %></h2>
+          <p class="text-gray-400 mt-1">Registered Seekers</p>
+        </div>
+        <div class="bg-gray-800 p-6 rounded-lg text-center shadow-lg">
+          <h2 class="text-3xl font-bold">🔧 <%= providersCount %></h2>
+          <p class="text-gray-400 mt-1">Verified Providers</p>
+        </div>
+        <div class="bg-gray-800 p-6 rounded-lg text-center shadow-lg">
+          <h2 class="text-3xl font-bold">📜 <%= totalRequests %></h2>
+          <p class="text-gray-400 mt-1">Total Requests</p>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <h2 class="text-2xl font-bold mt-8">Quick Actions</h2>
+      <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <a
+          href="/admin/pending-providers"
+          class="block bg-blue-600 p-4 rounded-lg text-center hover:bg-blue-700 transition shadow-lg"
+          >✅ Approve Providers</a
+        >
+        <a
+          href="/admin/seekers"
+          class="block bg-green-600 p-4 rounded-lg text-center hover:bg-green-700 transition shadow-lg"
+          >🔍 View Seekers</a
+        >
+        <a
+          href="/admin/verified-providers"
+          class="block bg-purple-600 p-4 rounded-lg text-center hover:bg-purple-700 transition shadow-lg"
+          >👨‍🔧 View Verified Providers</a
+        >
+        <a
+          href="#"
+          class="block bg-gray-600 p-4 rounded-lg text-center hover:bg-gray-700 transition shadow-lg"
+          >⚙️ System Settings</a
+        >
+      </div>
+    </main>
   </body>
 </html>

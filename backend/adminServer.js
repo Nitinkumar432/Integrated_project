@@ -16,8 +16,14 @@ app.use(cookieParser());
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // Set views directory correctly
-app.set("views", path.join(__dirname, "../frontend/views")); // ✅ Make sure this path is correct
+app.set("views", path.join(__dirname, "../frontend/views"));
 app.set("view engine", "ejs");
+
+// ✅ Clear Admin Token on Server Restart
+// app.use((req, res, next) => {
+//   res.clearCookie("adminToken"); // Ensure token is cleared
+//   next();
+// });
 
 // ✅ Use admin routes
 app.use("/admin", adminRoutes);

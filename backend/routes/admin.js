@@ -10,6 +10,8 @@ import {
 
 import Provider from "../Models/provideschema.js";
 import Seeker from "../Models/seekers.js";
+import RepairProblem from "../Models/repairProblem.js";
+import Admin from "../Models/admin.js";
 
 const router = express.Router();
 
@@ -54,6 +56,44 @@ router.get("/dashboard", authenticateAdmin, async (req, res) => {
     console.error("Error fetching admin dashboard data:", error);
     res.status(500).send("Server Error");
   }
+});
+
+// ✅ Serve Admin Profile Page
+router.get("/profile", authenticateAdmin, async (req, res) => {
+  try {
+    const admin = await Admin.findOne({ username: "admin" });
+    if (!admin) return res.status(404).send("Admin not found");
+
+    res.render("Admin/adminProfile.ejs", { admin });
+  } catch (error) {
+    console.error("Error fetching admin profile:", error);
+    res.status(500).send("Server Error");
+  }
+});
+
+// ✅ Handle Admin Profile Update
+router.post("/profile/update", authenticateAdmin, async (req, res) => {
+  try {
+    const { email, newPassword } = req.body;
+    const updateFields = {};
+
+    if (email) updateFields.email = email;
+    if (newPassword) updateFields.password = newPassword;
+
+    await Admin.findOneAndUpdate({ username: "admin" }, updateFields, {
+      new: true,
+    });
+
+    res.redirect("/admin/profile");
+  } catch (error) {
+    console.error("Error updating admin profile:", error);
+    res.status(500).send("Server Error");
+  }
+});
+
+// ✅ Serve Admin Settings Page
+router.get("/settings", authenticateAdmin, (req, res) => {
+  res.render("Admin/adminSettings.ejs"); // Ensure this file exists in views/Admin
 });
 
 // ✅ Protected Admin Routes
@@ -123,6 +163,55 @@ router.get("/verified-providers", authenticateAdmin, async (req, res) => {
   }
 });
 
-router.get("/seekers", authenticateAdmin, getAllSeekers);
+// router.get("/seekers", authenticateAdmin, getAllSeekers);
+
+// ✅ Serve Seekers Management Page
+router.get("/seekers", authenticateAdmin, async (req, res) => {
+  try {
+    const seekers = await Seeker.find();
+    res.render("Admin/adminSeekers.ejs", { seekers });
+  } catch (error) {
+    console.error("Error fetching seekers:", error);
+    res.status(500).send("Server Error");
+  }
+});
+
+// ✅ Fetch Seeker Details & Requests
+router.get("/seekers/:id", authenticateAdmin, async (req, res) => {
+  try {
+    const seeker = await Seeker.findById(req.params.id);
+    if (!seeker) return res.status(404).send("Seeker not found");
+
+    // Fetch repair requests made by this seeker
+    const repairRequests = await RepairProblem.find({ userId: seeker._id });
+
+    res.render("Admin/seekerDetails.ejs", { seeker, repairRequests });
+  } catch (error) {
+    console.error("Error fetching seeker details:", error);
+    res.status(500).send("Server Error");
+  }
+});
+
+// ✅ Delete Seeker
+router.delete("/seekers/:id", authenticateAdmin, async (req, res) => {
+  try {
+    await Seeker.findByIdAndDelete(req.params.id);
+    res.status(200).json({ message: "Seeker deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting seeker:", error);
+    res.status(500).json({ error: "Server Error" });
+  }
+});
+
+// ✅ Send Message to Seeker (Placeholder)
+router.post("/seekers/:id/message", authenticateAdmin, (req, res) => {
+  try {
+    // For now, we simulate sending a message
+    res.status(200).json({ message: "Message sent to seeker successfully" });
+  } catch (error) {
+    console.error("Error sending message:", error);
+    res.status(500).json({ error: "Server Error" });
+  }
+});
 
 export default router;

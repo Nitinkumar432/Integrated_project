@@ -3,6 +3,7 @@ import { registerSeeker } from "../Controller/register.js";
 import RepairProblem from "../../Models/repairProblem.js"; // Import the model
 import { loginSeeker } from "../Controller/login.js";
 import { authenticateUser } from "../../middlewares/auth.js";
+import Seeker from "../../Models/seekers.js";
 
 const router = express.Router();
 
@@ -65,6 +66,24 @@ router.get("/problempage", authenticateUser, async (req, res) => {
   }
 });
 
+// ✅ Seeker Dashboard Route
+router.get("/dashboard", authenticateUser, async (req, res) => {
+  try {
+    // Fetch Seeker Details
+    const seeker = await Seeker.findById(req.user.userId);
+    if (!seeker) return res.status(404).send("Seeker not found");
+
+    // Fetch Repair Requests Made by This Seeker
+    const repairRequests = await RepairProblem.find({ userId: seeker._id });
+
+    // ✅ Pass `repairRequests` to `dashboard.ejs`
+    res.render("Seeker/dashboard.ejs", { seeker, repairRequests });
+  } catch (error) {
+    console.error("Error fetching seeker dashboard:", error);
+    res.status(500).send("Server Error");
+  }
+});
+
 // Register seeker route
 router.post("/register", registerSeeker);
 
@@ -73,6 +92,12 @@ router.post("/login", loginSeeker);
 
 router.get("/profile", authenticateUser, (req, res) => {
   res.send(req.user);
+});
+
+// ✅ Seeker Logout Route
+router.get("/logout", (req, res) => {
+  res.clearCookie("userToken"); // Remove authentication token
+  res.redirect("/login"); // Redirect to login page
 });
 
 export default router;

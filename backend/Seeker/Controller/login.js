@@ -39,7 +39,8 @@ export const loginSeeker = async (req, res) => {
 
     console.log(req.body);
     // Send token in response
-    res.status(200).json({ message: "Login successful!", token });
+    // res.status(200).json({ message: "Login successful!", token });
+    res.redirect("/seeker/dashboard");
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Error logging in" });

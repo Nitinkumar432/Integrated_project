@@ -11,65 +11,79 @@
           extend: {
             colors: {
               primary: {
-                DEFAULT: "#6366f1",
-                50: "#eef2ff",
-                100: "#e0e7ff",
-                200: "#c7d2fe",
-                300: "#a5b4fc",
-                400: "#818cf8",
-                500: "#6366f1",
-                600: "#4f46e5",
-                700: "#4338ca",
-                800: "#3730a3",
-                900: "#312e81",
-                950: "#1e1b4b",
+                DEFAULT: "#10b981",
+                50: "#ecfdf5",
+                100: "#d1fae5",
+                200: "#a7f3d0",
+                300: "#6ee7b7",
+                400: "#34d399",
+                500: "#10b981",
+                600: "#059669",
+                700: "#047857",
+                800: "#065f46",
+                900: "#064e3b",
+                950: "#022c22",
               },
               secondary: {
-                DEFAULT: "#8b5cf6",
-                50: "#f5f3ff",
-                100: "#ede9fe",
-                200: "#ddd6fe",
-                300: "#c4b5fd",
-                400: "#a78bfa",
-                500: "#8b5cf6",
-                600: "#7c3aed",
-                700: "#6d28d9",
-                800: "#5b21b6",
-                900: "#4c1d95",
-                950: "#2e1065",
+                DEFAULT: "#4ade80",
+                50: "#f0fdf4",
+                100: "#dcfce7",
+                200: "#bbf7d0",
+                300: "#86efac",
+                400: "#4ade80",
+                500: "#22c55e",
+                600: "#16a34a",
+                700: "#15803d",
+                800: "#166534",
+                900: "#14532d",
+                950: "#052e16",
               },
               accent: {
-                DEFAULT: "#ec4899",
-                50: "#fdf2f8",
-                100: "#fce7f3",
-                200: "#fbcfe8",
-                300: "#f9a8d4",
-                400: "#f472b6",
-                500: "#ec4899",
-                600: "#db2777",
-                700: "#be185d",
-                800: "#9d174d",
-                900: "#831843",
-                950: "#500724",
+                DEFAULT: "#84cc16",
+                50: "#f7fee7",
+                100: "#ecfccb",
+                200: "#d9f99d",
+                300: "#bef264",
+                400: "#a3e635",
+                500: "#84cc16",
+                600: "#65a30d",
+                700: "#4d7c0f",
+                800: "#3f6212",
+                900: "#365314",
+                950: "#1a2e05",
               },
-              dark: {
-                DEFAULT: "#1e1b4b",
-                50: "#f8fafc",
-                100: "#f1f5f9",
-                200: "#e2e8f0",
-                300: "#cbd5e1",
-                400: "#94a3b8",
-                500: "#64748b",
-                600: "#475569",
-                700: "#334155",
-                800: "#1e293b",
-                900: "#0f172a",
-                950: "#020617",
+              teal: {
+                DEFAULT: "#14b8a6",
+                50: "#f0fdfa",
+                100: "#ccfbf1",
+                200: "#99f6e4",
+                300: "#5eead4",
+                400: "#2dd4bf",
+                500: "#14b8a6",
+                600: "#0d9488",
+                700: "#0f766e",
+                800: "#115e59",
+                900: "#134e4a",
+                950: "#042f2e",
+              },
+              amber: {
+                DEFAULT: "#f59e0b",
+                50: "#fffbeb",
+                100: "#fef3c7",
+                200: "#fde68a",
+                300: "#fcd34d",
+                400: "#fbbf24",
+                500: "#f59e0b",
+                600: "#d97706",
+                700: "#b45309",
+                800: "#92400e",
+                900: "#78350f",
+                950: "#451a03",
               },
             },
             boxShadow: {
-              card: "0 4px 15px 0 rgba(0, 0, 0, 0.1)",
-              "card-hover": "0 10px 25px 0 rgba(0, 0, 0, 0.2)",
+              card: "0 4px 15px 0 rgba(0, 0, 0, 0.05)",
+              "card-hover": "0 10px 25px 0 rgba(0, 0, 0, 0.1)",
             },
           },
         },
@@ -83,70 +97,176 @@
       .gradient-card {
         background: linear-gradient(
           135deg,
-          rgba(99, 102, 241, 0.1) 0%,
-          rgba(139, 92, 246, 0.1) 100%
+          rgba(16, 185, 129, 0.1) 0%,
+          rgba(20, 184, 166, 0.1) 100%
         );
-        border: 1px solid rgba(99, 102, 241, 0.2);
+        border: 1px solid rgba(16, 185, 129, 0.2);
+        position: relative;
+        overflow: hidden;
+      }
+      .gradient-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          45deg,
+          rgba(255, 255, 255, 0.1) 0%,
+          rgba(255, 255, 255, 0.3) 50%,
+          rgba(255, 255, 255, 0.1) 100%
+        );
+        z-index: 1;
+        pointer-events: none;
       }
       .gradient-primary {
-        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        background: linear-gradient(135deg, #10b981 0%, #0d9488 100%);
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
       }
       .gradient-secondary {
-        background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+        background: linear-gradient(135deg, #4ade80 0%, #14b8a6 100%);
+        box-shadow: 0 4px 12px rgba(74, 222, 128, 0.3);
       }
       .gradient-accent {
-        background: linear-gradient(135deg, #ec4899 0%, #f43f5e 100%);
+        background: linear-gradient(135deg, #84cc16 0%, #f59e0b 100%);
+        box-shadow: 0 4px 12px rgba(132, 204, 22, 0.3);
+      }
+      .pattern-bg {
+        background-color: #ffffff;
+        background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2310b981' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      }
+      .card-shine {
+        position: relative;
+        overflow: hidden;
+      }
+      .card-shine::after {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(
+          to bottom right,
+          rgba(255, 255, 255, 0) 0%,
+          rgba(255, 255, 255, 0.2) 50%,
+          rgba(255, 255, 255, 0) 100%
+        );
+        transform: rotate(30deg);
+        pointer-events: none;
+        z-index: 1;
+      }
+      .sidebar-gradient {
+        background: linear-gradient(180deg, #ecfdf5 0%, #f0fdfa 100%);
+      }
+      .header-gradient {
+        background: linear-gradient(
+          90deg,
+          #ecfdf5 0%,
+          #f0fdfa 50%,
+          #f7fee7 100%
+        );
+      }
+      .stat-card-1 {
+        background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+        border: 1px solid #a7f3d0;
+      }
+      .stat-card-2 {
+        background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+        border: 1px solid #bbf7d0;
+      }
+      .stat-card-3 {
+        background: linear-gradient(135deg, #f7fee7 0%, #ecfccb 100%);
+        border: 1px solid #d9f99d;
+      }
+      .request-card {
+        transition: all 0.3s ease;
+      }
+      .request-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(16, 185, 129, 0.1);
+      }
+      .action-card-1 {
+        background: linear-gradient(135deg, #10b981 0%, #0d9488 100%);
+      }
+      .action-card-2 {
+        background: linear-gradient(135deg, #4ade80 0%, #14b8a6 100%);
+      }
+      .action-card-3 {
+        background: linear-gradient(135deg, #84cc16 0%, #65a30d 100%);
+      }
+      /* Mobile sidebar toggle */
+      #sidebar-toggle:checked ~ .sidebar {
+        transform: translateX(0);
+      }
+
+      @media (max-width: 768px) {
+        .sidebar {
+          transform: translateX(-100%);
+          transition: transform 0.3s ease-in-out;
+          z-index: 50;
+        }
       }
     </style>
   </head>
-  <body
-    class="bg-dark-900 text-white flex flex-col md:flex-row min-h-screen font-sans"
-  >
+  <body class="pattern-bg text-gray-800 min-h-screen font-sans">
+    <!-- Mobile Sidebar Toggle -->
+    <input type="checkbox" id="sidebar-toggle" class="hidden" />
+    <label
+      for="sidebar-toggle"
+      class="fixed top-4 left-4 z-50 p-2 bg-primary-500 text-white rounded-lg shadow-lg cursor-pointer md:hidden"
+    >
+      <i class="ri-menu-line text-xl"></i>
+    </label>
     <!-- Sidebar -->
     <aside
-      class="w-full md:w-72 bg-dark-800 min-h-screen flex flex-col shadow-xl border-r border-dark-700"
+      class="sidebar fixed top-0 left-0 w-full md:w-72 sidebar-gradient h-screen flex flex-col shadow-xl border-r border-primary-100 overflow-hidden z-40"
     >
       <div class="p-6">
         <div class="flex items-center space-x-3 mb-8">
           <div class="gradient-primary p-2.5 rounded-lg shadow-lg">
-            <i class="ri-tools-fill text-xl"></i>
+            <i class="ri-leaf-fill text-xl text-white"></i>
           </div>
-          <h2 class="text-2xl font-bold text-white tracking-tight">
+          <h2 class="text-2xl font-bold text-primary-800 tracking-tight">
             Seeker Panel
           </h2>
         </div>
+
+        <!-- Navigation Links -->
         <nav class="space-y-2 flex-1">
           <a
             href="/seeker/dashboard"
-            class="flex items-center px-4 py-3 rounded-lg bg-primary-500/20 text-primary-300 border-l-4 border-primary-500 transition-all duration-200 font-medium"
+            class="flex items-center px-4 py-3 rounded-lg bg-white text-primary-700 border-l-4 border-primary-500 transition-all duration-200 font-medium shadow-sm"
           >
             <i class="ri-dashboard-line mr-3 text-lg"></i> Dashboard
           </a>
           <a
             href="/seeker/problempage"
-            class="flex items-center px-4 py-3 rounded-lg hover:bg-dark-700 transition-all duration-200 group"
+            class="flex items-center px-4 py-3 rounded-lg hover:bg-white/70 transition-all duration-200 group"
           >
             <i
-              class="ri-list-check-line mr-3 text-gray-400 group-hover:text-white text-lg"
+              class="ri-list-check-line mr-3 text-gray-500 group-hover:text-primary-700 text-lg"
             ></i>
             <span class="font-medium">View Problems</span>
           </a>
           <a
             href="/seeker/profile"
-            class="flex items-center px-4 py-3 rounded-lg hover:bg-dark-700 transition-all duration-200 group"
+            class="flex items-center px-4 py-3 rounded-lg hover:bg-white/70 transition-all duration-200 group"
           >
             <i
-              class="ri-user-line mr-3 text-gray-400 group-hover:text-white text-lg"
+              class="ri-user-line mr-3 text-gray-500 group-hover:text-primary-700 text-lg"
             ></i>
             <span class="font-medium">Profile</span>
           </a>
         </nav>
       </div>
 
+      <!-- Logout Button Stays Fixed at Bottom -->
       <div class="p-6 mt-auto">
         <a
           href="/seeker/logout"
-          class="flex items-center justify-center px-4 py-3 bg-accent-500/10 text-accent-400 rounded-lg hover:bg-accent-600 hover:text-white transition-all duration-200 font-medium"
+          class="flex items-center justify-center px-4 py-3 bg-white text-primary-600 rounded-lg hover:bg-primary-600 hover:text-white transition-all duration-200 font-medium shadow-sm"
         >
           <i class="ri-logout-box-line mr-2 text-lg"></i> Logout
         </a>
@@ -154,27 +274,27 @@
     </aside>
 
     <!-- Main Content -->
-    <main class="flex-1 p-6 md:p-8 overflow-x-hidden">
+    <main class="md:ml-72 p-6 md:p-8 overflow-x-hidden min-h-screen">
       <div class="max-w-7xl mx-auto">
         <!-- Header -->
         <div
-          class="flex flex-col md:flex-row justify-between items-center mb-8 bg-dark-800/50 p-6 rounded-xl border border-dark-700 shadow-lg"
+          class="flex flex-col md:flex-row justify-between items-center mb-8 header-gradient p-6 rounded-xl border border-primary-100 shadow-lg card-shine"
         >
           <div>
             <h1
-              class="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary-400 to-secondary-400"
+              class="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-teal-600"
             >
               Welcome, <%= seeker.name %>
             </h1>
-            <p class="mt-2 text-gray-400">
+            <p class="mt-2 text-gray-600">
               Manage your repair requests and view your profile information.
             </p>
           </div>
           <div
-            class="mt-4 md:mt-0 flex items-center bg-dark-800 px-4 py-2 rounded-lg border border-dark-700"
+            class="mt-4 md:mt-0 flex items-center bg-white px-4 py-2 rounded-lg border border-primary-100 shadow-sm"
           >
-            <i class="ri-calendar-line text-primary-400 mr-2"></i>
-            <p class="text-sm text-gray-300">
+            <i class="ri-calendar-line text-primary-600 mr-2"></i>
+            <p class="text-sm text-gray-600">
               <%= new Date().toLocaleDateString('en-US', { weekday: 'long',
               year: 'numeric', month: 'long', day: 'numeric' }) %>
             </p>
@@ -184,58 +304,60 @@
         <!-- Overview Stats -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-6">
           <div
-            class="gradient-card p-6 rounded-xl text-center shadow-card hover:shadow-card-hover transition-all duration-300 transform hover:-translate-y-1"
+            class="stat-card-1 p-6 rounded-xl text-center shadow-card hover:shadow-card-hover transition-all duration-300 transform hover:-translate-y-1 card-shine"
           >
             <div
-              class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-primary-500/20 mb-4"
+              class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-primary-100 mb-4 border border-primary-200"
             >
-              <i class="ri-tools-fill text-2xl text-primary-400"></i>
+              <i class="ri-tools-fill text-2xl text-primary-600"></i>
             </div>
-            <h2 class="text-3xl font-bold text-white">
+            <h2 class="text-3xl font-bold text-primary-800">
               <%= repairRequests.length %>
             </h2>
-            <p class="text-gray-400 mt-1">Total Repair Requests</p>
+            <p class="text-primary-700 mt-1 font-medium">
+              Total Repair Requests
+            </p>
           </div>
 
           <div
-            class="gradient-card p-6 rounded-xl text-center shadow-card hover:shadow-card-hover transition-all duration-300 transform hover:-translate-y-1"
+            class="stat-card-2 p-6 rounded-xl text-center shadow-card hover:shadow-card-hover transition-all duration-300 transform hover:-translate-y-1 card-shine"
           >
             <div
-              class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-secondary-500/20 mb-4"
+              class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-secondary-100 mb-4 border border-secondary-200"
             >
-              <i class="ri-time-line text-2xl text-secondary-400"></i>
+              <i class="ri-time-line text-2xl text-secondary-600"></i>
             </div>
-            <h2 class="text-3xl font-bold text-white">
+            <h2 class="text-3xl font-bold text-secondary-800">
               <%= repairRequests.filter(r => r.status === 'Pending').length %>
             </h2>
-            <p class="text-gray-400 mt-1">Pending Requests</p>
+            <p class="text-secondary-700 mt-1 font-medium">Pending Requests</p>
           </div>
 
           <div
-            class="gradient-card p-6 rounded-xl text-center shadow-card hover:shadow-card-hover transition-all duration-300 transform hover:-translate-y-1"
+            class="stat-card-3 p-6 rounded-xl text-center shadow-card hover:shadow-card-hover transition-all duration-300 transform hover:-translate-y-1 card-shine"
           >
             <div
-              class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-accent-500/20 mb-4"
+              class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-accent-100 mb-4 border border-accent-200"
             >
-              <i class="ri-check-line text-2xl text-accent-400"></i>
+              <i class="ri-check-line text-2xl text-accent-600"></i>
             </div>
-            <h2 class="text-3xl font-bold text-white">
+            <h2 class="text-3xl font-bold text-accent-800">
               <%= repairRequests.filter(r => r.status === 'Completed').length %>
             </h2>
-            <p class="text-gray-400 mt-1">Completed Requests</p>
+            <p class="text-accent-700 mt-1 font-medium">Completed Requests</p>
           </div>
         </div>
 
         <!-- Recent Repair Requests -->
         <div class="mt-10">
           <div class="flex items-center justify-between mb-6">
-            <h2 class="text-2xl font-bold flex items-center">
-              <i class="ri-file-list-3-line text-primary-400 mr-2"></i>
+            <h2 class="text-2xl font-bold flex items-center text-primary-800">
+              <i class="ri-file-list-3-line text-primary-600 mr-2"></i>
               Your Repair Requests
             </h2>
             <a
               href="/seeker/problempage"
-              class="px-4 py-2 rounded-lg gradient-primary text-white font-medium hover:opacity-90 transition-opacity flex items-center"
+              class="px-4 py-2 rounded-lg gradient-primary text-white font-medium hover:opacity-90 transition-opacity flex items-center shadow-lg"
             >
               <i class="ri-add-line mr-1"></i> New Request
             </a>
@@ -246,54 +368,54 @@
           >
             <% if (repairRequests.length === 0) { %>
             <div
-              class="col-span-3 bg-dark-800/50 p-10 rounded-xl border border-dark-700 text-center"
+              class="col-span-3 header-gradient p-10 rounded-xl border border-primary-100 text-center card-shine"
             >
               <div
-                class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-dark-700 mb-4"
+                class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white mb-4 shadow-md"
               >
-                <i class="ri-tools-line text-3xl text-gray-400"></i>
+                <i class="ri-tools-line text-3xl text-primary-600"></i>
               </div>
-              <p class="text-gray-400 text-lg">No repair requests found.</p>
+              <p class="text-gray-600 text-lg">No repair requests found.</p>
               <a
                 href="/seeker/problempage"
-                class="mt-4 inline-block px-4 py-2 rounded-lg bg-primary-600 text-white font-medium hover:bg-primary-700 transition-colors"
+                class="mt-4 inline-block px-4 py-2 rounded-lg bg-primary-600 text-white font-medium hover:bg-primary-700 transition-colors shadow-md"
               >
                 Submit your first request
               </a>
             </div>
             <% } else { %> <% repairRequests.forEach(request => { %>
             <div
-              class="bg-dark-800 border border-dark-700 p-6 rounded-xl shadow-card transition-all duration-300 hover:shadow-card-hover hover:-translate-y-1 group"
+              class="bg-white border border-primary-100 p-6 rounded-xl shadow-card request-card"
             >
               <div class="flex justify-between items-start mb-4">
                 <h3
-                  class="text-xl font-bold group-hover:text-primary-400 transition-colors"
+                  class="text-xl font-bold text-gray-800 group-hover:text-primary-600 transition-colors"
                 >
                   <%= request.issue %>
                 </h3>
                 <div
-                  class="rounded-full px-3 py-1 text-xs font-medium <% if (request.status === 'Pending') { %> bg-yellow-500/10 text-yellow-400 <% } else if (request.status === 'In Progress') { %> bg-blue-500/10 text-blue-400 <% } else { %> bg-green-500/10 text-green-400 <% } %>"
+                  class="rounded-full px-3 py-1 text-xs font-medium <% if (request.status === 'Pending') { %> bg-amber-100 text-amber-700 border border-amber-200 <% } else if (request.status === 'In Progress') { %> bg-teal-100 text-teal-700 border border-teal-200 <% } else { %> bg-secondary-100 text-secondary-700 border border-secondary-200 <% } %>"
                 >
                   <%= request.status %>
                 </div>
               </div>
 
               <div class="space-y-2">
-                <p class="text-gray-400 flex items-center">
-                  <i class="ri-map-pin-line mr-2 text-secondary-400"></i>
+                <p class="text-gray-600 flex items-center">
+                  <i class="ri-map-pin-line mr-2 text-primary-600"></i>
                   <%= request.location %>
                 </p>
-                <p class="text-gray-400 flex items-center">
-                  <i class="ri-calendar-line mr-2 text-secondary-400"></i>
+                <p class="text-gray-600 flex items-center">
+                  <i class="ri-calendar-line mr-2 text-primary-600"></i>
                   <%= new Date(request.createdAt).toLocaleDateString('en-US', {
                   year: 'numeric', month: 'short', day: 'numeric' }) %>
                 </p>
               </div>
 
-              <div class="mt-4 pt-4 border-t border-dark-700">
+              <div class="mt-4 pt-4 border-t border-primary-100">
                 <a
                   href="#"
-                  class="text-primary-400 hover:text-primary-300 text-sm font-medium flex items-center"
+                  class="text-primary-600 hover:text-primary-700 text-sm font-medium flex items-center"
                 >
                   <i class="ri-eye-line mr-1"></i> View Details
                 </a>
@@ -305,55 +427,60 @@
 
         <!-- Quick Actions -->
         <div class="mt-10">
-          <h2 class="text-2xl font-bold mb-6 flex items-center">
-            <i class="ri-flashlight-line text-secondary-400 mr-2"></i>
+          <h2
+            class="text-2xl font-bold mb-6 flex items-center text-primary-800"
+          >
+            <i class="ri-flashlight-line text-secondary-600 mr-2"></i>
             Quick Actions
           </h2>
 
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
             <a
               href="/seeker/problempage"
-              class="block p-6 rounded-xl text-center transition-all duration-300 hover:-translate-y-1 gradient-primary shadow-lg"
+              class="block p-6 rounded-xl text-center transition-all duration-300 hover:-translate-y-1 action-card-1 shadow-lg card-shine"
             >
-              <i class="ri-add-circle-line text-4xl mb-3"></i>
-              <h3 class="text-lg font-bold">Submit New Request</h3>
-              <p class="text-sm text-gray-200 mt-1">
+              <i class="ri-add-circle-line text-4xl mb-3 text-white"></i>
+              <h3 class="text-lg font-bold text-white">Submit New Request</h3>
+              <p class="text-sm text-white/90 mt-1">
                 Create a new repair request
               </p>
             </a>
 
             <a
               href="/seeker/profile"
-              class="block p-6 rounded-xl text-center transition-all duration-300 hover:-translate-y-1 gradient-secondary shadow-lg"
+              class="block p-6 rounded-xl text-center transition-all duration-300 hover:-translate-y-1 action-card-2 shadow-lg card-shine"
             >
-              <i class="ri-user-settings-line text-4xl mb-3"></i>
-              <h3 class="text-lg font-bold">Edit Profile</h3>
-              <p class="text-sm text-gray-200 mt-1">
+              <i class="ri-user-settings-line text-4xl mb-3 text-white"></i>
+              <h3 class="text-lg font-bold text-white">Edit Profile</h3>
+              <p class="text-sm text-white/90 mt-1">
                 Update your personal information
               </p>
             </a>
 
             <a
               href="/seeker/logout"
-              class="block p-6 rounded-xl text-center transition-all duration-300 hover:-translate-y-1 gradient-accent shadow-lg"
+              class="block p-6 rounded-xl text-center transition-all duration-300 hover:-translate-y-1 action-card-3 shadow-lg card-shine"
             >
-              <i class="ri-logout-circle-line text-4xl mb-3"></i>
-              <h3 class="text-lg font-bold">Logout</h3>
-              <p class="text-sm text-gray-200 mt-1">Sign out of your account</p>
+              <i class="ri-logout-circle-line text-4xl mb-3 text-white"></i>
+              <h3 class="text-lg font-bold text-white">Logout</h3>
+              <p class="text-sm text-white/90 mt-1">Sign out of your account</p>
             </a>
           </div>
         </div>
 
         <!-- Footer -->
         <div
-          class="mt-12 text-center text-gray-500 text-sm py-6 border-t border-dark-800"
+          class="mt-12 text-center text-gray-500 text-sm py-6 border-t border-primary-100"
         >
-          <p>
-            © <%= new Date().getFullYear() %> ReMend. All
-            rights reserved.
-          </p>
+          <p>© <%= new Date().getFullYear() %> ReMend. All rights reserved.</p>
         </div>
       </div>
     </main>
+
+    <!-- Overlay for mobile sidebar -->
+    <label
+      for="sidebar-toggle"
+      class="fixed inset-0 bg-black bg-opacity-50 z-30 md:hidden hidden peer-checked:block"
+    ></label>
   </body>
 </html>

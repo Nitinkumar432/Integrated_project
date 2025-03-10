@@ -102,7 +102,7 @@ cd backend
 5. Open a Pull Request
 
 ## License
-This project is licensed under the MIT License.
+This project is licensed under the [MIT License](LICENSE).
 
 ## Contact
 For any queries, please reach out via [GitHub Issues](https://github.com/Nitinkumar432/Integrated_project).

@@ -53,7 +53,7 @@
     <!-- Sidebar -->
     <aside
       id="sidebar"
-      class="w-full md:w-72 bg-sidebar min-h-screen p-6 flex flex-col md:sticky md:top-0 md:h-screen overflow-y-auto hidden md:flex"
+      class="w-full md:w-64 bg-sidebar min-h-screen p-6 flex flex-col md:sticky md:top-0 md:h-screen overflow-y-auto hidden md:flex"
     >
       <div class="flex items-center space-x-3 mb-8">
         <div class="bg-primary p-2 rounded-lg">
@@ -71,11 +71,9 @@
         <nav class="space-y-2 flex-1">
           <a
             href="/admin/dashboard"
-            class="flex items-center px-4 py-3 rounded-lg hover:bg-sidebar-hover transition-all group"
+            class="flex items-center px-4 py-3 rounded-lg bg-primary/20 text-primary border-l-4 border-primary transition-all"
           >
-            <i
-              class="ri-dashboard-line mr-3 text-gray-400 group-hover:text-white"
-            ></i>
+            <i class="ri-dashboard-line mr-3"></i>
             <span>Dashboard</span>
           </a>
           <a
@@ -88,11 +86,31 @@
             <span>Pending Providers</span>
           </a>
           <a
-            href="/admin/seekers"
-            class="flex items-center px-4 py-3 rounded-lg bg-primary/20 text-primary border-l-4 border-primary transition-all"
+            href="/admin/verified-providers"
+            class="flex items-center px-4 py-3 rounded-lg hover:bg-sidebar-hover transition-all group"
           >
-            <i class="ri-user-search-line mr-3"></i>
+            <i
+              class="ri-check-double-line mr-3 text-gray-400 group-hover:text-white"
+            ></i>
+            <span>Verified Providers</span>
+          </a>
+          <a
+            href="/admin/seekers"
+            class="flex items-center px-4 py-3 rounded-lg hover:bg-sidebar-hover transition-all group"
+          >
+            <i
+              class="ri-user-search-line mr-3 text-gray-400 group-hover:text-white"
+            ></i>
             <span>View Seekers</span>
+          </a>
+          <a
+            href="/admin/common-problems"
+            class="flex items-center px-4 py-3 rounded-lg hover:bg-sidebar-hover transition-all group"
+          >
+            <i
+              class="ri-file-list-3-line mr-3 text-gray-400 group-hover:text-white"
+            ></i>
+            <span>Manage Common Problems</span>
           </a>
         </nav>
       </div>
@@ -111,7 +129,7 @@
             <i
               class="ri-settings-line mr-3 text-gray-400 group-hover:text-white"
             ></i>
-            <span>General Settings</span>
+            <span>System Settings</span>
           </a>
           <a
             href="/admin/profile"

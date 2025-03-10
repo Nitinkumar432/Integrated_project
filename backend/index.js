@@ -6,8 +6,8 @@ import path from "path";
 import chalk from "chalk";
 import figlet from "figlet";
 import boxen from "boxen";
-import seeker from './Seeker/Routes/seeker.js';
-import provider from './Provider/Routes/provider.js'; // ✅ Import provider routes
+import seeker from "./Seeker/Routes/seeker.js";
+import provider from "./Provider/Routes/provider.js"; // ✅ Import provider routes
 import cookieParser from "cookie-parser";
 
 // Load environment variables
@@ -15,17 +15,24 @@ dotenv.config();
 
 const app = express();
 
-console.log("🛠 Views directory set to:", path.join(process.cwd(), "../frontend/views"));
+console.log(
+  "🛠 Views directory set to:",
+  path.join(process.cwd(), "../frontend/views")
+);
 
 // Middleware
-app.use(cors({
-  origin: "http://localhost:3000", // Update with frontend URL if different
-  methods: ["GET", "POST"],
-  credentials: true // Allow cookies/auth headers
-}));
+app.use(
+  cors({
+    origin: "http://localhost:3000", // Update with frontend URL if different
+    methods: ["GET", "POST"],
+    credentials: true, // Allow cookies/auth headers
+  })
+);
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
+
+app.use("/uploads", express.static("uploads"));
 
 // Set EJS as the view engine and point to frontend folder
 app.set("view engine", "ejs");
@@ -35,7 +42,9 @@ app.set("views", path.join(process.cwd(), "../frontend/views"));
 app.use(express.static(path.join(process.cwd(), "../frontend/public")));
 
 // Display a fancy title
-console.log(chalk.cyan(figlet.textSync("ReMend Server", { horizontalLayout: "full" })));
+console.log(
+  chalk.cyan(figlet.textSync("ReMend Server", { horizontalLayout: "full" }))
+);
 
 console.log(
   boxen(chalk.green.bold("🚀 Starting Express Server..."), {
@@ -47,7 +56,8 @@ console.log(
 );
 
 // Connect to MongoDB
-const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/mydatabase";
+const MONGO_URI =
+  process.env.MONGO_URI || "mongodb://localhost:27017/mydatabase";
 
 mongoose
   .connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -85,7 +95,9 @@ setTimeout(() => {
     console.log(chalk.yellow("⚡ Express Server is Booting Up..."));
     setTimeout(() => {
       app.listen(PORT, () => {
-        console.log(chalk.green.bold(`✅ Server is running at: http://localhost:${PORT}`));
+        console.log(
+          chalk.green.bold(`✅ Server is running at: http://localhost:${PORT}`)
+        );
       });
     }, 1500);
   }, 1500);

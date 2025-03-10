@@ -13,7 +13,9 @@ const SeekerSchema = new mongoose.Schema({
     age: { type: Number, required: true },
     gender: { type: String, enum: ["male", "female", "other"], required: true },
     occupation: { type: String },
+    profileImage: { type: String, default: "/uploads/default-avatar.png" },
     createdAt: { type: Date, default: Date.now }
 });
+
 
 export default mongoose.model("Seeker", SeekerSchema);

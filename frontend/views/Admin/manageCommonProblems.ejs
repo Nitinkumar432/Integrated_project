@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Manage Common Problems</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              /* Updated Primary Color Palette */
+              primary: {
+                DEFAULT: "#7c3aed", // A more modern purple
+                hover: "#6d28d9", // Slightly darker on hover
+                lighter: "#a78bfa", // A lighter shade for backgrounds
+              },
+              /* Updated Danger Color Palette */
+              danger: {
+                DEFAULT: "#e11d48", // A more vibrant red
+                hover: "#be123c", // Slightly darker on hover
+                lighter: "#f87171", // A lighter shade for backgrounds
+              },
+              /* Neutral Color Palette for better readability */
+              neutral: {
+                50: "#f8fafc",
+                100: "#f1f5f9",
+                200: "#e2e8f0",
+                300: "#cbd5e1",
+                400: "#94a3b8",
+                500: "#64748b",
+                600: "#475569",
+                700: "#334155",
+                800: "#1e293b",
+                900: "#0f172a",
+              },
+            },
+            /* Custom Font Family (optional) */
+            fontFamily: {
+              sans: ["Inter", "sans-serif"],
+            },
+            /* Adding Shadows for Depth */
+            boxShadow: {
+              "md-soft":
+                "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
+              "lg-soft":
+                "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+            },
+          },
+        },
+      };
+    </script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css"
+      rel="stylesheet"
+    />
+    <style>
+      /* Adding a subtle gradient background */
+      body {
+        background: linear-gradient(to right, #1e293b, #2d3748);
+        /* Darker background */
+        font-family: "Inter", sans-serif;
+        /* Apply custom font if defined */
+      }
+
+      /* For a more modern form input style */
+      input[type="text"],
+      textarea,
+      input[type="file"] {
+        border: 1px solid theme("colors.neutral.700");
+        border-radius: 0.375rem;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+      }
+
+      input[type="text"]:focus,
+      textarea:focus {
+        border-color: theme("colors.primary.DEFAULT");
+        box-shadow: 0 0 0 0.2rem rgba(theme("colors.primary.DEFAULT"), 0.25);
+        outline: 0;
+      }
+    </style>
+  </head>
+
+  <body class="text-white flex flex-col items-center p-8">
+    <h1 class="text-3xl font-bold flex items-center text-primary">
+      <i class="ri-settings-4-line mr-2"></i> Manage Common Problems
+    </h1>
+
+    <!-- Add Problem Form -->
+    <div class="bg-neutral-800 p-6 rounded-lg shadow-lg w-full max-w-xl mt-6">
+      <h2 class="text-xl font-semibold mb-4 text-neutral-100">
+        Add a New Common Problem
+      </h2>
+      <form
+        action="/admin/common-problems/add"
+        method="POST"
+        enctype="multipart/form-data"
+        class="space-y-4"
+      >
+        <input
+          type="text"
+          name="title"
+          placeholder="Title"
+          required
+          class="w-full px-4 py-2 bg-neutral-700 rounded-md text-white focus:ring-2 focus:ring-primary focus:outline-none"
+        />
+        <input
+          type="text"
+          name="category"
+          placeholder="Category"
+          required
+          class="w-full px-4 py-2 bg-neutral-700 rounded-md text-white focus:ring-2 focus:ring-primary focus:outline-none"
+        />
+        <input
+          type="text"
+          name="difficulty"
+          placeholder="Difficulty Level"
+          required
+          class="w-full px-4 py-2 bg-neutral-700 rounded-md text-white focus:ring-2 focus:ring-primary focus:outline-none"
+        />
+        <textarea
+          name="description"
+          placeholder="Description"
+          required
+          class="w-full px-4 py-2 bg-neutral-700 rounded-md text-white focus:ring-2 focus:ring-primary focus:outline-none"
+        ></textarea>
+
+        <!-- Image Upload -->
+        <div class="space-y-2">
+          <label class="block text-neutral-300 text-sm">Upload Image:</label>
+          <input
+            type="file"
+            name="imageFile"
+            accept="image/*"
+            class="w-full px-4 py-2 bg-neutral-700 rounded-md text-white focus:outline-none"
+            onchange="previewImage(event)"
+          />
+          <!-- Image Preview -->
+          <img
+            id="imagePreview"
+            src=""
+            alt="Image Preview"
+            class="w-full h-40 object-cover mt-2 rounded-lg hidden"
+          />
+        </div>
+
+        <!-- Image URL -->
+        <input
+          type="text"
+          name="imageUrl"
+          placeholder="Or provide Image URL"
+          class="w-full px-4 py-2 bg-neutral-700 rounded-md text-white focus:ring-2 focus:ring-primary focus:outline-none"
+        />
+
+        <input
+          type="text"
+          name="solutionUrl"
+          placeholder="Solution URL"
+          required
+          class="w-full px-4 py-2 bg-neutral-700 rounded-md text-white focus:ring-2 focus:ring-primary focus:outline-none"
+        />
+
+        <button
+          type="submit"
+          class="w-full py-3 flex items-center justify-center bg-primary text-white rounded-md hover:bg-primary-hover transition text-lg font-semibold"
+        >
+          <i class="ri-add-circle-line mr-2"></i> Add Problem
+        </button>
+      </form>
+    </div>
+
+    <!-- Problems List -->
+    <div class="mt-8 w-full max-w-5xl">
+      <h2 class="text-xl font-semibold mb-4 flex items-center text-neutral-100">
+        <i class="ri-list-check-2 text-primary mr-2"></i> Existing Common
+        Problems
+      </h2>
+      <% if (problems.length=== 0) { %>
+      <p class="text-center text-neutral-400">No common problems found.</p>
+      <% } else { %>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <% problems.forEach(problem=> { %>
+        <div
+          class="bg-neutral-800 p-6 rounded-lg shadow-lg border border-neutral-700 transition transform hover:-translate-y-2 hover:shadow-2xl relative flex flex-col"
+        >
+          <h3 class="text-xl font-bold text-primary"><%= problem.title %></h3>
+          <p class="text-neutral-300">
+            <strong>Category:</strong>
+            <%= problem.category %>
+          </p>
+          <p class="text-neutral-300">
+            <strong>Difficulty:</strong>
+            <%= problem.difficulty %>
+          </p>
+          <p class="text-neutral-400 text-sm flex-grow">
+            <%= problem.description.substring(0, 100) %>...
+          </p>
+
+          <div class="mt-4 relative">
+            <img
+              src="<%= problem.imageUrl %>"
+              alt="Problem Image"
+              class="w-full h-40 object-cover rounded-lg shadow-md"
+            />
+            <div
+              class="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center opacity-0 hover:opacity-100 transition"
+            >
+              <a
+                href="<%= problem.solutionUrl %>"
+                target="_blank"
+                class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover flex items-center"
+              >
+                <i class="ri-external-link-line mr-2"></i> View Solution
+              </a>
+            </div>
+          </div>
+
+          <!-- Delete Button -->
+          <form
+            action="/admin/common-problems/delete/<%= problem._id %>"
+            method="POST"
+            class="mt-4"
+          >
+            <button
+              type="submit"
+              class="w-full bg-danger text-white py-2 rounded-md hover:bg-danger-hover transition flex items-center justify-center"
+            >
+              <i class="ri-delete-bin-6-line mr-2"></i> Delete
+            </button>
+          </form>
+        </div>
+        <% }); %>
+      </div>
+      <% } %>
+    </div>
+
+    <a
+      href="/admin/dashboard"
+      class="mt-6 text-primary hover:underline flex items-center"
+    >
+      <i class="ri-arrow-left-line mr-2"></i> Back to Dashboard
+    </a>
+
+    <script>
+      function previewImage(event) {
+        const imagePreview = document.getElementById("imagePreview");
+        const file = event.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            imagePreview.src = e.target.result;
+            imagePreview.classList.remove("hidden");
+          };
+          reader.readAsDataURL(file);
+        }
+      }
+    </script>
+  </body>
+</html>

@@ -1,380 +1,608 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Common Repair Problems - RepairConnect</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/index.css">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
+      defer
+    ></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="css/index.css" />
     <style>
-        .rating-stars .star {
-            cursor: pointer;
-            transition: color 0.2s ease;
-        }
-        .rating-stars .star.active {
-            color: #FFD700;
-        }
-        .category-pill.active {
-            background-color: #16a34a;
-            color: white;
-        }
+      .rating-stars .star {
+        cursor: pointer;
+        transition: color 0.2s ease;
+      }
+
+      .rating-stars .star.active {
+        color: #ffd700;
+      }
+
+      .category-pill.active {
+        background-color: #16a34a;
+        color: white;
+      }
     </style>
-</head>
-<body class="bg-gray-100">
-    <%- include('../Essential/header') %>
+  </head>
+
+  <body class="bg-gray-100">
+    <!-- Header -->
+    <header class="bg-green-600 py-4 shadow-md">
+      <div
+        class="container mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between"
+      >
+        <a href="/seeker/dashboard" class="text-white text-2xl font-bold"
+          >ReMend</a
+        >
+        <a
+          href="/seeker/dashboard"
+          class="bg-white text-green-600 px-4 py-2 rounded-full hover:bg-green-100 transition-colors font-semibold"
+        >
+          Back to Dashboard
+        </a>
+      </div>
+    </header>
 
     <main>
-        <!-- Hero Section -->
+      <!-- Hero Section -->
+      <section class="bg-green-100 py-12">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h1 class="text-4xl font-extrabold text-green-800 mb-4">
+            Think You've Got This? Time to DIY!
+          </h1>
+          <p class="text-lg text-gray-700 mb-8">
+            Why wait for a fix when you can be the fix? Check out solutions to
+            common repair problems below—find yours, roll up your sleeves, and
+            show that problem who's boss!
+          </p>
+        </div>
+      </section>
 
-
-        <!-- Search and Filter Section -->
-        <section class="py-8 bg-white shadow-md">
-            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                    <div class="relative flex-grow max-w-2xl">
-                        <input type="text" id="search-input" placeholder="Search for repair problems..." class="w-full px-4 py-3 pl-12 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-green-500">
-                        <svg class="w-6 h-6 text-gray-400 absolute left-3 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                        </svg>
-                    </div>
-                    <div x-data="{ open: false }" class="relative">
-                        <button @click="open = !open" class="flex items-center px-4 py-2 bg-green-100 text-green-800 rounded-full hover:bg-green-200">
-                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
-                            </svg>
-                            Filter
-                        </button>
-                        <div x-show="open" @click.away="open = false" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10">
-                            <div class="py-1">
-                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-green-100">Most Recent</a>
-                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-green-100">Highest Rated</a>
-                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-green-100">Most Viewed</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+      <!-- Search and Filter Section -->
+      <section class="py-8 bg-white shadow-md">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div
+            class="flex flex-col md:flex-row md:items-center md:justify-between gap-4"
+          >
+            <div class="relative flex-grow max-w-2xl">
+              <input
+                type="text"
+                id="search-input"
+                placeholder="Search for repair problems..."
+                class="w-full px-4 py-3 pl-12 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-green-500"
+              />
+              <svg
+                class="w-6 h-6 text-gray-400 absolute left-3 top-3"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                ></path>
+              </svg>
             </div>
-        </section>
-
-        <!-- Categories Section -->
-        <section class="py-6 bg-gray-50">
-            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex flex-wrap gap-2 justify-center" x-data="{ activeCategory: 'all' }">
-                    <button @click="activeCategory = 'all'" :class="{ 'active': activeCategory === 'all' }" class="category-pill px-4 py-2 rounded-full bg-gray-200 hover:bg-green-100 transition-colors">
-                        All
-                    </button>
-                    <button @click="activeCategory = 'electronics'" :class="{ 'active': activeCategory === 'electronics' }" class="category-pill px-4 py-2 rounded-full bg-gray-200 hover:bg-green-100 transition-colors">
-                        Electronics
-                    </button>
-                    <button @click="activeCategory = 'appliances'" :class="{ 'active': activeCategory === 'appliances' }" class="category-pill px-4 py-2 rounded-full bg-gray-200 hover:bg-green-100 transition-colors">
-                        Appliances
-                    </button>
-                    <button @click="activeCategory = 'computers'" :class="{ 'active': activeCategory === 'computers' }" class="category-pill px-4 py-2 rounded-full bg-gray-200 hover:bg-green-100 transition-colors">
-                        Computers
-                    </button>
-                    <button @click="activeCategory = 'smartphones'" :class="{ 'active': activeCategory === 'smartphones' }" class="category-pill px-4 py-2 rounded-full bg-gray-200 hover:bg-green-100 transition-colors">
-                        Smartphones
-                    </button>
-                    <button @click="activeCategory = 'furniture'" :class="{ 'active': activeCategory === 'furniture' }" class="category-pill px-4 py-2 rounded-full bg-gray-200 hover:bg-green-100 transition-colors">
-                        Furniture
-                    </button>
-                    <button @click="activeCategory = 'clothing'" :class="{ 'active': activeCategory === 'clothing' }" class="category-pill px-4 py-2 rounded-full bg-gray-200 hover:bg-green-100 transition-colors">
-                        Clothing
-                    </button>
+            <div x-data="{ open: false }" class="relative">
+              <button
+                @click="open = !open"
+                class="flex items-center px-4 py-2 bg-green-100 text-green-800 rounded-full hover:bg-green-200"
+              >
+                <svg
+                  class="w-5 h-5 mr-2"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
+                  ></path>
+                </svg>
+                Filter
+              </button>
+              <div
+                x-show="open"
+                @click.away="open = false"
+                class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10"
+              >
+                <div class="py-1">
+                  <a
+                    href="#"
+                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-green-100"
+                    >Most Recent</a
+                  >
+                  <a
+                    href="#"
+                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-green-100"
+                    >Highest Rated</a
+                  >
+                  <a
+                    href="#"
+                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-green-100"
+                    >Most Viewed</a
+                  >
                 </div>
+              </div>
             </div>
-        </section>
+          </div>
+        </div>
+      </section>
 
-        <!-- Common Problems Grid -->
-        <section class="py-12 bg-gray-100">
-            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-                <h2 class="text-3xl font-bold text-center mb-12">Popular Repair Solutions</h2>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <% problems.forEach(problem => { %>
-                        <% let userHasRated = problem.ratings.some(r => r.userId.toString() === currentUserId.toString()); %>
+      <!-- Categories Section -->
+      <section class="py-6 bg-gray-50">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div
+            class="flex flex-wrap gap-2 justify-center"
+            x-data="{ activeCategory: 'all' }"
+          >
+            <button
+              @click="activeCategory = 'all'"
+              :class="{ 'active': activeCategory === 'all' }"
+              class="category-pill px-4 py-2 rounded-full bg-gray-200 hover:bg-green-100 transition-colors"
+            >
+              All
+            </button>
+            <button
+              @click="activeCategory = 'electronics'"
+              :class="{ 'active': activeCategory === 'electronics' }"
+              class="category-pill px-4 py-2 rounded-full bg-gray-200 hover:bg-green-100 transition-colors"
+            >
+              Electronics
+            </button>
+            <button
+              @click="activeCategory = 'appliances'"
+              :class="{ 'active': activeCategory === 'appliances' }"
+              class="category-pill px-4 py-2 rounded-full bg-gray-200 hover:bg-green-100 transition-colors"
+            >
+              Appliances
+            </button>
+            <button
+              @click="activeCategory = 'computers'"
+              :class="{ 'active': activeCategory === 'computers' }"
+              class="category-pill px-4 py-2 rounded-full bg-gray-200 hover:bg-green-100 transition-colors"
+            >
+              Computers
+            </button>
+            <button
+              @click="activeCategory = 'smartphones'"
+              :class="{ 'active': activeCategory === 'smartphones' }"
+              class="category-pill px-4 py-2 rounded-full bg-gray-200 hover:bg-green-100 transition-colors"
+            >
+              Smartphones
+            </button>
+            <button
+              @click="activeCategory = 'furniture'"
+              :class="{ 'active': activeCategory === 'furniture' }"
+              class="category-pill px-4 py-2 rounded-full bg-gray-200 hover:bg-green-100 transition-colors"
+            >
+              Furniture
+            </button>
+            <button
+              @click="activeCategory = 'clothing'"
+              :class="{ 'active': activeCategory === 'clothing' }"
+              class="category-pill px-4 py-2 rounded-full bg-gray-200 hover:bg-green-100 transition-colors"
+            >
+              Clothing
+            </button>
+          </div>
+        </div>
+      </section>
 
-                        <div class="bg-white rounded-xl shadow-md overflow-hidden p-6 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg">
-                            <img src="<%= problem.imageUrl %>" alt="<%= problem.title %>" class="w-full h-48 object-cover rounded-lg">
-                            
-                            <h3 class="text-xl font-semibold mt-4 text-gray-900"><%= problem.title %></h3>
-                            <p class="text-gray-600 mb-4"><%= problem.description %></p>
+      <!-- Common Problems Grid -->
+      <section class="py-12 bg-gray-100">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 class="text-3xl font-bold text-center mb-12">
+            Popular Repair Solutions
+          </h2>
 
-                            <!-- ⭐ Rating Display -->
-                            <div class="flex justify-between items-center mb-4">
-                                <span class="text-lg font-bold text-yellow-500" id="rating-value-<%= problem._id %>">
-                                    <%= problem.averageRating %>
-                                </span>
-                                <span class="text-sm text-gray-500" id="rating-count-<%= problem._id %>">
-                                    (<%= problem.ratings.length %> users)
-                                </span>
-                            </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <% problems.forEach(problem => { %> <% let userHasRated =
+            problem.ratings.some(r => r.userId.toString() ===
+            currentUserId.toString()); %>
 
-                            <!-- ⭐ Interactive Star Rating -->
-                            <div class="flex items-center justify-between space-x-4 mb-4">
-                                <div class="flex space-x-1" id="stars-<%= problem._id %>">
-                                    <% for(let i = 1; i <= 5; i++) { %>
-                                        <span class="star text-2xl cursor-pointer <%= i <= problem.averageRating ? 'text-yellow-400' : 'text-gray-300' %>"
-                                            data-problem-id="<%= problem._id %>"
-                                            data-rating="<%= i %>"
-                                            <% if (!userHasRated) { %> onclick="submitRating('<%= problem._id %>', <%= i %>)" <% } else { %> 
-                                            style="pointer-events: none; opacity: 0.5;" <% } %>>
-                                            ★
-                                        </span>
-                                    <% } %>
-                                </div>
-                            </div>
+            <div
+              class="bg-white rounded-xl shadow-md overflow-hidden p-6 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg"
+            >
+              <img
+                src="<%= problem.imageUrl %>"
+                alt="<%= problem.title %>"
+                class="w-full h-64 object-cover rounded-lg"
+              />
 
-                            <!-- View Solution Button -->
-                            <button class="w-full text-green-600 hover:text-green-800 font-medium py-2 border-t border-gray-200 mt-2"
-                                    onclick="showVideoModal('<%= problem.solutionUrl %>')">
-                                View Solution →
-                            </button>
-                        </div>
-                    <% }); %>
+              <!-- Difficulty Tag -->
+              <div class="flex justify-end mt-2">
+                <span
+                  class="inline-block w-24 text-center px-3 py-1 text-sm font-medium rounded-full text-white <% if (problem.difficulty === 'Easy') { %> bg-green-500 <% } else if (problem.difficulty === 'Medium') { %> bg-yellow-500 <% } else { %> bg-red-500 <% } %>"
+                >
+                  <%= problem.difficulty %>
+                </span>
+              </div>
+
+              <h3 class="text-xl font-semibold mt-4 text-gray-900">
+                <%= problem.title %>
+              </h3>
+              <p class="text-gray-600 mb-4"><%= problem.description %></p>
+
+              <!-- ⭐ Rating Display -->
+              <div class="flex justify-between items-center mb-4">
+                <span
+                  class="text-lg font-bold text-yellow-500"
+                  id="rating-value-<%= problem._id %>"
+                >
+                  <%= problem.averageRating %>
+                </span>
+                <span
+                  class="text-sm text-gray-500"
+                  id="rating-count-<%= problem._id %>"
+                >
+                  (<%= problem.ratings.length %> users)
+                </span>
+              </div>
+
+              <!-- ⭐ Interactive Star Rating -->
+              <div class="flex items-center justify-between space-x-4 mb-4">
+                <div class="flex space-x-1" id="stars-<%= problem._id %>">
+                  <% for(let i = 1; i <= 5; i++) { %>
+                  <span
+                    class="star text-2xl cursor-pointer <%= i <= problem.averageRating ? 'text-yellow-400' : 'text-gray-300' %>"
+                    data-problem-id="<%= problem._id %>"
+                    data-rating="<%= i %>"
+                    <%
+                    if
+                    (!userHasRated)
+                    {
+                    %>
+                    onclick="submitRating('<%= problem._id %>', <%= i %>)" <% }
+                    else { %> style="pointer-events: none; opacity: 0.5;" <% }
+                    %>> ★
+                  </span>
+                  <% } %>
                 </div>
+              </div>
 
-
-
-
-
-
-                <!-- Video Modal -->
-                <div id="videoModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 hidden z-50">
-                    <div class="relative bg-white p-6 rounded-lg shadow-lg w-[90%] max-w-3xl">
-                        <!-- Close Button (Moved Outside Box) -->
-                        <button id="closeModal" class="absolute -top-6 -right-6 bg-red-600 text-white text-5xl rounded-full w-12 h-12 flex items-center justify-center hover:bg-red-800">&times;</button>
-                        <!-- Video Frame -->
-                        <div class="relative w-full h-0 pb-[56.25%]">
-                            <iframe id="videoFrame" class="absolute top-0 left-0 w-full h-full rounded-lg" src="" frameborder="0" allowfullscreen></iframe>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Pagination -->
-                <div class="mt-12 flex justify-center">
-                    <nav class="inline-flex rounded-md shadow">
-                        <a href="#" class="px-4 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
-                            Previous
-                        </a>
-                        <a href="#" class="px-4 py-2 border-t border-b border-gray-300 bg-white text-sm font-medium text-green-600 hover:bg-green-50">
-                            1
-                        </a>
-                        <a href="#" class="px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
-                            2
-                        </a>
-                        <a href="#" class="px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
-                            3
-                        </a>
-                        <a href="#" class="px-4 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
-                            Next
-                        </a>
-                    </nav>
-                </div>
+              <!-- View Solution Button -->
+              <button
+                class="w-full text-green-600 hover:text-green-800 font-medium py-2 border-t border-gray-200 mt-2"
+                onclick="showVideoModal('<%= problem.solutionUrl %>')"
+              >
+                View Solution →
+              </button>
             </div>
-        </section>
+            <% }); %>
+          </div>
 
-        <!-- Call to Action -->
-        <section class="py-16 bg-green-600 text-white">
-            <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                <h2 class="text-3xl font-bold mb-6">Can't Find What You're Looking For?</h2>
-                <p class="text-xl mb-8 max-w-2xl mx-auto">Connect with our community of repair experts who can help you solve your specific problem.</p>
-                <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
-                    <a href="/ask-question" class="bg-white text-green-600 px-8 py-3 rounded-full text-lg font-semibold hover:bg-green-100 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105 shadow-lg">Ask a Question</a>
-                    <a href="/find-expert" class="bg-green-700 text-white px-8 py-3 rounded-full text-lg font-semibold hover:bg-green-800 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105 shadow-lg">Find an Expert</a>
-                </div>
+          <!-- Video Modal -->
+          <div
+            id="videoModal"
+            class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 hidden z-50"
+          >
+            <div
+              class="relative bg-white p-6 rounded-lg shadow-lg w-[90%] max-w-3xl"
+            >
+              <!-- Close Button (Moved Outside Box) -->
+              <button
+                id="closeModal"
+                class="absolute -top-6 -right-6 bg-red-600 text-white text-5xl rounded-full w-12 h-12 flex items-center justify-center hover:bg-red-800"
+              >
+                &times;
+              </button>
+              <!-- Video Frame -->
+              <div class="relative w-full h-0 pb-[56.25%]">
+                <iframe
+                  id="videoFrame"
+                  class="absolute top-0 left-0 w-full h-full rounded-lg"
+                  src=""
+                  frameborder="0"
+                  allowfullscreen
+                ></iframe>
+              </div>
             </div>
-        </section>
+          </div>
 
-        <!-- Community Tips Section -->
-        <section class="py-16 bg-white">
-            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-                <h2 class="text-3xl font-bold text-center mb-12">Community Tips & Tricks</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div class="bg-gray-50 rounded-lg p-6 shadow-md">
-                        <h3 class="text-xl font-semibold mb-4">Preventive Maintenance</h3>
-                        <ul class="space-y-3">
-                            <li class="flex items-start">
-                                <svg class="w-5 h-5 text-green-600 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                </svg>
-                                <span>Clean your electronics regularly to prevent dust buildup</span>
-                            </li>
-                            <li class="flex items-start">
-                                <svg class="w-5 h-5 text-green-600 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                </svg>
-                                <span>Check and tighten loose screws on furniture every few months</span>
-                            </li>
-                            <li class="flex items-start">
-                                <svg class="w-5 h-5 text-green-600 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                </svg>
-                                <span>Keep user manuals in a dedicated folder for quick reference</span>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="bg-gray-50 rounded-lg p-6 shadow-md">
-                        <h3 class="text-xl font-semibold mb-4">Essential Repair Tools</h3>
-                        <ul class="space-y-3">
-                            <li class="flex items-start">
-                                <svg class="w-5 h-5 text-green-600 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                </svg>
-                                <span>Invest in a quality screwdriver set with various head types</span>
-                            </li>
-                            <li class="flex items-start">
-                                <svg class="w-5 h-5 text-green-600 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                </svg>
-                                <span>Keep a multimeter handy for electrical troubleshooting</span>
-                            </li>
-                            <li class="flex items-start">
-                                <svg class="w-5 h-5 text-green-600 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                </svg>
-                                <span>Organize small parts in labeled containers during repairs</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
+          <!-- Pagination -->
+          <div class="mt-12 flex justify-center">
+            <nav class="inline-flex rounded-md shadow">
+              <a
+                href="#"
+                class="px-4 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+              >
+                Previous
+              </a>
+              <a
+                href="#"
+                class="px-4 py-2 border-t border-b border-gray-300 bg-white text-sm font-medium text-green-600 hover:bg-green-50"
+              >
+                1
+              </a>
+              <a
+                href="#"
+                class="px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+              >
+                2
+              </a>
+              <a
+                href="#"
+                class="px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+              >
+                3
+              </a>
+              <a
+                href="#"
+                class="px-4 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+              >
+                Next
+              </a>
+            </nav>
+          </div>
+        </div>
+      </section>
+
+      <!-- Call to Action -->
+      <section class="py-16 bg-green-600 text-white">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 class="text-3xl font-bold mb-6">
+            Can't Find What You're Looking For?
+          </h2>
+          <p class="text-xl mb-8 max-w-2xl mx-auto">
+            Connect with our community of repair experts who can help you solve
+            your specific problem.
+          </p>
+          <div
+            class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4"
+          >
+            <a
+              href="/ask-question"
+              class="bg-white text-green-600 px-8 py-3 rounded-full text-lg font-semibold hover:bg-green-100 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105 shadow-lg"
+              >Ask a Question</a
+            >
+            <a
+              href="/find-expert"
+              class="bg-green-700 text-white px-8 py-3 rounded-full text-lg font-semibold hover:bg-green-800 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105 shadow-lg"
+              >Find an Expert</a
+            >
+          </div>
+        </div>
+      </section>
+
+      <!-- Community Tips Section -->
+      <section class="py-16 bg-white">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 class="text-3xl font-bold text-center mb-12">
+            Community Tips & Tricks
+          </h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="bg-gray-50 rounded-lg p-6 shadow-md">
+              <h3 class="text-xl font-semibold mb-4">Preventive Maintenance</h3>
+              <ul class="space-y-3">
+                <li class="flex items-start">
+                  <svg
+                    class="w-5 h-5 text-green-600 mr-2 mt-0.5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 13l4 4L19 7"
+                    ></path>
+                  </svg>
+                  <span
+                    >Clean your electronics regularly to prevent dust
+                    buildup</span
+                  >
+                </li>
+                <li class="flex items-start">
+                  <svg
+                    class="w-5 h-5 text-green-600 mr-2 mt-0.5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 13l4 4L19 7"
+                    ></path>
+                  </svg>
+                  <span
+                    >Check and tighten loose screws on furniture every few
+                    months</span
+                  >
+                </li>
+                <li class="flex items-start">
+                  <svg
+                    class="w-5 h-5 text-green-600 mr-2 mt-0.5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 13l4 4L19 7"
+                    ></path>
+                  </svg>
+                  <span
+                    >Keep user manuals in a dedicated folder for quick
+                    reference</span
+                  >
+                </li>
+              </ul>
             </div>
-        </section>
+            <div class="bg-gray-50 rounded-lg p-6 shadow-md">
+              <h3 class="text-xl font-semibold mb-4">Essential Repair Tools</h3>
+              <ul class="space-y-3">
+                <li class="flex items-start">
+                  <svg
+                    class="w-5 h-5 text-green-600 mr-2 mt-0.5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 13l4 4L19 7"
+                    ></path>
+                  </svg>
+                  <span
+                    >Invest in a quality screwdriver set with various head
+                    types</span
+                  >
+                </li>
+                <li class="flex items-start">
+                  <svg
+                    class="w-5 h-5 text-green-600 mr-2 mt-0.5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 13l4 4L19 7"
+                    ></path>
+                  </svg>
+                  <span
+                    >Keep a multimeter handy for electrical
+                    troubleshooting</span
+                  >
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
 
-    <%- include('../Essential/footer') %>
+    <footer class="bg-gray-800 text-white py-8">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <p>&copy; <%= new Date().getFullYear() %> ReMend. All rights reserved.</p>
+        <p class="mt-2">Empowering you to fix it yourself.</p>
+      </div>
+    </footer>
 
     <script>
-        // Initialize rating functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            // Search functionality
-            const searchInput = document.getElementById('search-input');
-            if (searchInput) {
-                searchInput.addEventListener('keyup', function(e) {
-                    if (e.key === 'Enter') {
-                        // Implement search functionality
-                        console.log('Searching for:', searchInput.value);
-                    }
-                });
-            }
+      function showVideoModal(videoUrl) {
+        if (!videoUrl || videoUrl.trim() === "") {
+          console.error("❌ Error: No video URL provided.");
+          return;
+        }
 
-            // Charts for demonstration
-            const envCtx = document.getElementById('environmentalImpactChart');
-            const comCtx = document.getElementById('communityGrowthChart');
-            
-            if (typeof Chart !== 'undefined' && envCtx && comCtx) {
-                new Chart(envCtx, {
-                    type: 'bar',
-                    data: {
-                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                        datasets: [{
-                            label: 'Waste Reduced (kg)',
-                            data: [120, 190, 300, 250, 420, 380],
-                            backgroundColor: '#16a34a'
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        scales: {
-                            y: {
-                                beginAtZero: true
-                            }
-                        }
-                    }
-                });
+        // Convert YouTube watch URL to embed URL if necessary
+        const youtubeRegex = /(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]+)/;
+        const match = videoUrl.match(youtubeRegex);
+        if (match) {
+          videoUrl = `https://www.youtube.com/embed/${match[1]}`;
+        }
 
-                new Chart(comCtx, {
-                    type: 'line',
-                    data: {
-                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                        datasets: [{
-                            label: 'New Members',
-                            data: [65, 120, 180, 220, 300, 450],
-                            borderColor: '#16a34a',
-                            tension: 0.3
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        scales: {
-                            y: {
-                                beginAtZero: true
-                            }
-                        }
-                    }
-                });
-            }
+        const videoFrame = document.getElementById("videoFrame");
+        const videoModal = document.getElementById("videoModal");
+
+        if (!videoFrame || !videoModal) {
+          console.error("❌ Error: Modal elements not found.");
+          return;
+        }
+
+        console.log("🎥 Opening video modal with URL:", videoUrl);
+
+        videoFrame.src = videoUrl;
+        videoModal.classList.remove("hidden");
+        document.body.classList.add("overflow-hidden");
+      }
+
+      // Close the modal and stop video playback
+      document
+        .getElementById("closeModal")
+        .addEventListener("click", function () {
+          const videoFrame = document.getElementById("videoFrame");
+          const videoModal = document.getElementById("videoModal");
+
+          if (videoFrame) videoFrame.src = ""; // Stop video
+          if (videoModal) videoModal.classList.add("hidden");
+
+          document.body.classList.remove("overflow-hidden");
         });
 
-        // JavaScript to Handle Video Modal 
-        function showVideoModal(videoUrl) {
-            const modal = document.getElementById("videoModal");
-            const videoFrame = document.getElementById("videoFrame");
-            videoFrame.src = videoUrl.replace("watch?v=", "embed/"); // Convert YouTube link to embed format
-            modal.classList.remove("hidden");
-        }
+      // Rating
+      async function submitRating(problemId, rating) {
+        try {
+          const response = await fetch(`/seeker/rate/${problemId}`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ rating: parseInt(rating) }),
+          });
 
-        document.getElementById("closeModal").addEventListener("click", function() {
-            const modal = document.getElementById("videoModal");
-            const videoFrame = document.getElementById("videoFrame");
-            modal.classList.add("hidden");
-            videoFrame.src = ""; // Stop video when closing
+          const data = await response.json();
+
+          if (response.ok) {
+            // ✅ Update displayed rating count and average rating
+            document.getElementById(`rating-value-${problemId}`).innerText =
+              data.averageRating;
+            document.getElementById(
+              `rating-count-${problemId}`
+            ).innerText = `(${data.totalRatings} users)`;
+
+            // ✅ Update the stars instantly
+            updateStars(problemId, data.averageRating);
+
+            // ✅ Disable future ratings for this user
+            disableRating(problemId);
+          } else {
+            alert(`Error: ${data.error}`);
+          }
+        } catch (error) {
+          alert("Something went wrong. Try again!");
+        }
+      }
+
+      // ⭐ Updates Star Colors Based on Rating
+      function updateStars(problemId, newRating) {
+        const stars = document.querySelectorAll(`#stars-${problemId} .star`);
+        stars.forEach((star, index) => {
+          star.classList.toggle("text-yellow-400", index < newRating);
+          star.classList.toggle("text-gray-300", index >= newRating);
         });
+      }
 
-        // Rating
-        async function submitRating(problemId, rating) {
-            try {
-                const response = await fetch(`/seeker/rate/${problemId}`, {
-                    method: "POST",
-                    headers: { 
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({ rating: parseInt(rating) })
-                });
-
-                const data = await response.json();
-
-                if (response.ok) {
-                    // ✅ Update displayed rating count and average rating
-                    document.getElementById(`rating-value-${problemId}`).innerText = data.averageRating;
-                    document.getElementById(`rating-count-${problemId}`).innerText = `(${data.totalRatings} users)`;
-
-                    // ✅ Update the stars instantly
-                    updateStars(problemId, data.averageRating);
-
-                    // ✅ Disable future ratings for this user
-                    disableRating(problemId);
-                } else {
-                    alert(`Error: ${data.error}`);
-                }
-            } catch (error) {
-                alert("Something went wrong. Try again!");
-            }
-        }
-
-        // ⭐ Updates Star Colors Based on Rating
-        function updateStars(problemId, newRating) {
-            const stars = document.querySelectorAll(`#stars-${problemId} .star`);
-            stars.forEach((star, index) => {
-                star.classList.toggle("text-yellow-400", index < newRating);
-                star.classList.toggle("text-gray-300", index >= newRating);
-            });
-        }
-
-        // ❌ Disables Stars After User Has Rated
-        function disableRating(problemId) {
-            const stars = document.querySelectorAll(`#stars-${problemId} .star`);
-            stars.forEach(star => {
-                star.style.pointerEvents = "none";
-                star.style.opacity = "0.5";
-            });
-        }
-
-
-
+      // ❌ Disables Stars After User Has Rated
+      function disableRating(problemId) {
+        const stars = document.querySelectorAll(`#stars-${problemId} .star`);
+        stars.forEach((star) => {
+          star.style.pointerEvents = "none";
+          star.style.opacity = "0.5";
+        });
+      }
     </script>
-</body>
+  </body>
 </html>

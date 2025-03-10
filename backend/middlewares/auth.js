@@ -5,18 +5,19 @@ import cookieParser from "cookie-parser";
 dotenv.config();
 
 export const authenticateUser = (req, res, next) => {
-  const token = req.cookies.seekerToken; // Get token from request header
+  const token = req.cookies.seekerToken; // Get token from cookies
   console.log(token);
 
   if (!token) {
-    return res.status(401).json({ error: "Access denied. No token provided." });
+    return res.redirect("/login"); // Redirect to login if no token
   }
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET); // Verify token
     req.user = decoded; // Attach user data to request
-    next(); // Move to the next middleware
+    next(); // Proceed if authentication is successful
   } catch (error) {
-    res.status(400).json({ error: "Invalid token." });
+    res.clearCookie("seekerToken"); // Clear invalid token
+    return res.redirect("/login"); // Redirect to login on invalid token
   }
 };

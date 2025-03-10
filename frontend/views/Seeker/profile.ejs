@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Seeker Profile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/line-awesome/1.3.0/line-awesome/css/line-awesome.min.css"
+    />
+    <style>
+      .profile-container {
+        transition: all 0.3s ease;
+      }
+      .form-input:focus {
+        box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+      }
+      .file-input-wrapper {
+        position: relative;
+        overflow: hidden;
+      }
+      .file-input-wrapper input[type="file"] {
+        cursor: pointer;
+      }
+      .profile-image {
+        transition: transform 0.3s ease;
+      }
+      .profile-image:hover {
+        transform: scale(1.05);
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50 min-h-screen py-8">
+    <div class="max-w-4xl mx-auto px-4">
+      <!-- Back to Dashboard Button -->
+      <div class="flex justify-end mb-6">
+        <a
+          href="/seeker/dashboard"
+          class="group px-5 py-2.5 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700 transition-all duration-200 flex items-center gap-2"
+        >
+          <i
+            class="las la-arrow-left transition-transform group-hover:-translate-x-1"
+          ></i>
+          <span>Back to Dashboard</span>
+        </a>
+      </div>
+
+      <!-- Profile Container -->
+      <div
+        class="profile-container bg-white shadow-xl rounded-xl overflow-hidden"
+      >
+        <!-- Header Banner -->
+        <div class="h-32 bg-gradient-to-r from-green-500 to-emerald-600"></div>
+
+        <!-- Seeker Info -->
+        <div class="px-8 pb-8 mt-4">
+          <div class="flex flex-col md:flex-row gap-6">
+            <!-- Profile Picture -->
+            <div class="relative flex justify-center">
+              <div
+                class="w-32 h-32 rounded-full border-4 border-white shadow-lg overflow-hidden bg-white"
+              >
+                <img
+                  src="<%= seeker.profileImage ? seeker.profileImage : '/uploads/default-profile.png' %>"
+                  alt="Profile Picture"
+                  class="profile-image w-full h-full object-cover"
+                />
+              </div>
+            </div>
+
+            <div class="flex-1 pt-8 md:pt-0 text-center md:text-left">
+              <h2 class="text-3xl font-bold text-gray-800">
+                <%= seeker.name %>
+              </h2>
+              <div class="mt-2 space-y-2 text-gray-600">
+                <p
+                  class="flex items-center justify-center md:justify-start gap-2"
+                >
+                  <i class="las la-envelope text-green-600"></i>
+                  <%= seeker.email %>
+                </p>
+                <p
+                  class="flex items-center justify-center md:justify-start gap-2"
+                >
+                  <i class="las la-calendar text-green-600"></i>
+                  Joined on <%= new
+                  Date(seeker.createdAt).toLocaleDateString('en-US', { year:
+                  'numeric', month: 'long', day: 'numeric' }) %>
+                </p>
+                <p
+                  class="flex items-center justify-center md:justify-start gap-2"
+                >
+                  <i class="las la-map-marker text-green-600"></i>
+                  <%= seeker.location ? seeker.location : 'Not Provided' %>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Edit Profile Section -->
+          <div class="mt-10 border-t border-gray-100 pt-8">
+            <h3
+              class="text-xl font-semibold text-gray-800 mb-6 flex items-center gap-2"
+            >
+              <i class="las la-user-edit text-green-600"></i> Edit Your Profile
+            </h3>
+            <form
+              action="/seeker/edit-profile"
+              method="POST"
+              enctype="multipart/form-data"
+              class="space-y-6"
+            >
+              <!-- Name Input -->
+              <div>
+                <label class="block text-gray-700 font-medium mb-2">Name</label>
+                <input
+                  type="text"
+                  name="name"
+                  value="<%= seeker.name %>"
+                  required
+                  class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 transition-all duration-200"
+                />
+              </div>
+
+              <!-- Email Input -->
+              <div>
+                <label class="block text-gray-700 font-medium mb-2"
+                  >Email</label
+                >
+                <input
+                  type="email"
+                  name="email"
+                  value="<%= seeker.email %>"
+                  required
+                  class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 transition-all duration-200"
+                />
+              </div>
+
+              <!-- Location Input -->
+              <div>
+                <label class="block text-gray-700 font-medium mb-2"
+                  >Location</label
+                >
+                <input
+                  type="text"
+                  name="location"
+                  value="<%= seeker.location %>"
+                  class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 transition-all duration-200"
+                  placeholder="Enter your location"
+                />
+              </div>
+
+              <!-- Profile Picture Input -->
+              <div>
+                <label class="block text-gray-700 font-medium mb-2"
+                  >Profile Picture</label
+                >
+                <div class="file-input-wrapper">
+                  <input
+                    type="file"
+                    name="profileImage"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100 transition-all duration-200"
+                  />
+                </div>
+                <p class="text-xs text-gray-500 mt-1">
+                  Upload a new profile picture (optional)
+                </p>
+              </div>
+
+              <!-- Update Profile Button -->
+              <button
+                type="submit"
+                class="w-full px-6 py-3 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+              >
+                <i class="las la-save mr-2"></i> Update Profile
+              </button>
+            </form>
+          </div>
+
+          <!-- Logout Button -->
+          <div class="mt-8 pt-6 border-t border-gray-100 text-center">
+            <a
+              href="/seeker/logout"
+              class="inline-flex items-center gap-2 text-red-500 hover:text-red-700 font-medium transition-colors duration-200"
+            >
+              <i class="las la-sign-out-alt"></i> Logout from Account
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

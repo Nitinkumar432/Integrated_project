@@ -1,4 +1,5 @@
 import express from "express";
+import path from "path";
 import { loginAdmin } from "../controllers/adminAuth.js";
 import { authenticateAdmin } from "../middlewares/adminAuth.js";
 import {
@@ -13,7 +14,13 @@ import Seeker from "../Models/seekers.js";
 import RepairProblem from "../Models/repairProblem.js";
 import Admin from "../Models/admin.js";
 
+import multer from "multer";
+
 const router = express.Router();
+
+// Serve uploaded images statically
+router.use("/uploads", express.static(path.resolve("backend/uploads")));
+// router.use("/uploads", express.static(path.join("backend/uploads")));
 
 // ✅ Serve Admin Login Page
 router.get("/login", (req, res) => {
@@ -94,6 +101,92 @@ router.post("/profile/update", authenticateAdmin, async (req, res) => {
 // ✅ Serve Admin Settings Page
 router.get("/settings", authenticateAdmin, (req, res) => {
   res.render("Admin/adminSettings.ejs"); // Ensure this file exists in views/Admin
+});
+
+// ✅ Multer Storage for Image Uploads
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads"); // Ensure this directory exists
+  },
+  filename: (req, file, cb) => {
+    const uniqueName = Date.now() + "-" + file.originalname;
+    cb(null, uniqueName);
+  },
+});
+const upload = multer({ storage });
+
+// ✅ GET Route: Render Manage Common Problems Page
+router.get("/common-problems", async (req, res) => {
+  try {
+    const problems = await RepairProblem.find(); // Fetch existing problems
+    res.render("admin/manageCommonProblems.ejs", { problems }); // Render EJS
+  } catch (error) {
+    console.error("Error fetching problems:", error);
+    res.status(500).send("Server Error");
+  }
+});
+
+// ✅ POST Route: Handle New Problem Submission
+router.post(
+  "/common-problems/add",
+  upload.single("imageFile"), // Handle image upload
+  async (req, res) => {
+    try {
+      const { title, category, difficulty, description, solutionUrl } =
+        req.body;
+      const imageUrl = req.file
+        ? `/uploads/${req.file.filename}`
+        : req.body.imageUrl; // Use uploaded image or URL
+
+      // Create new problem
+      const newProblem = new RepairProblem({
+        title,
+        category,
+        difficulty,
+        description,
+        imageUrl,
+        solutionUrl,
+      });
+
+      await newProblem.save();
+      res.redirect("/admin/common-problems"); // Redirect to manage page
+    } catch (error) {
+      console.error("Error adding problem:", error);
+      res.status(500).send("Server Error");
+    }
+  }
+);
+
+// ✅ POST Route: Delete a Problem
+router.post("/common-problems/delete/:id", async (req, res) => {
+  try {
+    await RepairProblem.findByIdAndDelete(req.params.id);
+    res.redirect("/admin/common-problems"); // Refresh page after deletion
+  } catch (error) {
+    console.error("Error deleting problem:", error);
+    res.status(500).send("Server Error");
+  }
+});
+
+// ✅ Route to render the "Manage Common Problems" page
+router.get("/common-problems", async (req, res) => {
+  try {
+    const problems = await RepairProblem.find(); // Fetch all common problems
+    res.render("admin/manageCommonProblems.ejs", { problems }); // Render EJS page
+  } catch (error) {
+    console.error("Error fetching common problems:", error);
+    res.status(500).send("Server Error");
+  }
+});
+
+router.get("/manage-common-problems", async (req, res) => {
+  try {
+    const problems = await RepairProblem.find();
+    res.render("admin/manageCommonProblem", { problems });
+  } catch (error) {
+    console.error("Error fetching common problems:", error);
+    res.status(500).send("Server Error");
+  }
 });
 
 // ✅ Protected Admin Routes

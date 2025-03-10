@@ -1,10 +1,9 @@
 import path from "path";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-import RepairProblem from "../Models/repairProblem.js"; // Ensure this path is correct
+import RepairProblem from "../Models/repairProblem.js";
 import { fileURLToPath } from "url";
 
-// Load .env file manually
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
@@ -17,56 +16,29 @@ if (!process.env.MONGO_URI) {
 
 const MONGO_URI = process.env.MONGO_URI;
 
-console.log("MONGO_URI:", MONGO_URI); // Debugging log
-
-// Connect to MongoDB
 mongoose
   .connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(async () => {
     console.log("✅ MongoDB Connected Successfully!");
-    await seedDB(); // ✅ Call the function after successful connection
+    await resetRatings();
   })
   .catch((err) => {
     console.log("❌ MongoDB Connection Failed!");
     console.error(err);
   });
 
-// Sample repair problems (Default `reviewCount: 0`)
-const problems = [
-  {
-    title: "How to Repair a Ceiling Fan",
-    category: "Electronics",
-    difficulty: "Medium",
-    description: "Learn how to diagnose and fix common ceiling fan issues.",
-    imageUrl: "/images/fan-repair.jpg",
-    rating: 4,
-    reviewCount: 0, // ✅ Default review count set to 0
-    solutionUrl: "https://www.youtube.com/watch?v=sMHzfigUxz4",
-  },
-  {
-    title: "How to Replace a Laptop Battery",
-    category: "Computers",
-    difficulty: "Easy",
-    description:
-      "Step-by-step guide to safely remove and replace your laptop battery.",
-    imageUrl: "/images/laptop-battery.jpg",
-    rating: 5,
-    reviewCount: 0, // ✅ Default review count set to 0
-    solutionUrl: "https://www.youtube.com/watch?v=sMHzfigUxz4",
-  },
-];
-
-const seedDB = async () => {
+const resetRatings = async () => {
   try {
-    console.log("🗑️ Deleting old problems...");
-    const deleteResult = await RepairProblem.deleteMany();
-    console.log(`🛑 Deleted ${deleteResult.deletedCount} existing problems.`);
+    console.log("🔄 Resetting problem ratings...");
 
-    console.log("📌 Inserting new problems...");
-    const insertedData = await RepairProblem.insertMany(problems);
-    console.log(`✅ Successfully inserted ${insertedData.length} problems!`);
+    const updateResult = await RepairProblem.updateMany(
+      {},
+      { $set: { ratings: [], reviewCount: 0 } } // Clear ratings & review count
+    );
+
+    console.log(`✅ Reset ratings for ${updateResult.modifiedCount} problems.`);
   } catch (err) {
-    console.error("❌ Error seeding database:", err);
+    console.error("❌ Error resetting ratings:", err);
   } finally {
     console.log("🔌 Closing MongoDB connection...");
     mongoose.connection.close();

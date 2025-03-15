@@ -1,5 +1,6 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import ProviderData from  '../../Models/provideschema.js';
 import Provider from "../Routes/provider.js";
 import dotenv from "dotenv";
 
@@ -11,7 +12,7 @@ export const loginProvider = async (req, res) => {
     const { email, password } = req.body;
 
     // Check if provider exists
-    const provider = await Provider.findOne({ email });
+    const provider = await ProviderData.findOne({ email });
     if (!provider) {
       return res.status(400).json({ error: "Invalid email or password" });
     }

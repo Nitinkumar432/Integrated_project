@@ -1,0 +1,26 @@
+<h1 class="text-2xl font-bold mb-4">All Providers</h1>
+
+<table class="min-w-full bg-white border border-gray-300 rounded-lg">
+  <thead>
+    <tr class="bg-gray-200">
+      <th class="p-2 border">Name</th>
+      <th class="p-2 border">Email</th>
+      <th class="p-2 border">Verification Status</th>
+      <th class="p-2 border">Service Location</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% providers.forEach(provider => { %>
+    <tr>
+      <td class="p-2 border"><%= provider.name %></td>
+      <td class="p-2 border"><%= provider.email %></td>
+      <td
+        class="p-2 border <%= provider.verificationStatus === 'pending' ? 'bg-yellow-200' : provider.verificationStatus === 'verified' ? 'bg-green-200' : 'bg-red-200' %>"
+      >
+        <%= provider.verificationStatus %>
+      </td>
+      <td class="p-2 border"><%= provider.serviceLocation %></td>
+    </tr>
+    <% }); %>
+  </tbody>
+</table>

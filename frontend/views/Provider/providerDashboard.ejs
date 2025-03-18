@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Provider Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-100">
+    <div class="max-w-6xl mx-auto p-6">
+      <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold">Welcome, <%= provider.name %></h1>
+        <a
+          href="/provider/logout"
+          class="px-4 py-2 bg-red-500 text-white rounded-md"
+          >Logout</a
+        >
+      </div>
+
+      <!-- Profile Section -->
+      <div class="bg-white p-6 shadow-md rounded-lg">
+        <h2 class="text-xl font-semibold mb-4">Your Profile</h2>
+        <p><strong>Email:</strong> <%= provider.email %></p>
+        <p><strong>Location:</strong> <%= provider.location %></p>
+        <p>
+          <strong>Skills:</strong> <%= provider.skills.length > 0 ?
+          provider.skills.join(", ") : "Not specified" %>
+        </p>
+        <a href="/provider/profile" class="mt-4 inline-block text-blue-500"
+          >Edit Profile</a
+        >
+      </div>
+
+      <!-- Jobs Section -->
+      <div class="bg-white p-6 mt-6 shadow-md rounded-lg">
+        <h2 class="text-xl font-semibold mb-4">Your Job Requests</h2>
+        <% if (jobRequests.length === 0) { %>
+        <p class="text-gray-600">No job requests yet.</p>
+        <% } else { %>
+        <ul>
+          <% jobRequests.forEach(request => { %>
+          <li class="border-b py-2">
+            <strong><%= request.title %></strong> - <%= request.status %>
+            <a href="/provider/job/<%= request._id %>" class="text-blue-500"
+              >View</a
+            >
+          </li>
+          <% }); %>
+        </ul>
+        <% } %>
+      </div>
+    </div>
+  </body>
+</html>

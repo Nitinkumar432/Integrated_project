@@ -8,6 +8,7 @@ import multer from "multer";
 import path from "path";
 import bcrypt from "bcryptjs";
 import fs from "fs";
+import OpenAI from "openai";
 
 const router = express.Router();
 
@@ -31,6 +32,39 @@ const upload = multer({ storage });
 
 // ✅ Serve Static Files for Profile Images
 router.use("/uploads", express.static(path.resolve("uploads")));
+
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+// ✅ Route to Render Ask Question Page
+router.get("/ask-question", (req, res) => {
+  res.render("Seeker/askQuestion.ejs"); // Ensure this file exists in views/Seeker/
+});
+
+// ✅ AI Chatbot Route
+router.post("/ask-question", async (req, res) => {
+  try {
+    const { question } = req.body;
+
+    if (!question) {
+      return res.status(400).json({ error: "Question is required" });
+    }
+
+    const response = await openai.chat.completions.create({
+      model: "gpt-3.5-turbo", // ✅ Use GPT-3.5-Turbo (since GPT-4 is not available)
+      messages: [{ role: "user", content: question }],
+      
+    });
+
+    if (!response.choices || response.choices.length === 0) {
+      throw new Error("Invalid AI response");
+    }
+
+    res.json({ reply: response.choices[0].message.content });
+  } catch (error) {
+    console.error("AI Chatbot Error:", error.message || error);
+    res.status(500).json({ error: "Failed to process request" });
+  }
+});
 
 // ✅ Redirect Root Route to Login
 router.get("/", (req, res) => {

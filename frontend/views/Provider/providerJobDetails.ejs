@@ -1,0 +1,23 @@
+<div class="max-w-2xl mx-auto p-6 bg-white shadow-md rounded-lg mt-10">
+  <h1 class="text-2xl font-bold mb-4"><%= job.title %></h1>
+  <p class="text-gray-700">
+    <strong>Description:</strong> <%= job.description %>
+  </p>
+  <p class="text-gray-700"><strong>Location:</strong> <%= job.location %></p>
+  <p class="text-gray-700"><strong>Status:</strong> <%= job.status %></p>
+
+  <% if (job.status === "Pending") { %>
+  <form action="/provider/job/accept/<%= job._id %>" method="POST">
+    <button
+      type="submit"
+      class="mt-4 w-full px-4 py-2 bg-green-600 text-white rounded-md"
+    >
+      Accept Job
+    </button>
+  </form>
+  <% } %>
+
+  <div class="mt-4">
+    <a href="/provider/jobs" class="text-blue-500">Back to Job List</a>
+  </div>
+</div>

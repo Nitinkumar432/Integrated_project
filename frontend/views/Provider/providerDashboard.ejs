@@ -6,47 +6,106 @@
     <title>Provider Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
-  <body class="bg-gray-100">
-    <div class="max-w-6xl mx-auto p-6">
-      <div class="flex justify-between items-center mb-6">
-        <h1 class="text-2xl font-bold">Welcome, <%= provider.name %></h1>
+  <body class="bg-gray-50 min-h-screen">
+    <div class="max-w-6xl mx-auto p-4 sm:p-6">
+      <!-- Top Header -->
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+        <div>
+          <h1 class="text-2xl sm:text-3xl font-bold text-gray-800">
+            Welcome, <%= provider.name %> 👋
+          </h1>
+          <p class="text-gray-500 mt-1">Manage your service requests and profile</p>
+        </div>
         <a
           href="/provider/logout"
-          class="px-4 py-2 bg-red-500 text-white rounded-md"
-          >Logout</a
+          class="px-4 py-2 bg-red-500 text-white text-sm font-medium rounded-md hover:bg-red-600 transition-colors"
         >
+          Logout
+        </a>
       </div>
 
-      <!-- Profile Section -->
-      <div class="bg-white p-6 shadow-md rounded-lg">
-        <h2 class="text-xl font-semibold mb-4">Your Profile</h2>
-        <p><strong>Email:</strong> <%= provider.email %></p>
-        <p><strong>Location:</strong> <%= provider.location %></p>
-        <p>
-          <strong>Skills:</strong> <%= provider.skills.length > 0 ?
-          provider.skills.join(", ") : "Not specified" %>
-        </p>
-        <a href="/provider/profile" class="mt-4 inline-block text-blue-500"
-          >Edit Profile</a
-        >
+      <!-- Provider Info Section -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+        <div class="bg-white p-5 shadow-sm rounded-lg border border-gray-100">
+          <h2 class="text-lg font-semibold mb-3 text-gray-800">Your Profile</h2>
+          <div class="space-y-2 text-sm sm:text-base">
+            <p><span class="font-medium text-gray-700">Email:</span> <%= provider.email %></p>
+            <p><span class="font-medium text-gray-700">Location:</span> <%= provider.serviceLocation %></p>
+            <p>
+              <span class="font-medium text-gray-700">Skills:</span> <%= provider.skills.length > 0 ?
+              provider.skills.join(", ") : "Not specified" %>
+            </p>
+          </div>
+          <a href="/provider/profile" class="text-blue-600 hover:text-blue-800 text-sm font-medium mt-4 inline-flex items-center">
+            Edit Profile
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </a>
+        </div>
+
+        <div class="bg-white p-5 shadow-sm rounded-lg border border-gray-100">
+          <h2 class="text-lg font-semibold mb-3 text-gray-800">Completed Jobs</h2>
+          <div class="flex items-center">
+            <span class="text-3xl font-bold text-green-600"><%= completedJobs %></span>
+            <span class="ml-2 text-gray-500">jobs completed</span>
+          </div>
+        </div>
+
+        <div class="bg-white p-5 shadow-sm rounded-lg border border-gray-100">
+          <h2 class="text-lg font-semibold mb-3 text-gray-800">Total Job Requests</h2>
+          <div class="flex items-center">
+            <span class="text-3xl font-bold text-blue-600"><%= jobRequests.length %></span>
+            <span class="ml-2 text-gray-500">total requests</span>
+          </div>
+        </div>
       </div>
 
-      <!-- Jobs Section -->
-      <div class="bg-white p-6 mt-6 shadow-md rounded-lg">
-        <h2 class="text-xl font-semibold mb-4">Your Job Requests</h2>
+      <!-- Job Requests Section -->
+      <div class="bg-white p-5 mt-6 shadow-sm rounded-lg border border-gray-100">
+        <h2 class="text-xl font-semibold mb-4 text-gray-800">Your Job Requests</h2>
         <% if (jobRequests.length === 0) { %>
-        <p class="text-gray-600">No job requests yet.</p>
+        <div class="py-8 text-center">
+          <p class="text-gray-500">No job requests yet.</p>
+          <p class="text-sm text-gray-400 mt-1">New requests will appear here when clients need your services.</p>
+        </div>
         <% } else { %>
-        <ul>
-          <% jobRequests.forEach(request => { %>
-          <li class="border-b py-2">
-            <strong><%= request.title %></strong> - <%= request.status %>
-            <a href="/provider/job/<%= request._id %>" class="text-blue-500"
-              >View</a
-            >
-          </li>
-          <% }); %>
-        </ul>
+        <div class="overflow-x-auto">
+          <ul class="divide-y divide-gray-100">
+            <% jobRequests.forEach(request => { %>
+            <li class="py-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+              <div>
+                <h3 class="font-medium text-gray-800"><%= request.title %></h3>
+                <div class="flex items-center mt-1">
+                  <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium
+                    <%= request.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' : 
+                       request.status === 'Accepted' ? 'bg-green-100 text-green-800' : 
+                       request.status === 'Rejected' ? 'bg-red-100 text-red-800' : 
+                       'bg-gray-100 text-gray-800' %>">
+                    <%= request.status %>
+                  </span>
+                </div>
+              </div>
+              <div class="flex flex-wrap gap-2">
+                <a
+                  href="/provider/job/<%= request._id %>"
+                  class="px-3 py-1.5 bg-blue-500 text-white text-sm font-medium rounded hover:bg-blue-600 transition-colors"
+                >View</a>
+                <% if (request.status === "Pending") { %>
+                <a
+                  href="/provider/job/<%= request._id %>/accept"
+                  class="px-3 py-1.5 bg-green-500 text-white text-sm font-medium rounded hover:bg-green-600 transition-colors"
+                >Accept</a>
+                <a
+                  href="/provider/job/<%= request._id %>/reject"
+                  class="px-3 py-1.5 bg-red-500 text-white text-sm font-medium rounded hover:bg-red-600 transition-colors"
+                >Reject</a>
+                <% } %>
+              </div>
+            </li>
+            <% }); %>
+          </ul>
+        </div>
         <% } %>
       </div>
     </div>

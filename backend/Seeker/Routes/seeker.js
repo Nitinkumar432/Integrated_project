@@ -1,3 +1,6 @@
+import dotenv from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
 import express from "express";
 import { registerSeeker } from "../Controller/register.js";
 import RepairProblem from "../../Models/repairProblem.js";
@@ -5,10 +8,20 @@ import { loginSeeker } from "../Controller/login.js";
 import { authenticateUser } from "../../middlewares/auth.js";
 import Seeker from "../../Models/seekers.js";
 import multer from "multer";
-import path from "path";
+// import path from "path";
 import bcrypt from "bcryptjs";
 import fs from "fs";
 import OpenAI from "openai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+
+// Get current directory
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// ✅ Load .env from backend folder
+dotenv.config({ path: path.resolve(__dirname, "../.env") });
+
+console.log("Gemini API Key:", process.env.GEMINI_API_KEY);
 
 const router = express.Router();
 
@@ -33,36 +46,65 @@ const upload = multer({ storage });
 // ✅ Serve Static Files for Profile Images
 router.use("/uploads", express.static(path.resolve("uploads")));
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+// const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+// // ✅ Route to Render Ask Question Page
+// router.get("/ask-question", (req, res) => {
+//   res.render("Seeker/askQuestion.ejs"); // Ensure this file exists in views/Seeker/
+// });
+
+// // ✅ AI Chatbot Route
+// router.post("/ask-question", async (req, res) => {
+//   try {
+//     const { question } = req.body;
+
+//     if (!question) {
+//       return res.status(400).json({ error: "Question is required" });
+//     }
+
+//     const response = await openai.chat.completions.create({
+//       model: "gpt-3.5-turbo", // ✅ Use GPT-3.5-Turbo (since GPT-4 is not available)
+//       messages: [{ role: "user", content: question }],
+
+//     });
+
+//     if (!response.choices || response.choices.length === 0) {
+//       throw new Error("Invalid AI response");
+//     }
+
+//     res.json({ reply: response.choices[0].message.content });
+//   } catch (error) {
+//     console.error("AI Chatbot Error:", error.message || error);
+//     res.status(500).json({ error: "Failed to process request" });
+//   }
+// });
+
+// Initialize Gemini AI
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+
 
 // ✅ Route to Render Ask Question Page
 router.get("/ask-question", (req, res) => {
-  res.render("Seeker/askQuestion.ejs"); // Ensure this file exists in views/Seeker/
+  res.render("Seeker/askQuestion.ejs");
 });
 
 // ✅ AI Chatbot Route
 router.post("/ask-question", async (req, res) => {
   try {
     const { question } = req.body;
-
-    if (!question) {
+    if (!question)
       return res.status(400).json({ error: "Question is required" });
-    }
 
-    const response = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo", // ✅ Use GPT-3.5-Turbo (since GPT-4 is not available)
-      messages: [{ role: "user", content: question }],
-      
-    });
+    // Generate Response from Gemini AI
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+    const result = await model.generateContent(question);
+    const response = await result.response;
+    const reply = response.text();
 
-    if (!response.choices || response.choices.length === 0) {
-      throw new Error("Invalid AI response");
-    }
-
-    res.json({ reply: response.choices[0].message.content });
+    res.json({ reply });
   } catch (error) {
-    console.error("AI Chatbot Error:", error.message || error);
-    res.status(500).json({ error: "Failed to process request" });
+    console.error("AI Chatbot Error:", error);
+    res.status(500).json({ error: "Failed to generate solution" });
   }
 });
 

@@ -14,20 +14,24 @@ console.log("✅ Provider Routes Loaded");
 // ✅ Provider Dashboard Route
 router.get("/dashboard", authenticateProvider, async (req, res) => {
   try {
-    console.log("🔹 Authenticated Provider ID:", req.user.providerId); // ✅ Debug log
-
     const provider = await Provider.findById(req.user.providerId);
-    if (!provider) {
-      console.log("❌ Provider not found in the database");
-      return res.status(404).send("Provider not found");
-    }
+    if (!provider) return res.status(404).json({ error: "Provider not found" });
 
     const jobRequests = await JobRequest.find({ providerId: provider._id });
 
-    res.render("Provider/providerDashboard.ejs", { provider, jobRequests });
+    // Ensure completedJobs has a value (count jobs with status "Completed")
+    const completedJobs = jobRequests.filter(
+      (job) => job.status === "Completed"
+    ).length;
+
+    res.render("Provider/providerDashboard", {
+      provider,
+      jobRequests,
+      completedJobs, // ✅ Ensure this is passed to the EJS file
+    });
   } catch (error) {
     console.error("❌ Error fetching provider dashboard:", error);
-    res.status(500).send("Server Error");
+    res.status(500).json({ error: "Server error" });
   }
 });
 

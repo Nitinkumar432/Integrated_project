@@ -7,39 +7,86 @@
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
   <body class="bg-gray-100 flex flex-col items-center p-8">
-    <h1 class="text-2xl font-bold mb-4">Ask AI About Repairs</h1>
+    <h1 class="text-2xl font-bold mb-4 text-gray-800">Ask AI About Repairs</h1>
+
     <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg">
       <textarea
         id="question"
         placeholder="Type your repair question..."
-        class="w-full p-3 border rounded-lg focus:ring-blue-500"
+        class="w-full p-3 border rounded-lg focus:ring-blue-500 focus:outline-none resize-none"
         rows="3"
       ></textarea>
+
       <button
         onclick="askQuestion()"
-        class="mt-4 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
+        id="askBtn"
+        class="mt-4 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
       >
         Ask AI
       </button>
-      <div id="response" class="mt-4 p-3 bg-gray-50 rounded-lg"></div>
+
+      <div
+        id="response"
+        class="mt-4 p-3 bg-gray-50 rounded-lg text-gray-700 hidden"
+      ></div>
     </div>
 
     <script>
       async function askQuestion() {
-        const question = document.getElementById("question").value;
-        if (!question.trim()) return alert("Please enter a question!");
-
+        const question = document.getElementById("question").value.trim();
         const responseDiv = document.getElementById("response");
-        responseDiv.innerHTML = "Thinking...";
+        const askBtn = document.getElementById("askBtn");
 
-        const res = await fetch("/seeker/ask-question", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ question }),
-        });
+        if (!question) {
+          alert("Please enter a question!");
+          return;
+        }
 
-        const data = await res.json();
-        responseDiv.innerHTML = data.reply || "Error getting response.";
+        // Show loading state
+        responseDiv.classList.remove("hidden");
+        responseDiv.innerHTML =
+          "<span class='text-gray-500'>Thinking...</span>";
+        askBtn.disabled = true;
+        askBtn.innerText = "Processing...";
+
+        try {
+          const res = await fetch("/seeker/ask-question", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ question }),
+          });
+
+          const data = await res.json();
+          console.log("AI Response:", data); // ✅ Debugging - Check what AI returns
+
+          let aiResponse = data.reply || "⚠️ Error getting response.";
+
+          // Apply Formatting
+          aiResponse = aiResponse.replace(/\n/g, "<br>");
+          aiResponse = aiResponse.replace(/\* (.+)/g, "• $1");
+          aiResponse = aiResponse.replace(
+            /\*\*(.+?)\*\*/g,
+            "<strong>$1</strong>"
+          );
+          aiResponse = aiResponse.replace(/\*(.+?)\*/g, "<em>$1</em>");
+          aiResponse = aiResponse.replace(
+            /```([^`]+)```/g,
+            `<pre class="bg-gray-800 text-white p-3 rounded-md overflow-auto">$1</pre>`
+          );
+          aiResponse = aiResponse.replace(
+            /`([^`]+)`/g,
+            `<code class="bg-gray-200 px-1 rounded-md">$1</code>`
+          );
+
+          responseDiv.innerHTML = aiResponse;
+        } catch (error) {
+          console.error("Error:", error);
+          responseDiv.innerHTML = "❌ Failed to get response. Try again.";
+        }
+
+        // Reset button state
+        askBtn.disabled = false;
+        askBtn.innerText = "Ask AI";
       }
     </script>
   </body>

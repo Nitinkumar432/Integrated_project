@@ -92,7 +92,9 @@
                   class="flex items-center justify-center md:justify-start gap-2"
                 >
                   <i class="las la-map-marker text-green-600"></i>
-                  <%= seeker.location ? seeker.location : 'Not Provided' %>
+                  <%= seeker.address && seeker.city && seeker.state &&
+                  seeker.zipCode ? seeker.address + ', ' + seeker.city + ', ' +
+                  seeker.state + ' - ' + seeker.zipCode : 'Not Provided' %>
                 </p>
               </div>
             </div>

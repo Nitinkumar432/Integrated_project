@@ -50,8 +50,9 @@ router.get("/providerpage", async (req, res) => {
 router.post("/register", registerProvider);
 
 // ✅ Login Provider & Redirect to Dashboard if Verified
+// ✅ Login Provider & Redirect to Dashboard if Verified
 router.post("/login", async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, lat, lon } = req.body; // Make sure lat/lon is sent
 
   try {
     console.log("🔹 Provider Login Attempt:", email);
@@ -76,6 +77,25 @@ router.post("/login", async (req, res) => {
       return res.status(400).json({ error: "Invalid email or password" });
     }
 
+    // 🔄 Update locationCoordinates if still default
+    const existingCoords = provider.locationCoordinates?.coordinates || [0, 0];
+    const isDefault = existingCoords[0] === 0 && existingCoords[1] === 0;
+
+    if (isDefault && lat && lon) {
+      provider.locationCoordinates = {
+        type: "Point",
+        coordinates: [lon, lat], // longitude first
+      };
+      provider.lastUpdatedLocationAt = new Date();
+      await provider.save();
+      console.log(
+        "📍 Location Coordinates Updated:",
+        provider.locationCoordinates
+      );
+    } else {
+      console.log("📍 Location already set or missing lat/lon.");
+    }
+
     // Generate token
     const token = jwt.sign(
       { providerId: provider._id },
@@ -93,6 +113,48 @@ router.post("/login", async (req, res) => {
   } catch (error) {
     console.error("❌ Login Error:", error);
     res.status(500).json({ error: "Error logging in", details: error.message });
+  }
+});
+
+router.post("/update-location", async (req, res) => {
+  try {
+    const token = req.cookies.providerToken;
+    if (!token) return res.status(401).json({ error: "Unauthorized" });
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const providerId = decoded.providerId;
+
+    const { lat, lon } = req.body;
+    if (!lat || !lon) {
+      return res.status(400).json({ error: "Missing coordinates" });
+    }
+
+    const provider = await Provider.findById(providerId);
+    if (!provider) return res.status(404).json({ error: "Provider not found" });
+
+    const existingCoords = provider.locationCoordinates?.coordinates || [0, 0];
+    const isDefault = existingCoords[0] === 0 && existingCoords[1] === 0;
+
+    if (isDefault) {
+      provider.locationCoordinates = {
+        type: "Point",
+        coordinates: [lon, lat], // [longitude, latitude]
+      };
+      provider.lastUpdatedLocationAt = new Date();
+
+      await provider.save();
+      console.log(
+        "📍 Provider location updated:",
+        provider.locationCoordinates
+      );
+      return res.status(200).json({ message: "Location updated" });
+    }
+
+    console.log("📍 Location already set");
+    res.status(200).json({ message: "Location already set" });
+  } catch (err) {
+    console.error("Error updating location:", err);
+    res.status(500).json({ error: "Failed to update location" });
   }
 });
 

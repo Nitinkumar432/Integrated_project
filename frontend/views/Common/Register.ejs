@@ -135,9 +135,25 @@
                     </div>
                 </div>
                 <div>
-                    <label for="skills" class="block text-gray-700 font-medium mb-2">Skills</label>
-                    <input type="text" id="skills" name="skills" class="w-full p-3 border rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-300" placeholder="Enter skills separated by commas" required>
+                    <label for="problem" class="block text-gray-700 font-medium mb-2">Select Problem Type</label>
+                    <select id="problem" name="problem" class="w-full p-3 border rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-300" required onchange="updateSubProblems()">
+                        <option value="">Select Problem</option>
+                        <option value="Plumbing">Plumbing</option>
+                        <option value="Electrical">Electrical</option>
+                        <option value="Cleaning">Cleaning</option>
+                        <option value="Appliance Repair">Appliance Repair</option>
+                        <!-- Add more as needed -->
+                    </select>
                 </div>
+
+                <div>
+                    <label for="subproblem" class="block text-gray-700 font-medium mb-2">Select Subproblem</label>
+                    <select id="subproblem" name="subproblem" class="w-full p-3 border rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-300" required>
+                        <option value="">Select Subproblem</option>
+                        <!-- Populated dynamically -->
+                    </select>
+                </div>
+
                 <div class="grid gap-8 md:grid-cols-2">
                     <div>
                         <label for="experience" class="block text-gray-700 font-medium mb-2">Years of Experience</label>
@@ -169,6 +185,9 @@
                             Locate Me
                         </button>
                     </div>
+                    <input type="hidden" id="providerLat" name="latitude">
+                    <input type="hidden" id="providerLon" name="longitude">
+
                 </div>
 
                 <div class="grid gap-8 md:grid-cols-2">
@@ -236,6 +255,30 @@
                 }
             });
         });
+
+        const subProblemOptions = {
+            Plumbing: ["Leaky Faucet", "Clogged Drain", "Pipe Installation"],
+            Electrical: ["Wiring Issue", "Fuse Problem", "Light Fixture Repair"],
+            Cleaning: ["Deep Cleaning", "Sofa Cleaning", "Carpet Cleaning"],
+            "Appliance Repair": ["Washing Machine", "Refrigerator", "Microwave"],
+        };
+
+        function updateSubProblems() {
+            const problem = document.getElementById("problem").value;
+            const subSelect = document.getElementById("subproblem");
+
+            subSelect.innerHTML = '<option value="">Select Subproblem</option>';
+
+            if (subProblemOptions[problem]) {
+                subProblemOptions[problem].forEach(sub => {
+                    const option = document.createElement("option");
+                    option.value = sub;
+                    option.textContent = sub;
+                    subSelect.appendChild(option);
+                });
+            }
+        }
+
     </script>
         
     <script>
@@ -307,6 +350,9 @@
 
                             // ✅ Fill Service Location with Complete Address
                             document.getElementById('serviceLocation').value = `${area}, ${city}, ${state}, ${country}, ${zipCode}`;
+
+                            document.getElementById('providerLat').value = position.coords.longitude;
+                            document.getElementById('providerLon').value = position.coords.latitude;
                         } else {
                             document.getElementById('serviceLocation').value = 'Location not found';
                         }

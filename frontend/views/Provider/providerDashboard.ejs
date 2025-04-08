@@ -9,12 +9,16 @@
   <body class="bg-gray-50 min-h-screen">
     <div class="max-w-6xl mx-auto p-4 sm:p-6">
       <!-- Top Header -->
-      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+      <div
+        class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8"
+      >
         <div>
           <h1 class="text-2xl sm:text-3xl font-bold text-gray-800">
             Welcome, <%= provider.name %> 👋
           </h1>
-          <p class="text-gray-500 mt-1">Manage your service requests and profile</p>
+          <p class="text-gray-500 mt-1">
+            Manage your service requests and profile
+          </p>
         </div>
         <a
           href="/provider/logout"
@@ -29,59 +33,93 @@
         <div class="bg-white p-5 shadow-sm rounded-lg border border-gray-100">
           <h2 class="text-lg font-semibold mb-3 text-gray-800">Your Profile</h2>
           <div class="space-y-2 text-sm sm:text-base">
-            <p><span class="font-medium text-gray-700">Email:</span> <%= provider.email %></p>
-            <p><span class="font-medium text-gray-700">Location:</span> <%= provider.serviceLocation %></p>
             <p>
-              <span class="font-medium text-gray-700">Skills:</span> <%= provider.skills.length > 0 ?
-              provider.skills.join(", ") : "Not specified" %>
+              <span class="font-medium text-gray-700">Email:</span> <%=
+              provider.email %>
+            </p>
+            <p>
+              <span class="font-medium text-gray-700">Location:</span> <%=
+              provider.serviceLocation %>
+            </p>
+            <p>
+              <span class="font-medium text-gray-700">Skills:</span> <%=
+              provider.skills.length > 0 ? provider.skills.join(", ") : "Not specified" %>
             </p>
           </div>
-          <a href="/provider/profile" class="text-blue-600 hover:text-blue-800 text-sm font-medium mt-4 inline-flex items-center">
+          <a
+            href="/provider/profile"
+            class="text-blue-600 hover:text-blue-800 text-sm font-medium mt-4 inline-flex items-center"
+          >
             Edit Profile
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-4 w-4 ml-1"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 5l7 7-7 7"
+              />
             </svg>
           </a>
         </div>
 
         <div class="bg-white p-5 shadow-sm rounded-lg border border-gray-100">
-          <h2 class="text-lg font-semibold mb-3 text-gray-800">Completed Jobs</h2>
+          <h2 class="text-lg font-semibold mb-3 text-gray-800">
+            Completed Jobs
+          </h2>
           <div class="flex items-center">
-            <span class="text-3xl font-bold text-green-600"><%= completedJobs %></span>
+            <span class="text-3xl font-bold text-green-600"
+              ><%= completedJobs %></span
+            >
             <span class="ml-2 text-gray-500">jobs completed</span>
           </div>
         </div>
 
         <div class="bg-white p-5 shadow-sm rounded-lg border border-gray-100">
-          <h2 class="text-lg font-semibold mb-3 text-gray-800">Total Job Requests</h2>
+          <h2 class="text-lg font-semibold mb-3 text-gray-800">
+            Total Job Requests
+          </h2>
           <div class="flex items-center">
-            <span class="text-3xl font-bold text-blue-600"><%= jobRequests.length %></span>
+            <span class="text-3xl font-bold text-blue-600"
+              ><%= jobRequests.length %></span
+            >
             <span class="ml-2 text-gray-500">total requests</span>
           </div>
         </div>
       </div>
 
       <!-- Job Requests Section -->
-      <div class="bg-white p-5 mt-6 shadow-sm rounded-lg border border-gray-100">
-        <h2 class="text-xl font-semibold mb-4 text-gray-800">Your Job Requests</h2>
+      <div
+        class="bg-white p-5 mt-6 shadow-sm rounded-lg border border-gray-100"
+      >
+        <h2 class="text-xl font-semibold mb-4 text-gray-800">
+          Your Job Requests
+        </h2>
         <% if (jobRequests.length === 0) { %>
         <div class="py-8 text-center">
           <p class="text-gray-500">No job requests yet.</p>
-          <p class="text-sm text-gray-400 mt-1">New requests will appear here when clients need your services.</p>
+          <p class="text-sm text-gray-400 mt-1">
+            New requests will appear here when clients need your services.
+          </p>
         </div>
         <% } else { %>
         <div class="overflow-x-auto">
           <ul class="divide-y divide-gray-100">
             <% jobRequests.forEach(request => { %>
-            <li class="py-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+            <li
+              class="py-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3"
+            >
               <div>
                 <h3 class="font-medium text-gray-800"><%= request.title %></h3>
                 <div class="flex items-center mt-1">
-                  <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium
-                    <%= request.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' : 
-                       request.status === 'Accepted' ? 'bg-green-100 text-green-800' : 
-                       request.status === 'Rejected' ? 'bg-red-100 text-red-800' : 
-                       'bg-gray-100 text-gray-800' %>">
+                  <span
+                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium <%= request.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' : request.status === 'Accepted' ? 'bg-green-100 text-green-800' : request.status === 'Rejected' ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-gray-800' %>"
+                  >
                     <%= request.status %>
                   </span>
                 </div>
@@ -90,16 +128,19 @@
                 <a
                   href="/provider/job/<%= request._id %>"
                   class="px-3 py-1.5 bg-blue-500 text-white text-sm font-medium rounded hover:bg-blue-600 transition-colors"
-                >View</a>
+                  >View</a
+                >
                 <% if (request.status === "Pending") { %>
                 <a
                   href="/provider/job/<%= request._id %>/accept"
                   class="px-3 py-1.5 bg-green-500 text-white text-sm font-medium rounded hover:bg-green-600 transition-colors"
-                >Accept</a>
+                  >Accept</a
+                >
                 <a
                   href="/provider/job/<%= request._id %>/reject"
                   class="px-3 py-1.5 bg-red-500 text-white text-sm font-medium rounded hover:bg-red-600 transition-colors"
-                >Reject</a>
+                  >Reject</a
+                >
                 <% } %>
               </div>
             </li>
@@ -109,5 +150,54 @@
         <% } %>
       </div>
     </div>
+    <script>
+      window.addEventListener("DOMContentLoaded", () => {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              const { latitude, longitude } = position.coords;
+
+              fetch("/provider/update-location", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ latitude, longitude }),
+              });
+            },
+            (err) => {
+              console.warn(
+                "Geolocation not available or permission denied",
+                err
+              );
+            }
+          );
+        }
+      });
+
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(async (position) => {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+
+          try {
+            const res = await fetch("/provider/update-location", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ lat, lon }),
+            });
+
+            const data = await res.json();
+            console.log("📍 Location Update Response:", data.message);
+          } catch (err) {
+            console.error("❌ Error updating location:", err);
+          }
+        });
+      } else {
+        console.warn("⚠️ Geolocation is not supported by this browser.");
+      }
+    </script>
   </body>
 </html>

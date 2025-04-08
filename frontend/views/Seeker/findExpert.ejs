@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Find an Expert</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-100 flex flex-col items-center p-8">
+    <h1 class="text-2xl font-bold mb-4 text-gray-800">Describe Your Problem</h1>
+
+    <form
+      id="problemForm"
+      action="/seeker/find-expert"
+      method="POST"
+      class="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg"
+      enctype="multipart/form-data"
+    >
+      <!-- Problem Type Dropdown -->
+      <label class="block font-medium">Select Problem Type</label>
+      <select
+        id="problemType"
+        name="problemType"
+        class="w-full p-2 border rounded-lg mt-1 mb-3"
+        onchange="updateSubProblems()"
+        required
+      >
+        <option value="">-- Select Type --</option>
+      </select>
+
+      <!-- Optionally allow new problem -->
+      <input
+        type="text"
+        id="newProblemType"
+        class="w-full p-2 border rounded-lg mt-1 mb-3 hidden"
+        placeholder="Enter new problem type"
+      />
+
+      <!-- Subproblem Dropdown -->
+      <label class="block font-medium">Select Specific Issue</label>
+      <select
+        id="subProblem"
+        name="subProblem"
+        class="w-full p-2 border rounded-lg mt-1 mb-3"
+        required
+      >
+        <option value="">-- Select Issue --</option>
+      </select>
+
+      <!-- Optionally allow new subproblem -->
+      <input
+        type="text"
+        id="newSubProblem"
+        class="w-full p-2 border rounded-lg mt-1 mb-3 hidden"
+        placeholder="Enter new specific issue"
+      />
+
+      <label class="block font-medium">Describe Your Problem (Optional)</label>
+      <textarea
+        id="description"
+        name="description"
+        class="w-full p-3 border rounded-lg mt-1 mb-3"
+        rows="3"
+      ></textarea>
+
+      <label class="block font-medium">Upload Problem Image (Optional)</label>
+      <input
+        type="file"
+        id="problemImage"
+        name="problemImage"
+        class="w-full p-2 border rounded-lg mt-1 mb-3"
+      />
+
+      <label class="block font-medium">Your Location</label>
+      <div class="flex gap-2 items-center mb-3">
+        <input
+          type="text"
+          id="location"
+          name="location"
+          required
+          class="flex-1 p-2 border rounded-lg"
+          placeholder="Enter your city or address"
+        />
+        <button
+          type="button"
+          onclick="getLocation()"
+          class="bg-gray-300 text-sm px-3 py-2 rounded-lg hover:bg-gray-400 transition"
+        >
+          Locate Me
+        </button>
+      </div>
+
+      <!-- Hidden inputs to store coordinates -->
+      <input type="hidden" name="latitude" id="latitude" />
+      <input type="hidden" name="longitude" id="longitude" />
+
+      <button
+        type="submit"
+        class="mt-4 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
+      >
+        Find Expert
+      </button>
+
+      <div id="response" class="mt-4 text-gray-700 hidden"></div>
+    </form>
+
+    <script>
+      // Location
+      async function getLocation() {
+        const locationInput = document.getElementById("location");
+        const latInput = document.getElementById("latitude");
+        const lonInput = document.getElementById("longitude");
+
+        if (!navigator.geolocation) {
+          alert("Geolocation is not supported by your browser.");
+          return;
+        }
+
+        locationInput.placeholder = "Locating...";
+
+        navigator.geolocation.getCurrentPosition(
+          async (position) => {
+            const { latitude, longitude } = position.coords;
+            latInput.value = latitude;
+            lonInput.value = longitude;
+
+            try {
+              const url = `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`;
+
+              const res = await fetch(url, {
+                headers: {
+                  "User-Agent": "find-expert-form/1.0",
+                },
+              });
+
+              const data = await res.json();
+              if (data && data.display_name) {
+                locationInput.value = data.display_name;
+              } else {
+                alert("Unable to fetch address. Please enter manually.");
+              }
+            } catch (err) {
+              console.error("Error fetching address:", err);
+              alert("Error fetching location. Please try again.");
+            } finally {
+              locationInput.placeholder = "Enter your city or address";
+            }
+          },
+          (error) => {
+            console.error("Geolocation error:", error);
+            alert("Unable to retrieve location. Please allow location access.");
+            locationInput.placeholder = "Enter your city or address";
+          },
+          { enableHighAccuracy: true }
+        );
+      }
+
+      // Problems
+
+      let problemData = [];
+
+      async function fetchProblems() {
+        try {
+          const res = await fetch("/api/problems");
+          problemData = await res.json();
+
+          const problemType = document.getElementById("problemType");
+          problemType.innerHTML = `<option value="">-- Select Type --</option>`;
+
+          problemData.forEach((p) => {
+            const option = document.createElement("option");
+            option.value = p.name;
+            option.textContent = p.name;
+            problemType.appendChild(option);
+          });
+
+          const other = document.createElement("option");
+          other.value = "__other__";
+          other.textContent = "Other";
+          problemType.appendChild(other);
+        } catch (err) {
+          console.error("Error loading problems:", err);
+        }
+      }
+
+      function updateSubProblems() {
+        const selected = document.getElementById("problemType").value;
+        const subProblem = document.getElementById("subProblem");
+        const newProblem = document.getElementById("newProblemType");
+        const newSub = document.getElementById("newSubProblem");
+
+        if (selected === "__other__") {
+          newProblem.classList.remove("hidden");
+          newSub.classList.remove("hidden");
+          subProblem.innerHTML = `<option value="">-- Select Issue --</option>`;
+          subProblem.required = false;
+          newSub.required = true; // since they’ll be typing a new one
+          return;
+        }
+
+        newProblem.classList.add("hidden");
+        newSub.classList.add("hidden");
+        subProblem.required = true;
+        newSub.required = false;
+
+        const match = problemData.find((p) => p.name === selected);
+        subProblem.innerHTML = `<option value="">-- Select Issue --</option>`;
+
+        if (match) {
+          match.subproblems.forEach((sp) => {
+            const option = document.createElement("option");
+            option.value = sp.name;
+            option.textContent = sp.name;
+            subProblem.appendChild(option);
+          });
+
+          const other = document.createElement("option");
+          other.value = "__other__";
+          other.textContent = "Other";
+          subProblem.appendChild(other);
+        }
+      }
+
+      // Show input for new subproblem if "Other" selected
+      document.getElementById("subProblem").addEventListener("change", () => {
+        const subVal = document.getElementById("subProblem").value;
+        const newSub = document.getElementById("newSubProblem");
+
+        if (subVal === "__other__") {
+          newSub.classList.remove("hidden");
+          newSub.required = true;
+        } else {
+          newSub.classList.add("hidden");
+          newSub.required = false;
+        }
+      });
+
+      window.addEventListener("DOMContentLoaded", () => {
+        fetchProblems();
+        document
+          .getElementById("problemType")
+          .addEventListener("change", updateSubProblems);
+      });
+
+      // Handle final submission values
+      document.getElementById("problemForm").addEventListener("submit", (e) => {
+        const selectedProblem = document.getElementById("problemType").value;
+        const selectedSub = document.getElementById("subProblem").value;
+        const newProblem = document
+          .getElementById("newProblemType")
+          .value.trim();
+        const newSub = document.getElementById("newSubProblem").value.trim();
+
+        const finalProblem =
+          selectedProblem === "__other__" ? newProblem : selectedProblem;
+        const finalSubproblem =
+          selectedSub === "__other__" ? newSub : selectedSub;
+
+        // Create hidden inputs if needed
+        const problemInput = document.createElement("input");
+        problemInput.type = "hidden";
+        problemInput.name = "problem";
+        problemInput.value = finalProblem;
+
+        const subInput = document.createElement("input");
+        subInput.type = "hidden";
+        subInput.name = "subproblem";
+        subInput.value = finalSubproblem;
+
+        e.target.appendChild(problemInput);
+        e.target.appendChild(subInput);
+      });
+    </script>
+  </body>
+</html>

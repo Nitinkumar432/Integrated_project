@@ -4,9 +4,13 @@ import { fileURLToPath } from "url";
 import express from "express";
 import { registerSeeker } from "../Controller/register.js";
 import RepairProblem from "../../Models/repairProblem.js";
+import Provider from "../../Models/provideschema.js";
 import { loginSeeker } from "../Controller/login.js";
 import { authenticateUser } from "../../middlewares/auth.js";
 import Seeker from "../../Models/seekers.js";
+import SeekerProblem from "../../Models/seekerProblemSchema.js";
+import ProblemType from "../../Models/problemModel.js";
+
 import multer from "multer";
 // import path from "path";
 import bcrypt from "bcryptjs";
@@ -81,7 +85,6 @@ router.use("/uploads", express.static(path.resolve("uploads")));
 
 // Initialize Gemini AI
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-
 
 // ✅ Route to Render Ask Question Page
 router.get("/ask-question", (req, res) => {
@@ -262,6 +265,184 @@ router.get("/logout", (req, res) => {
   res.clearCookie("seekerToken", { path: "/" }); // Ensure cookie is cleared globally
   res.set("Cache-Control", "no-store, no-cache, must-revalidate, private"); // Prevent caching
   res.redirect("/login"); // Redirect to login page
+});
+
+// Find Expert
+
+// ✅ Configure Multer for Problem Image Uploads
+const problemPicsPath = path.resolve("uploads/seekerProblem");
+if (!fs.existsSync(problemPicsPath)) {
+  fs.mkdirSync(problemPicsPath, { recursive: true });
+}
+
+const problemStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, problemPicsPath); // Uploads go to uploads/seekerProblem
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname));
+  },
+});
+
+const problemUpload = multer({ storage: problemStorage });
+
+// ✅ Render "Find Expert" Form Page
+router.get("/find-expert", authenticateUser, async (req, res) => {
+  try {
+    const allProblems = await ProblemType.find({}); // Fetch from DB
+    res.render("Seeker/findExpert.ejs", { allProblems });
+  } catch (error) {
+    console.error("Error fetching problem types:", error);
+    res.render("Seeker/findExpert.ejs", { allProblems: [] });
+  }
+});
+
+router.post(
+  "/find-expert",
+  authenticateUser,
+  problemUpload.single("problemImage"),
+  async (req, res) => {
+    try {
+      console.log("✅ Middleware Executed!");
+      console.log("🔍 Token:", req.headers.authorization || req.cookies.token);
+      console.log("✅ Decoded User:", req.user);
+      console.log("📝 Incoming Data:", req.body);
+      console.log(
+        "🖼 Uploaded File:",
+        req.file ? req.file.filename : "No file uploaded"
+      );
+
+      if (!req.user) {
+        return res
+          .status(401)
+          .json({ error: "Unauthorized: User not found in request" });
+      }
+
+      let { problemType, subProblem, description, location } = req.body;
+      const seekerId = req.user.userId;
+
+      if (!problemType || !subProblem || !location) {
+        return res
+          .status(400)
+          .json({ error: "All required fields must be filled!" });
+      }
+
+      problemType = problemType.trim();
+      subProblem = subProblem.trim();
+      description = description ? description.trim() : "";
+      location = location.trim();
+
+      const newProblem = new SeekerProblem({
+        seekerId,
+        problemType,
+        subProblem,
+        description,
+        location,
+        locationCoordinates: {
+          type: "Point",
+          coordinates: [
+            parseFloat(req.body.longitude),
+            parseFloat(req.body.latitude),
+          ],
+        },
+        imageUrl: req.file
+          ? `/uploads/seekerProblem/${req.file.filename}`
+          : null,
+      });
+
+      await newProblem.save();
+
+      const providers = await Provider.aggregate([
+        {
+          $geoNear: {
+            near: {
+              type: "Point",
+              coordinates: [
+                parseFloat(req.body.longitude),
+                parseFloat(req.body.latitude),
+              ],
+            },
+            distanceField: "distance",
+            spherical: true,
+            maxDistance: 10000, // 10 km
+            query: {
+              skills: { $in: [problemType, subProblem] },
+              verificationStatus: "verified",
+            },
+          },
+        },
+      ]);
+
+      console.log("🔍 Found Providers:", providers.length);
+
+      res.render("Seeker/expertResults.ejs", {
+        providers,
+        error:
+          providers.length === 0
+            ? "No providers found for this issue in your area."
+            : null,
+        locationUsed: location, // ✅ Add this to prevent undefined error
+      });
+    } catch (error) {
+      console.error("Error fetching expert results:", error);
+      res.status(500).render("Seeker/expertResults.ejs", {
+        problems: [],
+        providers: [],
+        locationUsed: null, // ✅ Handle error state gracefully
+      });
+    }
+  }
+);
+
+// ✅ Render "Expert Results" Page
+// ✅ Render "Expert Results" Page with Nearby Experts
+router.get("/expert-results", authenticateUser, async (req, res) => {
+  try {
+    const problems = await SeekerProblem.find({ seekerId: req.user._id }).sort({
+      createdAt: -1,
+    });
+
+    // Use the most recent problem (or modify to let user choose one)
+    const latestProblem = problems[0];
+
+    if (!latestProblem || !latestProblem.locationCoordinates) {
+      return res.render("Seeker/expertResults.ejs", {
+        problems,
+        providers: [],
+        message: "No location found for your problem.",
+        locationUsed: null,
+      });
+    }
+
+    const { coordinates } = latestProblem.locationCoordinates;
+
+    const providers = await Provider.aggregate([
+      {
+        $geoNear: {
+          near: {
+            type: "Point",
+            coordinates,
+          },
+          distanceField: "distance",
+          spherical: true,
+          maxDistance: 10000, // 10km
+        },
+      },
+    ]);
+
+    res.render("Seeker/expertResults.ejs", {
+      problems,
+      providers,
+      locationUsed: latestProblem.location,
+    });
+  } catch (error) {
+    console.error("Error fetching expert results:", error);
+    res.status(500).render("Seeker/expertResults.ejs", {
+      problems: [],
+      providers: [],
+      locationUsed: null,
+    });
+  }
 });
 
 export default router;

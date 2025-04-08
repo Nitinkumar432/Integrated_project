@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Experts Available</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-100 flex flex-col items-center p-8">
+    <h1 class="text-2xl font-bold mb-4 text-gray-800">Experts Available</h1>
+
+    <% if (locationUsed) { %>
+    <p class="mb-4 text-sm text-gray-600">
+      Showing results near your location: <strong><%= locationUsed %></strong>
+    </p>
+    <% } %>
+
+    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg">
+      <% if (providers && providers.length === 0) { %>
+      <p class="text-gray-600">No experts found for this issue in your area.</p>
+      <% } else { %>
+      <ul class="space-y-4">
+        <% providers.forEach(provider => { %>
+        <li class="p-4 border rounded-lg shadow-sm bg-gray-50">
+          <h3 class="text-lg font-semibold text-gray-800">
+            <%= provider.name %>
+          </h3>
+          <p class="text-gray-600">
+            <strong>Location:</strong> <%= provider.serviceLocation %>
+          </p>
+          <p class="text-gray-600">
+            <strong>Skills:</strong> <%= provider.skills.join(", ") %>
+          </p>
+          <p class="text-gray-600">
+            <strong>Rating:</strong> ⭐ <%= provider.ratings %>/5
+          </p>
+
+          <% if (provider.distance) { %>
+          <p class="text-gray-600">
+            <strong>Distance:</strong> <%= (provider.distance / 1000).toFixed(2)
+            %> km away
+          </p>
+          <% } %>
+
+          <a
+            href="/provider/profile/<%= provider._id %>"
+            class="text-blue-600 hover:underline"
+          >
+            View Profile
+          </a>
+        </li>
+        <% }); %>
+      </ul>
+      <% } %>
+    </div>
+  </body>
+</html>

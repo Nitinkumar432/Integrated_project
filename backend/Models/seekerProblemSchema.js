@@ -7,7 +7,7 @@ const SeekerProblemSchema = new mongoose.Schema({
     required: true,
   },
   problemType: { type: String, required: true },
-  subProblem: { type: String, required: true },
+  subProblem: { type: String },
   description: { type: String },
   location: { type: String, required: true },
 

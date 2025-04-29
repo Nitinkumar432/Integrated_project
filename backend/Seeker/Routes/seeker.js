@@ -288,6 +288,7 @@ const problemUpload = multer({ storage: problemStorage });
 
 // ✅ Render "Find Expert" Form Page
 router.get("/find-expert", authenticateUser, async (req, res) => {
+
   try {
     const allProblems = await ProblemType.find({}); // Fetch from DB
     res.render("Seeker/findExpert.ejs", { allProblems });
@@ -302,6 +303,7 @@ router.post(
   authenticateUser,
   problemUpload.single("problemImage"),
   async (req, res) => {
+    console.log(req.body);
     try {
       console.log("✅ Middleware Executed!");
       console.log("🔍 Token:", req.headers.authorization || req.cookies.token);
@@ -321,7 +323,7 @@ router.post(
       let { problemType, subProblem, description, location } = req.body;
       const seekerId = req.user.userId;
 
-      if (!problemType || !subProblem || !location) {
+      if (!problemType || !location) {
         return res
           .status(400)
           .json({ error: "All required fields must be filled!" });

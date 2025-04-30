@@ -382,7 +382,7 @@ router.post(
 
       res.render("Seeker/expertResults.ejs", {
         providers,
-  
+         data:newProblem,
 
         error:
           providers.length === 0
@@ -418,10 +418,10 @@ router.get('/fetch-finder/:id', async (req, res) => {
     });
 
     console.log("🔍 Found Providers:", providers.length);
-
+console.log("data hai ",data);
     res.render("Seeker/expertResults.ejs", {
       providers,
-
+       data,
       error: providers.length === 0 ? "No providers found for this issue." : null,
       locationUsed: data.location || "your area", // fallback location
     });
@@ -444,116 +444,50 @@ router.get('/fetch-finder/:id', async (req, res) => {
 
 // Send request to provider
 router.post('/send-request', authenticateUser, async (req, res) => {
+  console.log("called hello do it");
+  console.log(req.body);
+
   try {
-    const { providerId, problemId } = req.body;
-    
-    // Validate input
-    if (!providerId || !problemId) {
-      return res.status(400).json({ 
-        success: false,
-        message: 'Provider ID and Problem ID are required' 
-      });
-    }
+    const { providerId, problemDetails} = req.body;
+    // console.log("seekerid",seekerId);
 
-    // Get problem details
-    const problem = await SeekerProblem.findById(problemId);
-    if (!problem) {
-      return res.status(404).json({ 
-        success: false,
-        message: 'Problem not found' 
-      });
-    }
+    // Convert coordinates from string to array of numbers
+    const coords = problemDetails.locationCoordinates.coordinates[0]
+      .split(',').map(Number);  // Example: "30.5134689,76.6611815" => [30.5134689, 76.6611815]
 
-    // Verify the problem belongs to the current user
-    if (problem.seekerId.toString() !== req.user._id.toString()) {
-      return res.status(403).json({ 
-        success: false,
-        message: 'Unauthorized - You can only send requests for your own problems' 
-      });
-    }
-
-    // Verify provider exists
-    const provider = await Provider.findById(providerId);
-    if (!provider) {
-      return res.status(404).json({ 
-        success: false,
-        message: 'Provider not found' 
-      });
-    }
-
-    // Check if request already exists
-    const existingRequest = await Request.findOne({
-      seekerId: req.user._id,
-      providerId,
-      problemId,
-      status: { $in: ['pending', 'accepted'] }
-    });
-
-    if (existingRequest) {
-      return res.status(400).json({ 
-        success: false,
-        message: existingRequest.status === 'pending' 
-          ? 'Request already sent and pending' 
-          : 'Request already accepted by this provider'
-      });
-    }
-
-    // Create new request
+    // Build the full request object directly
     const newRequest = new Request({
-      seekerId: req.user._id,
+      seekerId: problemDetails.seekerId,
       providerId,
-      problemId,
       problemDetails: {
-        problemType: problem.problemType,
-        subProblem: problem.subProblem,
-        description: problem.description,
-        location: problem.location,
-        locationCoordinates: problem.locationCoordinates,
-        createdAt: problem.createdAt
+        ...problemDetails,
+        locationCoordinates: {
+          type: 'Point',
+          coordinates: coords
+        }
       },
-      status: 'pending'
+      status: 'pending',
+      createdAt: new Date(),
+      updatedAt: new Date()
     });
 
     await newRequest.save();
 
-    // Create notification for provider
-    const notification = new Notification({
-      userId: providerId,
-      type: 'new_request',
-      message: `You have a new service request for ${problem.problemType}`,
-      relatedEntity: {
-        type: 'request',
-        id: newRequest._id
-      },
-      read: false
-    });
-
-    await notification.save();
-
-    // You might want to send real-time notification here (Socket.io or similar)
-
     res.status(201).json({
       success: true,
       message: 'Service request sent successfully',
-      data: {
-        requestId: newRequest._id,
-        providerName: provider.name,
-        problemType: problem.problemType,
-        status: newRequest.status,
-        createdAt: newRequest.createdAt
-      }
+      data: newRequest
     });
+
   } catch (error) {
     console.error('Error sending request:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       success: false,
-      message: 'Server error while processing your request',
-      error: error.message 
+      message: 'Server error while sending request',
+      error: error.message
     });
   }
 });
-
-
 
 
 // ✅ Render "Expert Results" Page

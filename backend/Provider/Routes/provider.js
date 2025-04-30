@@ -6,6 +6,7 @@ import Provider from "../../Models/provideschema.js";
 import JobRequest from "../../Models/jobRequests.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import Request from '../../Models/problemrequest.js'
 
 const router = express.Router();
 
@@ -15,13 +16,14 @@ console.log("✅ Provider Routes Loaded");
 router.get("/dashboard", authenticateProvider, async (req, res) => {
   try {
     const provider = await Provider.findById(req.user.providerId);
+    // const allRequests = await Request.find({ providerId: provider._id });
     if (!provider) return res.status(404).json({ error: "Provider not found" });
 
-    const jobRequests = await JobRequest.find({ providerId: provider._id });
+    const jobRequests = await Request.find({ providerId: provider._id });
 
     // Ensure completedJobs has a value (count jobs with status "Completed")
     const completedJobs = jobRequests.filter(
-      (job) => job.status === "Completed"
+      (job) => job.status === "completed"
     ).length;
 
     res.render("Provider/providerDashboard", {

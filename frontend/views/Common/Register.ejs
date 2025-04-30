@@ -137,11 +137,19 @@
                 <div>
                     <label for="problem" class="block text-gray-700 font-medium mb-2">Select Problem Type</label>
                     <select id="problem" name="problem" class="w-full p-3 border rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-300" required onchange="updateSubProblems()">
-                        <option value="">Select Problem</option>
-                        <option value="Plumbing">Plumbing</option>
-                        <option value="Electrical">Electrical</option>
-                        <option value="Cleaning">Cleaning</option>
-                        <option value="Appliance Repair">Appliance Repair</option>
+                       
+                            <option value="">Select Problem</option>
+                            <option value="Plumbing">Plumbing</option>
+                            <option value="Electrical">Electrical</option>
+                            <option value="Cleaning">Cleaning</option>
+                            <option value="Appliance Repair">Appliance Repair</option>
+                            <option value="Laptop Repair">Laptop Repair</option>
+                            <option value="AC Repair">AC Repair</option>
+                            <option value="Carpentry">Carpentry</option>
+                            <option value="Painting">Painting</option>
+                            <option value="Masonry">Masonry</option>
+                            <option value="More">More...</option>
+                      
                         <!-- Add more as needed -->
                     </select>
                 </div>
@@ -257,11 +265,17 @@
         });
 
         const subProblemOptions = {
-            Plumbing: ["Leaky Faucet", "Clogged Drain", "Pipe Installation"],
-            Electrical: ["Wiring Issue", "Fuse Problem", "Light Fixture Repair"],
-            Cleaning: ["Deep Cleaning", "Sofa Cleaning", "Carpet Cleaning"],
-            "Appliance Repair": ["Washing Machine", "Refrigerator", "Microwave"],
-        };
+    Plumbing: ["Leaky Faucet", "Clogged Drain", "Pipe Installation"],
+    Electrical: ["Wiring Issue", "Fuse Problem", "Light Fixture Repair"],
+    Cleaning: ["Deep Cleaning", "Sofa Cleaning", "Carpet Cleaning"],
+    "Appliance Repair": ["Washing Machine", "Refrigerator", "Microwave"],
+    "Laptop Repair": ["Screen Replacement", "Keyboard Issue", "Battery Problem"],
+    "AC Repair": ["Gas Refill", "Compressor Issue", "Thermostat Problem"],
+    Carpentry: ["Furniture Repair", "Door Hinge Fix", "Woodwork Polishing"],
+    Painting: ["Wall Painting", "Texture Painting", "Waterproof Coating"],
+    Masonry: ["Wall Cracks", "Tile Installation", "Cement Plastering"]
+};
+
 
         function updateSubProblems() {
             const problem = document.getElementById("problem").value;

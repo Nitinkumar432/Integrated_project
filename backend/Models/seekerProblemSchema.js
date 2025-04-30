@@ -23,6 +23,11 @@ const SeekerProblemSchema = new mongoose.Schema({
       required: true,
     },
   },
+  verificationStatus: {
+    type: String,
+    enum: ["pending", "verified", "rejected"],
+    default: "pending",
+  },
 
   createdAt: { type: Date, default: Date.now },
   tags: [{ type: String }],

@@ -10,6 +10,7 @@ import { authenticateUser } from "../../middlewares/auth.js";
 import Seeker from "../../Models/seekers.js";
 import SeekerProblem from "../../Models/seekerProblemSchema.js";
 import ProblemType from "../../Models/problemModel.js";
+import  Request  from '../../Models/problemrequest.js';
 
 import multer from "multer";
 // import path from "path";
@@ -240,7 +241,9 @@ router.get("/dashboard", authenticateUser, async (req, res) => {
     if (!seeker) return res.status(404).send("Seeker not found");
 
     // Fetch Repair Requests Made by This Seeker
-    const repairRequests = await RepairProblem.find({ userId: seeker._id });
+    const repairRequests = await SeekerProblem.find({ seekerId: seeker._id });
+    
+    // console.log(repairRequests);
 
     // ✅ Pass `repairRequests` to `dashboard.ejs`
     res.render("Seeker/dashboard.ejs", { seeker, repairRequests });
@@ -297,104 +300,261 @@ router.get("/find-expert", authenticateUser, async (req, res) => {
     res.render("Seeker/findExpert.ejs", { allProblems: [] });
   }
 });
-
 router.post(
   "/find-expert",
   authenticateUser,
   problemUpload.single("problemImage"),
   async (req, res) => {
+    console.log("this is data");
     console.log(req.body);
+
     try {
       console.log("✅ Middleware Executed!");
       console.log("🔍 Token:", req.headers.authorization || req.cookies.token);
       console.log("✅ Decoded User:", req.user);
       console.log("📝 Incoming Data:", req.body);
-      console.log(
-        "🖼 Uploaded File:",
-        req.file ? req.file.filename : "No file uploaded"
-      );
+      console.log("🖼 Uploaded File:", req.file ? req.file.filename : "No file uploaded");
 
       if (!req.user) {
-        return res
-          .status(401)
-          .json({ error: "Unauthorized: User not found in request" });
+        return res.status(401).json({ error: "Unauthorized: User not found in request" });
       }
 
-      let { problemType, subProblem, description, location } = req.body;
-      const seekerId = req.user.userId;
-
-      if (!problemType || !location) {
-        return res
-          .status(400)
-          .json({ error: "All required fields must be filled!" });
-      }
-
-      problemType = problemType.trim();
-      subProblem = subProblem.trim();
-      description = description ? description.trim() : "";
-      location = location.trim();
-
-      const newProblem = new SeekerProblem({
-        seekerId,
+      let {
+        newProblemType,
+        newSubProblem,
         problemType,
         subProblem,
         description,
         location,
+        latitude,
+        longitude
+      } = req.body;
+
+      // Fallback to dropdown value if manual input is empty
+      newProblemType =
+        typeof newProblemType === "string" && newProblemType.trim()
+          ? newProblemType.trim()
+          : Array.isArray(problemType) && problemType.length > 0
+          ? problemType[0].trim()
+          : "";
+
+      newSubProblem =
+        typeof newSubProblem === "string" && newSubProblem.trim()
+          ? newSubProblem.trim()
+          : Array.isArray(subProblem) && subProblem.length > 0
+          ? subProblem[0].trim()
+          : "";
+
+      description = typeof description === "string" ? description.trim() : "";
+      location = typeof location === "string" ? location.trim() : "";
+
+      if (!newProblemType || !location || !latitude || !longitude) {
+        return res.status(400).json({ error: "All required fields must be filled!" });
+      }
+
+      const seekerId = req.user.userId;
+
+      const newProblem = new SeekerProblem({
+        seekerId,
+        problemType: newProblemType,
+        subProblem: newSubProblem,
+        description,
+        location,
         locationCoordinates: {
           type: "Point",
-          coordinates: [
-            parseFloat(req.body.longitude),
-            parseFloat(req.body.latitude),
-          ],
+          coordinates: [parseFloat(longitude), parseFloat(latitude)],
         },
-        imageUrl: req.file
-          ? `/uploads/seekerProblem/${req.file.filename}`
-          : null,
+        imageUrl: req.file ? `/uploads/seekerProblem/${req.file.filename}` : null,
       });
 
       await newProblem.save();
+      console.log(newProblem);
 
-      const providers = await Provider.aggregate([
-        {
-          $geoNear: {
-            near: {
-              type: "Point",
-              coordinates: [
-                parseFloat(req.body.longitude),
-                parseFloat(req.body.latitude),
-              ],
-            },
-            distanceField: "distance",
-            spherical: true,
-            maxDistance: 10000, // 10 km
-            query: {
-              skills: { $in: [problemType, subProblem] },
-              verificationStatus: "verified",
-            },
-          },
-        },
-      ]);
+      // ✅ Directly match against `problem` and `subproblem`
+      const providers = await Provider.find({
+        $or: [
+          { problem: newProblemType },
+          { subproblem: newSubProblem }
+        ]
+      });
 
       console.log("🔍 Found Providers:", providers.length);
 
       res.render("Seeker/expertResults.ejs", {
         providers,
+  
+
         error:
           providers.length === 0
-            ? "No providers found for this issue in your area."
+            ? "No providers found for this issue."
             : null,
-        locationUsed: location, // ✅ Add this to prevent undefined error
+        locationUsed: req.body.location,
       });
+
     } catch (error) {
       console.error("Error fetching expert results:", error);
       res.status(500).render("Seeker/expertResults.ejs", {
-        problems: [],
         providers: [],
-        locationUsed: null, // ✅ Handle error state gracefully
+        error: "An error occurred while searching for providers.",
+        locationUsed: null,
       });
     }
   }
 );
+router.get('/fetch-finder/:id', async (req, res) => {
+  const requestId = req.params.id;
+  console.log("Request ID:", requestId);
+
+  try {
+    const data = await SeekerProblem.findById(requestId);
+    // console.log(newProblem);
+    // console.log("Data:", newProblem);
+
+    const providers = await Provider.find({
+      $or: [
+        { problem: data.problemType },
+        { subproblem: data.subProblem }
+      ]
+    });
+
+    console.log("🔍 Found Providers:", providers.length);
+
+    res.render("Seeker/expertResults.ejs", {
+      providers,
+
+      error: providers.length === 0 ? "No providers found for this issue." : null,
+      locationUsed: data.location || "your area", // fallback location
+    });
+
+  } catch (error) {
+    console.error("Error fetching expert results:", error);
+    res.status(500).render("Seeker/expertResults.ejs", {
+      providers: [],
+      error: "An error occurred while searching for providers.",
+      locationUsed: null,
+    });
+  }
+});
+
+// const express = require('express');
+// const router = express.Router();
+// const Request = require('../models/Request');
+// const Problem = require('../models/Problem');
+// const { authenticate } = require('../middleware/auth');
+
+// Send request to provider
+router.post('/send-request', authenticateUser, async (req, res) => {
+  try {
+    const { providerId, problemId } = req.body;
+    
+    // Validate input
+    if (!providerId || !problemId) {
+      return res.status(400).json({ 
+        success: false,
+        message: 'Provider ID and Problem ID are required' 
+      });
+    }
+
+    // Get problem details
+    const problem = await SeekerProblem.findById(problemId);
+    if (!problem) {
+      return res.status(404).json({ 
+        success: false,
+        message: 'Problem not found' 
+      });
+    }
+
+    // Verify the problem belongs to the current user
+    if (problem.seekerId.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ 
+        success: false,
+        message: 'Unauthorized - You can only send requests for your own problems' 
+      });
+    }
+
+    // Verify provider exists
+    const provider = await Provider.findById(providerId);
+    if (!provider) {
+      return res.status(404).json({ 
+        success: false,
+        message: 'Provider not found' 
+      });
+    }
+
+    // Check if request already exists
+    const existingRequest = await Request.findOne({
+      seekerId: req.user._id,
+      providerId,
+      problemId,
+      status: { $in: ['pending', 'accepted'] }
+    });
+
+    if (existingRequest) {
+      return res.status(400).json({ 
+        success: false,
+        message: existingRequest.status === 'pending' 
+          ? 'Request already sent and pending' 
+          : 'Request already accepted by this provider'
+      });
+    }
+
+    // Create new request
+    const newRequest = new Request({
+      seekerId: req.user._id,
+      providerId,
+      problemId,
+      problemDetails: {
+        problemType: problem.problemType,
+        subProblem: problem.subProblem,
+        description: problem.description,
+        location: problem.location,
+        locationCoordinates: problem.locationCoordinates,
+        createdAt: problem.createdAt
+      },
+      status: 'pending'
+    });
+
+    await newRequest.save();
+
+    // Create notification for provider
+    const notification = new Notification({
+      userId: providerId,
+      type: 'new_request',
+      message: `You have a new service request for ${problem.problemType}`,
+      relatedEntity: {
+        type: 'request',
+        id: newRequest._id
+      },
+      read: false
+    });
+
+    await notification.save();
+
+    // You might want to send real-time notification here (Socket.io or similar)
+
+    res.status(201).json({
+      success: true,
+      message: 'Service request sent successfully',
+      data: {
+        requestId: newRequest._id,
+        providerName: provider.name,
+        problemType: problem.problemType,
+        status: newRequest.status,
+        createdAt: newRequest.createdAt
+      }
+    });
+  } catch (error) {
+    console.error('Error sending request:', error);
+    res.status(500).json({ 
+      success: false,
+      message: 'Server error while processing your request',
+      error: error.message 
+    });
+  }
+});
+
+
+
 
 // ✅ Render "Expert Results" Page
 // ✅ Render "Expert Results" Page with Nearby Experts

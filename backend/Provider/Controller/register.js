@@ -59,7 +59,7 @@ import Provider from "../../Models/provideschema.js";
 export const registerProvider = async (req, res) => {
   console.log("🔹 Register Provider API hit!");
   console.log("Received Data:", req.body);
-
+console.log("skills",req.body.skills);
   try {
     let {
       name,
@@ -67,6 +67,9 @@ export const registerProvider = async (req, res) => {
       phone,
       password,
       skills,
+      problem,
+      subproblem,
+
       experience,
       certifications,
       gstNumber,
@@ -124,6 +127,8 @@ export const registerProvider = async (req, res) => {
       experience,
       certifications,
       gstNumber,
+      problem,
+      subproblem,
       governmentProof,
       serviceLocation,
       availability,

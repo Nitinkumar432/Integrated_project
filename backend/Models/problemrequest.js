@@ -14,7 +14,6 @@ const requestSchema = new mongoose.Schema({
   problemId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Problem',
-    required: true
   },
   problemDetails: {
     problemType: String,

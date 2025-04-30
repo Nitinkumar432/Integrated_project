@@ -5,53 +5,397 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Experts Available</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: '#4F46E5',
+              secondary: '#10B981',
+            }
+          }
+        }
+      }
+    </script>
   </head>
-  <body class="bg-gray-100 flex flex-col items-center p-8">
-    <h1 class="text-2xl font-bold mb-4 text-gray-800">Experts Available</h1>
+  <body class="bg-gray-50 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+      <!-- Header Section -->
+      <header class="mb-10 text-center">
+        <h1 class="text-4xl font-bold text-gray-800 mb-3">🛠️ Find Your Expert</h1>
+        <p class="text-gray-600 max-w-2xl mx-auto mb-6">
+          Connect with verified professionals in your area to solve your problems quickly and efficiently.
+        </p>
+      
+        <div class="text-left max-w-3xl mx-auto leading-relaxed text-base sm:text-lg text-gray-700 space-y-2">
+          <p><span class="font-semibold text-gray-800">🧾 Problem Type:</span> <span class="text-yellow-700"><%= data.problemType %></span></p>
+          <p><span class="font-semibold text-gray-800">🔌 Sub Problem:</span> <span class="text-yellow-700"><%= data.subProblem %></span></p>
+          <p><span class="font-semibold text-gray-800">📝 Description:</span> <span class="text-yellow-700"><%= data.description %></span></p>
+          <p><span class="font-semibold text-gray-800">📍 Location:</span> <span class="text-yellow-700"><%= data.location %></span></p>
+          <p><span class="font-semibold text-gray-800">📌 Coordinates:</span> 
+            <span class="text-yellow-700">[ <%= data.locationCoordinates.coordinates[1] %>, <%= data.locationCoordinates.coordinates[0] %> ]</span>
+          </p>
+          <p><span class="font-semibold text-gray-800">🆔 Seeker ID:</span> 
+            <span class="text-yellow-700"><%= data.seekerId %></span>
+          </p>
+          <p><span class="font-semibold text-gray-800">⏱️ Created At:</span> 
+            <span class="text-yellow-700">
+              <%= new Date(data.createdAt).toLocaleString('en-US', {
+                year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
+              }) %>
+            </span>
+          </p>
+          <p><span class="font-semibold text-gray-800">✅ Verification Status:</span> 
+            <span class="capitalize text-yellow-700"><%= data.verificationStatus %></span>
+          </p>
+        </div>
+      </header>
 
-    <% if (locationUsed) { %>
-    <p class="mb-4 text-sm text-gray-600">
-      Showing results near your location: <strong><%= locationUsed %></strong>
-    </p>
-    <% } %>
+      <!-- Search and Filter Section -->
+      <div class="bg-white rounded-xl shadow-md p-6 mb-8">
+        <div class="flex flex-col md:flex-row gap-4">
+          <div class="flex-1">
+            <label for="search" class="block text-sm font-medium text-gray-700 mb-1">Search Experts</label>
+            <div class="relative">
+              <input 
+                type="text" 
+                id="search" 
+                placeholder="Search by name, problem or location..." 
+                class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"
+              >
+              <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+            </div>
+          </div>
+          <div>
+            <label for="sort" class="block text-sm font-medium text-gray-700 mb-1">Sort By</label>
+            <select 
+              id="sort" 
+              class="w-full md:w-auto px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"
+            >
+              <option value="distance">Distance</option>
+              <option value="rating">Rating</option>
+              <option value="experience">Experience</option>
+              <option value="price">Price</option>
+            </select>
+          </div>
+          <div class="flex items-end">
+            <button class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary-dark transition">
+              Apply
+            </button>
+          </div>
+        </div>
 
-    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg">
-      <% if (providers && providers.length === 0) { %>
-      <p class="text-gray-600">No experts found for this issue in your area.</p>
-      <% } else { %>
-      <ul class="space-y-4">
-        <% providers.forEach(provider => { %>
-        <li class="p-4 border rounded-lg shadow-sm bg-gray-50">
-          <h3 class="text-lg font-semibold text-gray-800">
-            <%= provider.name %>
-          </h3>
-          <p class="text-gray-600">
-            <strong>Location:</strong> <%= provider.serviceLocation %>
-          </p>
-          <p class="text-gray-600">
-            <strong>Skills:</strong> <%= provider.skills.join(", ") %>
-          </p>
-          <p class="text-gray-600">
-            <strong>Rating:</strong> ⭐ <%= provider.ratings %>/5
-          </p>
+        <% if (locationUsed) { %>
+        <div class="mt-4 flex items-center text-sm text-gray-600">
+          <i class="fas fa-map-marker-alt mr-2 text-primary"></i>
+          Showing results near: <strong class="ml-1"><%= locationUsed %></strong>
+        </div>
+        <% } %>
+      </div>
 
-          <% if (provider.distance) { %>
-          <p class="text-gray-600">
-            <strong>Distance:</strong> <%= (provider.distance / 1000).toFixed(2)
-            %> km away
-          </p>
+      <!-- Main Content -->
+      <div class="flex flex-col lg:flex-row gap-8">
+        <!-- Experts List -->
+        <div class="lg:w-2/3">
+          <% if (providers && providers.length === 0) { %>
+          <div class="bg-white rounded-xl shadow-md p-8 text-center">
+            <i class="fas fa-exclamation-circle text-4xl text-gray-400 mb-4"></i>
+            <h3 class="text-xl font-semibold text-gray-800 mb-2">No experts found</h3>
+            <p class="text-gray-600 mb-4">We couldn't find any experts for this issue in your area.</p>
+            <button class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary-dark transition">
+              Try a different location
+            </button>
+          </div>
+          <% } else { %>
+          <div class="space-y-4">
+            <% providers.forEach(provider => { %>
+            <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition">
+              <div class="p-6">
+                <div class="flex flex-col md:flex-row gap-6">
+                  <!-- Provider Avatar -->
+                  <div class="flex-shrink-0">
+                    <div class="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
+                      <i class="fas fa-user text-3xl text-gray-400"></i>
+                    </div>
+                  </div>
+                  
+                  <!-- Provider Details -->
+                  <div class="flex-1">
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-2 mb-3">
+                      <h3 class="text-xl font-bold text-gray-800">
+                        <%= provider.name %>
+                        <% if (provider.verificationStatus === 'verified') { %>
+                        <span class="ml-2 px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">
+                          <i class="fas fa-check-circle"></i> Verified
+                        </span>
+                        <% } %>
+                      </h3>
+                      <div class="flex items-center">
+                        <div class="flex items-center bg-yellow-50 px-3 py-1 rounded-full">
+                          <span class="text-yellow-600 font-medium">⭐ <%= provider.ratings || 'New' %></span>
+                          <% if (provider.ratings > 0) { %>
+                          <span class="text-gray-500 ml-1">/5</span>
+                          <% } %>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                      <div class="flex items-center text-gray-600">
+                        <i class="fas fa-bolt text-primary mr-2 w-5"></i>
+                        <span><strong>Specialization:</strong> <%= provider.problem %> - <%= provider.subproblem %></span>
+                      </div>
+                      <div class="flex items-center text-gray-600">
+                        <i class="fas fa-map-marker-alt text-primary mr-2 w-5"></i>
+                        <span><%= provider.serviceLocation %></span>
+                      </div>
+                      <div class="flex items-center text-gray-600">
+                        <i class="fas fa-briefcase text-primary mr-2 w-5"></i>
+                        <span><strong>Experience:</strong> <%= provider.experience %> years</span>
+                      </div>
+                      <div class="flex items-center text-gray-600">
+                        <i class="fas fa-rupee-sign text-primary mr-2 w-5"></i>
+                        <span><strong>Rate:</strong> ₹<%= provider.pricingDetails %> per service</span>
+                      </div>
+                    </div>
+                    
+                    <% if (provider.distance) { %>
+                    <div class="flex items-center text-gray-600 mb-4">
+                      <i class="fas fa-route text-primary mr-2 w-5"></i>
+                      <span><strong>Distance:</strong> <%= (provider.distance / 1000).toFixed(2) %> km away</span>
+                    </div>
+                    <% } %>
+                    
+                    <div class="flex flex-wrap gap-3 mt-4">
+                      <a 
+                        href="/provider/profile/<%= provider._id %>" 
+                        class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-dark transition flex items-center"
+                      >
+                        <i class="fas fa-eye mr-2"></i> View Profile
+                      </a>
+                      <a 
+                        href="tel:<%= provider.phone %>" 
+                        class="bg-green-100 text-green-800 px-4 py-2 rounded-lg hover:bg-green-200 transition flex items-center"
+                      >
+                        <i class="fas fa-phone-alt mr-2"></i> Call Now
+                      </a>
+                      <button 
+                        class="bg-blue-100 text-blue-800 px-4 py-2 rounded-lg hover:bg-blue-200 transition flex items-center"
+                        onclick="openChat('<%= provider._id %>')"
+                      >
+                        <i class="fas fa-comment-dots mr-2"></i> Chat
+                      </button>
+                      <button 
+                        class="bg-gray-100 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-200 transition flex items-center"
+                        onclick="saveExpert('<%= provider._id %>')"
+                      >
+                        <i class="fas fa-bookmark mr-2"></i> Save
+                      </button>
+                      <button 
+                        class="bg-purple-100 text-purple-800 px-4 py-2 rounded-lg hover:bg-purple-200 transition flex items-center"
+                        onclick="confirmSendRequest('<%= provider._id %>')"
+                      >
+                        <i class="fas fa-paper-plane mr-2"></i> Send Request
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Additional Details (Hidden by default) -->
+              <div class="border-t border-gray-200 px-6 py-4 bg-gray-50 hidden" id="details-<%= provider._id %>">
+                <h4 class="font-semibold text-gray-800 mb-3">More Details</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <h5 class="text-sm font-medium text-gray-500 mb-1">Availability</h5>
+                    <p class="text-gray-800"><%= provider.availability %></p>
+                  </div>
+                  <div>
+                    <h5 class="text-sm font-medium text-gray-500 mb-1">Provider ID</h5>
+                    <p class="text-gray-800"><%= provider._id %></p>
+                  </div>
+                  <div>
+                    <h5 class="text-sm font-medium text-gray-500 mb-1">Certifications</h5>
+                    <p class="text-gray-800">
+                      <% if (provider.certifications && provider.certifications.length > 0) { %>
+                        <%= provider.certifications.join(', ') %>
+                      <% } else { %>
+                        Not provided
+                      <% } %>
+                    </p>
+                  </div>
+                  <div>
+                    <h5 class="text-sm font-medium text-gray-500 mb-1">GST Number</h5>
+                    <p class="text-gray-800"><%= provider.gstNumber %></p>
+                  </div>
+                  <div>
+                    <h5 class="text-sm font-medium text-gray-500 mb-1">Government ID</h5>
+                    <p class="text-gray-800"><%= provider.governmentProof %></p>
+                  </div>
+                </div>
+                
+                <% if (provider.reviews && provider.reviews.length > 0) { %>
+                <div class="mt-4">
+                  <h5 class="text-sm font-medium text-gray-500 mb-2">Recent Reviews</h5>
+                  <div class="space-y-3">
+                    <% provider.reviews.slice(0, 2).forEach(review => { %>
+                    <div class="bg-white p-3 rounded-lg border border-gray-200">
+                      <div class="flex items-center mb-1">
+                        <div class="flex items-center text-yellow-500 mr-2">
+                          <% for (let i = 0; i < review.rating; i++) { %>
+                            <i class="fas fa-star"></i>
+                          <% } %>
+                        </div>
+                        <span class="text-sm font-medium"><%= review.userName %></span>
+                      </div>
+                      <p class="text-gray-700 text-sm"><%= review.comment %></p>
+                    </div>
+                    <% }); %>
+                  </div>
+                </div>
+                <% } %>
+              </div>
+              
+              <!-- Toggle Details Button -->
+              <div class="border-t border-gray-200 px-6 py-3 bg-gray-50 text-center">
+                <button 
+                  class="text-primary text-sm font-medium hover:underline flex items-center justify-center w-full"
+                  onclick="toggleDetails('<%= provider._id %>')"
+                >
+                  <span>Show more details</span>
+                  <i class="fas fa-chevron-down ml-2 text-xs"></i>
+                </button>
+              </div>
+            </div>
+            <% }); %>
+          </div>
           <% } %>
-
-          <a
-            href="/provider/profile/<%= provider._id %>"
-            class="text-blue-600 hover:underline"
-          >
-            View Profile
-          </a>
-        </li>
-        <% }); %>
-      </ul>
-      <% } %>
+        </div>
+        
+        <!-- Map View (Sidebar) -->
+        <div class="lg:w-1/3">
+          <div class="bg-white rounded-xl shadow-md p-6 sticky top-4">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">Experts Near You</h3>
+            <div class="bg-gray-200 rounded-lg h-64 flex items-center justify-center mb-4">
+              <i class="fas fa-map-marked-alt text-4xl text-gray-400"></i>
+            </div>
+            <div class="space-y-3">
+              <% if (providers && providers.length > 0) { %>
+                <% providers.slice(0, 3).forEach(provider => { %>
+                <div class="flex items-center p-2 hover:bg-gray-50 rounded-lg cursor-pointer">
+                  <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center mr-3">
+                    <i class="fas fa-user text-gray-500"></i>
+                  </div>
+                  <div>
+                    <h4 class="font-medium text-gray-800"><%= provider.name %></h4>
+                    <p class="text-xs text-gray-500"><%= (provider.distance / 1000).toFixed(2) %> km away</p>
+                  </div>
+                </div>
+                <% }); %>
+              <% } else { %>
+                <p class="text-gray-500 text-center py-4">No experts to show on map</p>
+              <% } %>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmationModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+      <div class="bg-white rounded-lg p-6 max-w-md w-full">
+        <h3 class="text-xl font-bold text-gray-800 mb-4">Confirm Request</h3>
+        <p class="text-gray-600 mb-6">Are you sure you want to send a service request to this expert?</p>
+        <div class="flex justify-end gap-3">
+          <button 
+            onclick="document.getElementById('confirmationModal').classList.add('hidden')"
+            class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 transition"
+          >
+            Cancel
+          </button>
+          <button 
+            id="confirmRequestBtn"
+            class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition"
+          >
+            Yes, Send Request
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Store the current provider ID for the confirmation
+      let currentProviderId = null;
+
+      function toggleDetails(providerId) {
+        const detailsSection = document.getElementById(`details-${providerId}`);
+        const button = document.querySelector(`[onclick="toggleDetails('${providerId}')"]`);
+        
+        if (detailsSection.classList.contains('hidden')) {
+          detailsSection.classList.remove('hidden');
+          button.innerHTML = '<span>Show less details</span><i class="fas fa-chevron-up ml-2 text-xs"></i>';
+        } else {
+          detailsSection.classList.add('hidden');
+          button.innerHTML = '<span>Show more details</span><i class="fas fa-chevron-down ml-2 text-xs"></i>';
+        }
+      }
+      
+      function openChat(providerId) {
+        // Implement chat functionality
+        alert(`Opening chat with provider ID: ${providerId}`);
+      }
+      
+      function saveExpert(providerId) {
+        // Implement save functionality
+        alert(`Saving expert with ID: ${providerId}`);
+      }
+
+      function confirmSendRequest(providerId) {
+        currentProviderId = providerId;
+        document.getElementById('confirmationModal').classList.remove('hidden');
+      }
+
+      document.getElementById('confirmRequestBtn').addEventListener('click', async function() {
+        document.getElementById('confirmationModal').classList.add('hidden');
+        
+        try {
+          const response = await fetch('/seeker/send-request', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              providerId: currentProviderId,
+              problemDetails: {
+                problemType: '<%= data.problemType %>',
+                subProblem: '<%= data.subProblem %>',
+                description: '<%= data.description %>',
+                location: '<%= data.location %>',
+                locationCoordinates: {
+                  type: 'Point',
+                  coordinates: ["<%= data.locationCoordinates.coordinates[1] %>, <%= data.locationCoordinates.coordinates[0] %>"]
+                },
+                seekerId: '<%= data.seekerId %>',
+                verificationStatus: '<%= data.verificationStatus %>',
+                createdAt: '<%= data.createdAt %>'
+              }
+            }),
+            credentials: 'include' // Include cookies for authentication
+          });
+
+          const result = await response.json();
+
+          if (result.success) {
+            alert('Request sent successfully!');
+          } else {
+            alert(`Failed to send request: ${result.message}`);
+          }
+        } catch (error) {
+          console.error('Error sending request:', error);
+          alert('An error occurred while sending the request. Please try again.');
+        }
+      });
+    </script>
   </body>
 </html>

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Find an Expert</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex flex-col items-center p-8 min-h-screen">
+  <h1 class="text-3xl font-bold mb-6 text-gray-800">Describe Your Problem</h1>
+
+  <form id="problemForm" action="/seeker/find-expert" method="POST"
+    enctype="multipart/form-data"
+    class="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg"
+  >
+    <!-- Problem Type -->
+    <label class="block font-medium">Select Problem Type</label>
+    <select id="problemType" name="problemType" class="w-full p-2 border rounded-lg mt-1 mb-3" required></select>
+    <input type="text" id="newProblemType" name="newProblemType" class="w-full p-2 border rounded-lg mt-1 mb-3 hidden" placeholder="Enter new problem type" />
+
+    <!-- Sub Problem -->
+    <label class="block font-medium">Select Specific Issue</label>
+    <select id="subProblem" name="subProblem" class="w-full p-2 border rounded-lg mt-1 mb-3" required></select>
+    <input type="text" id="newSubProblem" name="newSubProblem" class="w-full p-2 border rounded-lg mt-1 mb-3 hidden" placeholder="Enter new specific issue" />
+
+    <!-- Description -->
+    <label class="block font-medium">Description (Optional)</label>
+    <textarea name="description" id="description" class="w-full p-3 border rounded-lg mt-1 mb-3" rows="3" placeholder="Describe your problem..."></textarea>
+
+    <!-- File Upload -->
+    <label class="block font-medium">Upload Image (Optional)</label>
+    <input type="file" name="problemImage" id="problemImage" class="w-full p-2 border rounded-lg mt-1 mb-3" />
+
+    <!-- Location -->
+    <label class="block font-medium">Your Location</label>
+    <div class="flex gap-2 items-center mb-3">
+      <input type="text" id="location" name="location" required class="flex-1 p-2 border rounded-lg" placeholder="Enter your city or address" />
+      <button type="button" onclick="getLocation()" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 text-sm">Locate Me</button>
+    </div>
+
+    <!-- Hidden lat/lon -->
+    <input type="hidden" name="latitude" id="latitude" />
+    <input type="hidden" name="longitude" id="longitude" />
+
+    <!-- Final Submit -->
+    <button type="submit" class="mt-4 w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700">Find Expert</button>
+  </form>
+
+  <script>
+    const subProblemOptions = {
+      Plumbing: ["Leaky Faucet", "Clogged Drain", "Pipe Installation"],
+      Electrical: ["Wiring Issue", "Fuse Problem", "Light Fixture Repair"],
+      Cleaning: ["Deep Cleaning", "Sofa Cleaning", "Carpet Cleaning"],
+      "Appliance Repair": ["Washing Machine", "Refrigerator", "Microwave"],
+      "Laptop Repair": ["Screen Replacement", "Keyboard Issue", "Battery Problem"],
+      "AC Repair": ["Gas Refill", "Compressor Issue", "Thermostat Problem"],
+      Carpentry: ["Furniture Repair", "Door Hinge Fix", "Woodwork Polishing"],
+      Painting: ["Wall Painting", "Texture Painting", "Waterproof Coating"],
+      Masonry: ["Wall Cracks", "Tile Installation", "Cement Plastering"],
+    };
+  
+    window.addEventListener("DOMContentLoaded", () => {
+      const problemType = document.getElementById("problemType");
+      const defaultOptions = [
+        "Plumbing",
+        "Electrical",
+        "Cleaning",
+        "Appliance Repair",
+        "Laptop Repair",
+        "AC Repair",
+        "Carpentry",
+        "Painting",
+        "Masonry"
+      ];
+  
+      problemType.innerHTML = `<option value="">Select Problem</option>`;
+      defaultOptions.forEach((opt) => {
+        const option = document.createElement("option");
+        option.value = opt;
+        option.textContent = opt;
+        problemType.appendChild(option);
+      });
+  
+      const other = document.createElement("option");
+      other.value = "__other__";
+      other.textContent = "More...";
+      problemType.appendChild(other);
+    });
+  
+    function updateSubProblems() {
+      const selected = document.getElementById("problemType").value;
+      const subProblem = document.getElementById("subProblem");
+      const newTypeInput = document.getElementById("newProblemType");
+      const newSubInput = document.getElementById("newSubProblem");
+  
+      if (selected === "__other__") {
+        newTypeInput.classList.remove("hidden");
+        newSubInput.classList.remove("hidden");
+        subProblem.innerHTML = `<option value="">-- Select Issue --</option>`;
+        subProblem.required = false;
+        newSubInput.required = true;
+      } else {
+        newTypeInput.classList.add("hidden");
+        newSubInput.classList.add("hidden");
+        subProblem.required = true;
+        newSubInput.required = false;
+  
+        subProblem.innerHTML = `<option value="">-- Select Issue --</option>`;
+        const options = subProblemOptions[selected] || [];
+        options.forEach((sp) => {
+          const opt = document.createElement("option");
+          opt.value = sp;
+          opt.textContent = sp;
+          subProblem.appendChild(opt);
+        });
+  
+        const other = document.createElement("option");
+        other.value = "__other__";
+        other.textContent = "Other";
+        subProblem.appendChild(other);
+      }
+    }
+  
+    document.getElementById("problemType").addEventListener("change", updateSubProblems);
+  
+    document.getElementById("subProblem").addEventListener("change", () => {
+      const sub = document.getElementById("subProblem");
+      const newSub = document.getElementById("newSubProblem");
+  
+      if (sub.value === "__other__") {
+        newSub.classList.remove("hidden");
+        newSub.required = true;
+      } else {
+        newSub.classList.add("hidden");
+        newSub.required = false;
+      }
+    });
+  
+    document.getElementById("problemForm").addEventListener("submit", (e) => {
+      const pType = document.getElementById("problemType").value;
+      const sProb = document.getElementById("subProblem").value;
+  
+      const newPType = document.getElementById("newProblemType").value.trim();
+      const newSProb = document.getElementById("newSubProblem").value.trim();
+  
+      const finalP = (pType === "__other__") ? newPType : pType;
+      const finalS = (sProb === "__other__") ? newSProb : sProb;
+  
+      const pInput = document.createElement("input");
+      pInput.type = "hidden";
+      pInput.name = "problemType";
+      pInput.value = finalP;
+  
+      const sInput = document.createElement("input");
+      sInput.type = "hidden";
+      sInput.name = "subProblem";
+      sInput.value = finalS;
+  
+      e.target.appendChild(pInput);
+      e.target.appendChild(sInput);
+    });
+  
+    async function getLocation() {
+      const locationInput = document.getElementById("location");
+      const latInput = document.getElementById("latitude");
+      const lonInput = document.getElementById("longitude");
+  
+      if (!navigator.geolocation) return alert("Geolocation not supported.");
+  
+      locationInput.placeholder = "Locating...";
+      navigator.geolocation.getCurrentPosition(async (pos) => {
+        const { latitude, longitude } = pos.coords;
+        latInput.value = latitude;
+        lonInput.value = longitude;
+  
+        try {
+          const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`);
+          const data = await res.json();
+          locationInput.value = data.display_name || "";
+        } catch (err) {
+          alert("Unable to fetch location name.");
+        } finally {
+          locationInput.placeholder = "Enter your city or address";
+        }
+      }, () => {
+        alert("Permission denied.");
+        locationInput.placeholder = "Enter your city or address";
+      });
+    }
+  </script>
+  
+</body>
+</html>

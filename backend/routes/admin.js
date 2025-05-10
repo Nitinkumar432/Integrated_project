@@ -13,6 +13,7 @@ import Provider from "../Models/provideschema.js";
 import Seeker from "../Models/seekers.js";
 import RepairProblem from "../Models/repairProblem.js";
 import Admin from "../Models/admin.js";
+import Activity from "../Models/activitySchema.js";
 
 import multer from "multer";
 
@@ -53,11 +54,53 @@ router.get("/dashboard", authenticateAdmin, async (req, res) => {
     const seekersCount = await Seeker.countDocuments();
     const totalRequests = pendingProvidersCount + providersCount;
 
+    // ✅ Get Monthly Registrations for Seekers & Verified Providers
+    const monthlySeekers = await Seeker.aggregate([
+      {
+        $group: {
+          _id: { $month: "$createdAt" },
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+
+    const monthlyProviders = await Provider.aggregate([
+      {
+        $match: { verificationStatus: "verified" }, // ✅ Only verified providers
+      },
+      {
+        $group: {
+          _id: { $month: "$createdAt" },
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+
+    // ✅ Convert Aggregation Results to JavaScript Arrays
+    const seekersPerMonth = Array(12).fill(0);
+    const providersPerMonth = Array(12).fill(0);
+
+    monthlySeekers.forEach((s) => {
+      seekersPerMonth[s._id - 1] = s.count;
+    });
+
+    monthlyProviders.forEach((p) => {
+      providersPerMonth[p._id - 1] = p.count;
+    });
+
+    // ✅ Fetch real recent activities from your database
+    const recentActivities = await Activity.find()
+      .sort({ createdAt: -1 })
+      .limit(5);
+
     res.render("Admin/adminDashboard.ejs", {
       pendingProvidersCount,
       providersCount,
       seekersCount,
       totalRequests,
+      seekersPerMonth,
+      providersPerMonth,
+      recentActivities,
     });
   } catch (error) {
     console.error("Error fetching admin dashboard data:", error);
@@ -83,12 +126,17 @@ router.post("/profile/update", authenticateAdmin, async (req, res) => {
   try {
     const { email, newPassword } = req.body;
     const updateFields = {};
-
     if (email) updateFields.email = email;
     if (newPassword) updateFields.password = newPassword;
 
     await Admin.findOneAndUpdate({ username: "admin" }, updateFields, {
       new: true,
+    });
+
+    // ✅ Log activity
+    await Activity.create({
+      type: "update",
+      message: `Admin profile updated.`,
     });
 
     res.redirect("/admin/profile");
@@ -129,16 +177,15 @@ router.get("/common-problems", async (req, res) => {
 // ✅ POST Route: Handle New Problem Submission
 router.post(
   "/common-problems/add",
-  upload.single("imageFile"), // Handle image upload
+  upload.single("imageFile"),
   async (req, res) => {
     try {
       const { title, category, difficulty, description, solutionUrl } =
         req.body;
       const imageUrl = req.file
         ? `/uploads/${req.file.filename}`
-        : req.body.imageUrl; // Use uploaded image or URL
+        : req.body.imageUrl;
 
-      // Create new problem
       const newProblem = new RepairProblem({
         title,
         category,
@@ -147,9 +194,15 @@ router.post(
         imageUrl,
         solutionUrl,
       });
-
       await newProblem.save();
-      res.redirect("/admin/common-problems"); // Redirect to manage page
+
+      // ✅ Log activity
+      await Activity.create({
+        type: "problem",
+        message: `New problem "${title}" added.`,
+      });
+
+      res.redirect("/admin/common-problems");
     } catch (error) {
       console.error("Error adding problem:", error);
       res.status(500).send("Server Error");
@@ -160,8 +213,16 @@ router.post(
 // ✅ POST Route: Delete a Problem
 router.post("/common-problems/delete/:id", async (req, res) => {
   try {
-    await RepairProblem.findByIdAndDelete(req.params.id);
-    res.redirect("/admin/common-problems"); // Refresh page after deletion
+    const problem = await RepairProblem.findByIdAndDelete(req.params.id);
+    if (!problem) return res.status(404).json({ error: "Problem not found" });
+
+    // ✅ Log activity
+    await Activity.create({
+      type: "problem",
+      message: `Problem "${problem.title}" deleted.`,
+    });
+
+    res.redirect("/admin/common-problems");
   } catch (error) {
     console.error("Error deleting problem:", error);
     res.status(500).send("Server Error");
@@ -190,9 +251,6 @@ router.get("/manage-common-problems", async (req, res) => {
 });
 
 // ✅ Protected Admin Routes
-// router.get("/pending-providers", authenticateAdmin, getPendingProviders);
-// router.put("/approve-provider/:providerId", authenticateAdmin, approveProvider);
-// router.put("/reject-provider/:providerId", authenticateAdmin, rejectProvider);
 
 // ✅ Serve Pending Providers Page
 router.get("/pending-providers", authenticateAdmin, async (req, res) => {
@@ -218,6 +276,13 @@ router.put(
       });
       if (!provider)
         return res.status(404).json({ error: "Provider not found" });
+
+      // ✅ Log activity
+      await Activity.create({
+        type: "approval",
+        message: `Provider "${provider.name}" was approved.`,
+      });
+
       res.json({ message: "Provider approved successfully!" });
     } catch (error) {
       console.error("Error approving provider:", error);
@@ -235,6 +300,13 @@ router.put(
       const provider = await Provider.findByIdAndDelete(req.params.providerId);
       if (!provider)
         return res.status(404).json({ error: "Provider not found" });
+
+      // ✅ Log activity
+      await Activity.create({
+        type: "rejection",
+        message: `Provider "${provider.name}" was rejected and removed.`,
+      });
+
       res.json({ message: "Provider rejected and removed!" });
     } catch (error) {
       console.error("Error rejecting provider:", error);
@@ -255,8 +327,6 @@ router.get("/verified-providers", authenticateAdmin, async (req, res) => {
     res.status(500).send("Server Error");
   }
 });
-
-// router.get("/seekers", authenticateAdmin, getAllSeekers);
 
 // ✅ Serve Seekers Management Page
 router.get("/seekers", authenticateAdmin, async (req, res) => {
@@ -288,7 +358,15 @@ router.get("/seekers/:id", authenticateAdmin, async (req, res) => {
 // ✅ Delete Seeker
 router.delete("/seekers/:id", authenticateAdmin, async (req, res) => {
   try {
-    await Seeker.findByIdAndDelete(req.params.id);
+    const seeker = await Seeker.findByIdAndDelete(req.params.id);
+    if (!seeker) return res.status(404).json({ error: "Seeker not found" });
+
+    // ✅ Log activity
+    await Activity.create({
+      type: "deletion",
+      message: `Seeker "${seeker.name}" was deleted.`,
+    });
+
     res.status(200).json({ message: "Seeker deleted successfully" });
   } catch (error) {
     console.error("Error deleting seeker:", error);
@@ -297,9 +375,17 @@ router.delete("/seekers/:id", authenticateAdmin, async (req, res) => {
 });
 
 // ✅ Send Message to Seeker (Placeholder)
-router.post("/seekers/:id/message", authenticateAdmin, (req, res) => {
+router.post("/seekers/:id/message", authenticateAdmin, async (req, res) => {
   try {
-    // For now, we simulate sending a message
+    const seeker = await Seeker.findById(req.params.id);
+    if (!seeker) return res.status(404).json({ error: "Seeker not found" });
+
+    // ✅ Log activity
+    await Activity.create({
+      type: "message",
+      message: `Admin sent a message to seeker "${seeker.name}".`,
+    });
+
     res.status(200).json({ message: "Message sent to seeker successfully" });
   } catch (error) {
     console.error("Error sending message:", error);

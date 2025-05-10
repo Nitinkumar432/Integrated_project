@@ -261,8 +261,8 @@
             href="/seeker/problempage"
             class="flex items-center px-4 py-3 rounded-lg hover:bg-primary-200 transition-all duration-200 group text-primary-700"
           >
-            <i class="ri-list-check-line mr-3 text-primary-600 text-lg"></i>
-            <span class="font-medium">View Common Problems</span>
+            <i class="ri-brain-line mr-3 text-primary-600 text-lg"></i>
+            View Common Problems
           </a>
           <a
             href="/seeker/profile"
@@ -336,7 +336,7 @@
               <i class="ri-time-line text-2xl"></i>
             </div>
             <h2 class="text-3xl font-bold text-gray-800">
-              <%= repairRequests.filter(r => r.status === 'Pending').length %>
+              <%= repairRequests.filter(r => r.verificationStatus === 'pending').length %>
             </h2>
             <p class="text-gray-600 mt-1 font-medium">Pending Requests</p>
           </div>
@@ -364,7 +364,7 @@
               Your Repair Requests
             </h2>
             <a
-              href="/seeker/problempage"
+              href="/seeker/find-expert"
               class="px-5 py-2.5 rounded-lg action-card-1 text-white font-medium hover:opacity-95 transition-opacity flex items-center shadow-md"
             >
               <i class="ri-add-line mr-1.5"></i> New Request
@@ -385,47 +385,63 @@
               </div>
               <p class="text-gray-700 text-lg">No repair requests found.</p>
               <a
-                href="/seeker/problempage"
+                href="/seeker/find-expert"
                 class="mt-4 inline-block px-5 py-2.5 rounded-lg bg-primary-500 text-white font-medium hover:bg-primary-600 transition-colors shadow-md"
               >
                 Submit your first request
               </a>
             </div>
-            <% } else { %> <% repairRequests.forEach(request => { %>
-            <div class="request-card p-6 rounded-xl">
-              <div class="flex justify-between items-start mb-4">
-                <h3 class="text-xl font-bold text-gray-800">
-                  <%= request.issue %>
-                </h3>
-                <div
-                  class="rounded-full px-3 py-1 text-xs font-medium <% if (request.status === 'Pending') { %> bg-amber-100 text-amber-700 <% } else if (request.status === 'In Progress') { %> bg-secondary-100 text-secondary-700 <% } else { %> bg-primary-100 text-primary-700 <% } %>"
-                >
-                  <%= request.status %>
+            <% } else { %> 
+              <% repairRequests.forEach(request => { %>
+                <div class="request-card p-6 rounded-xl">
+                  <div class="flex justify-between items-start mb-4">
+                    <h3 class="text-xl font-bold text-gray-800">
+                      <%= request.issue %>
+                    </h3>
+                    <div
+                      class="rounded-full px-3 py-1 text-xs font-medium 
+                      <% if (request.verificationStatus === 'Pending') { %> bg-amber-100 text-amber-700 
+                      <% } else if (request.verificationStatus === 'In Progress') { %> bg-secondary-100 text-secondary-700 
+                      <% } else { %> bg-primary-100 text-primary-700 <% } %>"
+                    >
+                      <%= request.status %>
+                    </div>
+                  </div>
+            
+                  <div class="space-y-3">
+                    <p class="text-gray-600 flex items-center">
+                      <i class="ri-map-pin-line mr-2 text-primary-500"></i>
+                      <%= request.location %>
+                    </p>
+                    <p class="text-gray-600 flex items-center">
+                      <i class="ri-calendar-line mr-2 text-primary-500"></i>
+                      <%= new Date(request.createdAt).toLocaleDateString('en-US', {
+                        year: 'numeric', month: 'short', day: 'numeric'
+                      }) %>
+                    </p>
+                  </div>
+            
+                  <div class="mt-5 pt-4 border-t border-gray-100 flex flex-col gap-2">
+                    <a
+                      href="#"
+                      class="text-primary-600 hover:text-primary-700 text-sm font-medium flex items-center"
+                    >
+                      <i class="ri-eye-line mr-1.5"></i> View Details
+                    </a>
+            
+                    <form action="/seeker/fetch-finder/<%= request._id %>" method="GET">
+                      <button
+                        type="submit"
+                        class="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center"
+                      >
+                        <i class="ri-refresh-line mr-1.5"></i> Fetch Finder
+                      </button>
+                    </form>
+                  </div>
                 </div>
-              </div>
-
-              <div class="space-y-3">
-                <p class="text-gray-600 flex items-center">
-                  <i class="ri-map-pin-line mr-2 text-primary-500"></i>
-                  <%= request.location %>
-                </p>
-                <p class="text-gray-600 flex items-center">
-                  <i class="ri-calendar-line mr-2 text-primary-500"></i>
-                  <%= new Date(request.createdAt).toLocaleDateString('en-US', {
-                  year: 'numeric', month: 'short', day: 'numeric' }) %>
-                </p>
-              </div>
-
-              <div class="mt-5 pt-4 border-t border-gray-100">
-                <a
-                  href="#"
-                  class="text-primary-600 hover:text-primary-700 text-sm font-medium flex items-center"
-                >
-                  <i class="ri-eye-line mr-1.5"></i> View Details
-                </a>
-              </div>
-            </div>
-            <% }); %> <% } %>
+              <% }); %> 
+            <% } %>
+            
           </div>
         </div>
 
@@ -438,7 +454,7 @@
 
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
             <a
-              href="/seeker/problempage"
+              href="/seeker/find-expert"
               class="block p-6 rounded-xl text-center action-card-1 shadow-md"
             >
               <i class="ri-add-circle-line text-4xl mb-3 text-white"></i>

@@ -9,6 +9,8 @@ import boxen from "boxen";
 import seeker from "./Seeker/Routes/seeker.js";
 import provider from "./Provider/Routes/provider.js"; // ✅ Import provider routes
 import cookieParser from "cookie-parser";
+import bodyParser from "express";
+import problemRoutes from "./routes/problemRoutes.js";
 
 // Load environment variables
 dotenv.config();
@@ -33,6 +35,8 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use("/uploads", express.static("uploads"));
+
+app.use("/api", problemRoutes);
 
 // Set EJS as the view engine and point to frontend folder
 app.set("view engine", "ejs");

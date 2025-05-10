@@ -5,41 +5,181 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ask AI - Repair Queries</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+    />
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["Inter", "sans-serif"],
+            },
+            colors: {
+              primary: {
+                50: "#f0f9ff",
+                100: "#e0f2fe",
+                200: "#bae6fd",
+                300: "#7dd3fc",
+                400: "#38bdf8",
+                500: "#0ea5e9",
+                600: "#0284c7",
+                700: "#0369a1",
+                800: "#075985",
+                900: "#0c4a6e",
+              },
+            },
+          },
+        },
+      };
+    </script>
   </head>
-  <body class="bg-gray-100 flex flex-col items-center p-8">
-    <h1 class="text-2xl font-bold mb-4">Ask AI About Repairs</h1>
-    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg">
-      <textarea
-        id="question"
-        placeholder="Type your repair question..."
-        class="w-full p-3 border rounded-lg focus:ring-blue-500"
-        rows="3"
-      ></textarea>
-      <button
-        onclick="askQuestion()"
-        class="mt-4 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
+  <body
+    class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen flex flex-col items-center p-4 md:p-8"
+  >
+    <div class="w-full max-w-2xl mx-auto">
+      <header class="text-center mb-8">
+        <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-2">
+          <span class="text-primary-600">Ask AI</span> About Repairs
+        </h1>
+        <p class="text-gray-600">
+          Get expert advice on your repair questions instantly
+        </p>
+      </header>
+
+      <div
+        class="bg-white p-6 md:p-8 rounded-xl shadow-lg border border-gray-100"
       >
-        Ask AI
-      </button>
-      <div id="response" class="mt-4 p-3 bg-gray-50 rounded-lg"></div>
+        <div class="mb-6">
+          <label
+            for="question"
+            class="block text-sm font-medium text-gray-700 mb-2"
+            >Your repair question</label
+          >
+          <textarea
+            id="question"
+            placeholder="E.g., How do I fix a leaking faucet? What tools do I need to replace a light switch?"
+            class="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 focus:outline-none resize-none transition duration-200 text-gray-700"
+            rows="4"
+          ></textarea>
+        </div>
+
+        <button
+          onclick="askQuestion()"
+          id="askBtn"
+          class="w-full bg-primary-600 text-white py-3 px-4 rounded-lg hover:bg-primary-700 transition duration-200 font-medium flex items-center justify-center gap-2"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z"
+              clip-rule="evenodd"
+            />
+          </svg>
+          Ask AI
+        </button>
+
+        <div id="loading" class="hidden mt-6 flex items-center justify-center">
+          <div
+            class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"
+          ></div>
+          <span class="ml-3 text-gray-600">Analyzing your question...</span>
+        </div>
+
+        <div
+          id="response"
+          class="mt-6 p-5 bg-gray-50 rounded-lg border border-gray-200 text-gray-700 hidden overflow-auto"
+        ></div>
+      </div>
+
+      <footer class="mt-8 text-center text-gray-500 text-sm">
+        <p>Get reliable repair advice powered by AI</p>
+      </footer>
     </div>
 
     <script>
       async function askQuestion() {
-        const question = document.getElementById("question").value;
-        if (!question.trim()) return alert("Please enter a question!");
-
+        const question = document.getElementById("question").value.trim();
         const responseDiv = document.getElementById("response");
-        responseDiv.innerHTML = "Thinking...";
+        const loadingDiv = document.getElementById("loading");
+        const askBtn = document.getElementById("askBtn");
 
-        const res = await fetch("/seeker/ask-question", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ question }),
-        });
+        if (!question) {
+          alert("Please enter a question!");
+          return;
+        }
 
-        const data = await res.json();
-        responseDiv.innerHTML = data.reply || "Error getting response.";
+        // Show loading state
+        responseDiv.classList.add("hidden");
+        loadingDiv.classList.remove("hidden");
+        askBtn.disabled = true;
+        askBtn.innerHTML = `
+          <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          Processing...
+        `;
+
+        try {
+          const res = await fetch("/seeker/ask-question", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ question }),
+          });
+
+          const data = await res.json();
+          console.log("AI Response:", data); // ✅ Debugging - Check what AI returns
+
+          let aiResponse = data.reply || "⚠️ Error getting response.";
+
+          // Apply Formatting - keeping the exact same formatting logic
+          aiResponse = aiResponse.replace(/\n/g, "<br>");
+          aiResponse = aiResponse.replace(/\* (.+)/g, "• $1");
+          aiResponse = aiResponse.replace(
+            /\*\*(.+?)\*\*/g,
+            "<strong>$1</strong>"
+          );
+          aiResponse = aiResponse.replace(/\*(.+?)\*/g, "<em>$1</em>");
+          aiResponse = aiResponse.replace(
+            /```([^`]+)```/g,
+            `<pre class="bg-gray-800 text-white p-3 rounded-md overflow-auto">$1</pre>`
+          );
+          aiResponse = aiResponse.replace(
+            /`([^`]+)`/g,
+            `<code class="bg-gray-200 px-1 rounded-md">$1</code>`
+          );
+
+          responseDiv.innerHTML = aiResponse;
+          responseDiv.classList.remove("hidden");
+        } catch (error) {
+          console.error("Error:", error);
+          responseDiv.innerHTML = `
+            <div class="flex items-center text-red-600">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+              </svg>
+              Failed to get response. Try again.
+            </div>
+          `;
+          responseDiv.classList.remove("hidden");
+        }
+
+        // Reset button state
+        loadingDiv.classList.add("hidden");
+        askBtn.disabled = false;
+        askBtn.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+          </svg>
+          Ask AI
+        `;
       }
     </script>
   </body>
